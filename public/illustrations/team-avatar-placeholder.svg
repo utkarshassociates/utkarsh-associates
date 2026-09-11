@@ -1,0 +1,7 @@
+<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- PLACEHOLDER team avatar fallback -->
+  <g fill="none" stroke="#133458" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="20" cy="15" r="7" />
+    <path d="M6 36C6 27 12 24 20 24C28 24 34 27 34 36" />
+  </g>
+</svg>

@@ -1,0 +1,35 @@
+@import "../styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background: var(--white);
+    color: var(--ink-900);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  /* Visible keyboard focus everywhere — accessibility floor per frontend-design skill */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--navy-100);
+    border-radius: var(--r-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

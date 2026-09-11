@@ -1,0 +1,13 @@
+<svg width="160" height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- PLACEHOLDER logo — swap for client's final SVG at this same path -->
+  <g fill="none" stroke="#133458" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 8V32" />
+    <path d="M8 14H32" />
+    <path d="M8 14L4 22C4 25 7 27 10 27C13 27 16 25 16 22L8 14Z" />
+    <path d="M32 14L28 22C28 25 31 27 34 27C37 27 40 25 40 22L32 14Z" />
+    <circle cx="20" cy="32" r="1.6" fill="#DBAF15" stroke="none" />
+  </g>
+  <text x="48" y="24" font-family="Newsreader, Georgia, serif" font-weight="600" font-size="17" fill="#133458">
+    Utkarsh Associates
+  </text>
+</svg>
