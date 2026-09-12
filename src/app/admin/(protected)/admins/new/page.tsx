@@ -6,7 +6,7 @@ import { AdminForm } from "@/components/admin/AdminForm";
 export const metadata: Metadata = { title: "New Admin" };
 
 export default async function NewAdminPage() {
-  await requirePermission("admins.manage");
+  const actor = await requirePermission("admins.manage");
 
   const supabase = createServiceRoleClient();
   const [{ data: roles }, { data: permissions }] = await Promise.all([
@@ -14,10 +14,12 @@ export default async function NewAdminPage() {
     supabase.from("permissions").select("id, key, label, category").order("category"),
   ]);
 
+  const visibleRoles = actor.isSuper ? (roles ?? []) : (roles ?? []).filter((r) => !r.is_super);
+
   return (
     <div>
       <h1 className="mb-6 font-serif text-h3 text-navy-700">New admin</h1>
-      <AdminForm mode="create" roles={roles ?? []} permissions={permissions ?? []} />
+      <AdminForm mode="create" roles={visibleRoles} permissions={permissions ?? []} />
     </div>
   );
 }

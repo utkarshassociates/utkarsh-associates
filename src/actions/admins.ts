@@ -32,6 +32,14 @@ export async function createAdminAction(input: CreateAdminInput): Promise<Action
 
   const supabase = createServiceRoleClient();
 
+  // Security fix: only a superAdmin can hand out the superAdmin role. Without
+  // this, anyone granted admins.manage could create a brand-new superAdmin
+  // account for themselves regardless of their own role.
+  const { data: targetRole } = await supabase.from("roles").select("is_super").eq("id", roleId).single();
+  if (targetRole?.is_super && !actor.isSuper) {
+    return { success: false, error: "Only a superAdmin can assign the superAdmin role." };
+  }
+
   const { data: existing } = await supabase
     .from("admins")
     .select("id")
@@ -94,6 +102,14 @@ export async function updateAdminAction(input: UpdateAdminInput): Promise<Action
   const targetWasSuper = targetRole?.is_super === true;
   const losingSuperStatus = status === "disabled" || newRole?.is_super !== true;
 
+  // Security fix: only a superAdmin can touch an existing superAdmin's
+  // account (name/role/status/permissions) or promote someone TO superAdmin.
+  // Without this, anyone granted admins.manage could edit, disable, or
+  // re-permission a superAdmin — including their own account, to escalate.
+  if (!actor.isSuper && (targetWasSuper || newRole?.is_super)) {
+    return { success: false, error: "Only a superAdmin can manage a superAdmin account." };
+  }
+
   if (targetWasSuper && losingSuperStatus) {
     const { count } = await supabase
       .from("admins")
@@ -146,8 +162,18 @@ export async function resetAdminPasswordAction(input: ResetPasswordInput): Promi
   }
   const { adminId, newPassword } = parsed.data;
 
-  const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
   const supabase = createServiceRoleClient();
+
+  // Security fix: only a superAdmin can reset a superAdmin's password.
+  // Without this, anyone granted admins.manage could take over a
+  // superAdmin account just by resetting its password.
+  const { data: target } = await supabase.from("admins").select("roles(is_super)").eq("id", adminId).single();
+  const targetRole = Array.isArray(target?.roles) ? target.roles[0] : target?.roles;
+  if (targetRole?.is_super && !actor.isSuper) {
+    return { success: false, error: "Only a superAdmin can reset a superAdmin's password." };
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
 
   const { error } = await supabase.from("admins").update({ password_hash: passwordHash }).eq("id", adminId);
   if (error) {

@@ -12,14 +12,14 @@ interface EditAdminPageProps {
 }
 
 export default async function EditAdminPage({ params }: EditAdminPageProps) {
-  await requirePermission("admins.manage");
+  const actor = await requirePermission("admins.manage");
   const { id } = await params;
 
   const supabase = createServiceRoleClient();
   const [{ data: admin }, { data: roles }, { data: permissions }] = await Promise.all([
     supabase
       .from("admins")
-      .select("id, login_id, name, status, extra_permissions, role_id")
+      .select("id, login_id, name, status, extra_permissions, role_id, roles(name, is_super)")
       .eq("id", id)
       .maybeSingle(),
     supabase.from("roles").select("id, name, slug, is_super").order("name"),
@@ -28,6 +28,29 @@ export default async function EditAdminPage({ params }: EditAdminPageProps) {
 
   if (!admin) notFound();
 
+  const adminRole = Array.isArray(admin.roles) ? admin.roles[0] : admin.roles;
+  const targetIsSuper = adminRole?.is_super === true;
+
+  // Security fix: only a superAdmin can manage another superAdmin's account.
+  // The server actions already enforce this (see src/actions/admins.ts) —
+  // this is the page-level version, so a non-super admin with admins.manage
+  // sees a clear explanation instead of an editable form that would just
+  // fail with an error on submit.
+  if (targetIsSuper && !actor.isSuper) {
+    return (
+      <div>
+        <h1 className="mb-1 font-serif text-h3 text-navy-700">{admin.name}</h1>
+        <p className="mb-6 font-mono text-[13px] text-gray-500">{admin.login_id}</p>
+        <div className="max-w-[480px] rounded-sm border border-warning bg-warning-bg px-4 py-3 text-[13px] text-warning">
+          This account is a superAdmin. Only another superAdmin can view or change its role, permissions,
+          status, or password.
+        </div>
+      </div>
+    );
+  }
+
+  const visibleRoles = actor.isSuper ? (roles ?? []) : (roles ?? []).filter((r) => !r.is_super);
+
   return (
     <div>
       <h1 className="mb-1 font-serif text-h3 text-navy-700">{admin.name}</h1>
@@ -35,7 +58,7 @@ export default async function EditAdminPage({ params }: EditAdminPageProps) {
 
       <AdminForm
         mode="edit"
-        roles={roles ?? []}
+        roles={visibleRoles}
         permissions={permissions ?? []}
         initialValues={{
           adminId: admin.id,
