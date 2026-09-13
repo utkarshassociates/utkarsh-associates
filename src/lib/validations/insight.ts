@@ -63,16 +63,29 @@ export const createInsightSchema = insightSchema;
 // NOTE: built from `baseInsightFields.omit(...)`, not from
 // `insightSchema`/`createInsightSchema` — those are already wrapped in
 // `.superRefine()`, and zod's ZodEffects wrapper doesn't expose `.omit()`.
-export const insightFormSchema = baseInsightFields.omit({ status: true, tags: true }).superRefine((data, ctx) => {
-  if (data.postType === "external_link") {
-    if (!data.externalUrl) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["externalUrl"], message: "External URL is required for an external-link post." });
+// `.passthrough()` is the actual fix here: zodResolver's onSubmit callback
+// receives the *parsed output* of this schema, not React Hook Form's raw
+// field state — and by default a zod object schema silently strips any key
+// not in its own shape. `tagsInput` (the comma-separated text field the
+// Tags input is bound to) isn't a schema field at all — it's UI-only, split
+// into the real `tags: string[]` by hand in InsightForm's submitWithStatus
+// — so without `.passthrough()` it was being stripped from `values` on
+// every submit, and `values.tagsInput.split(",")` crashed on `undefined`.
+// `.passthrough()` keeps any extra keys (just `tagsInput` here) as-is
+// rather than validating or stripping them.
+export const insightFormSchema = baseInsightFields
+  .omit({ status: true, tags: true })
+  .passthrough()
+  .superRefine((data, ctx) => {
+    if (data.postType === "external_link") {
+      if (!data.externalUrl) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["externalUrl"], message: "External URL is required for an external-link post." });
+      }
+      if (!data.sourceName) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["sourceName"], message: "Source name is required for an external-link post." });
+      }
     }
-    if (!data.sourceName) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["sourceName"], message: "Source name is required for an external-link post." });
-    }
-  }
-});
+  });
 
 export const updateInsightSchema = baseInsightFields
   .extend({ id: z.string().uuid() })
