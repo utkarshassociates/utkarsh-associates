@@ -5,6 +5,8 @@ export interface AdminNavItem {
   href: string;
   /** Omit for items every authenticated admin can see (Dashboard, Profile). */
   permission?: Permission;
+  /** For items reachable via more than one permission (e.g. Insights — see requireAnyPermission in src/lib/auth/session.ts). Checked as "has at least one of these". Takes precedence over `permission` if both are set. */
+  anyPermission?: Permission[];
   /** True items are hidden from anyone but superAdmin, regardless of extra_permissions — matches the §5.2 table's "(superAdmin only by default)" routes. Since per-admin overrides can still grant e.g. admins.manage to a non-super admin, this flag is advisory for the sidebar only — the actual page-level guard is requirePermission(), not requireSuperAdmin(), so a granted admin still gets in even though the item wouldn't otherwise show. Handled per-page, see src/app/admin/admins/page.tsx etc. */
   superOnlyByDefault?: boolean;
 }
@@ -15,15 +17,20 @@ export interface AdminNavItem {
  * 'Team' item in their sidebar, rather than seeing it and hitting a blocked
  * page."
  *
- * Routes below marked (stub) don't have real CRUD yet — they're Phase 3
- * scope per project-plan.md §9. They render a lightweight
- * "coming in Phase 3" placeholder so the sidebar is fully wired now and
- * nothing links to a 404, without scope-creeping this phase into full CMS
- * entity CRUD.
+ * Phase 3 update: Insights now uses `anyPermission` instead of a single
+ * `permission` — /admin/insights itself is gated by requireAnyPermission()
+ * (any of create/edit_own/edit_any/publish/delete, §5.2's "insights.*"), so
+ * an admin who only has e.g. insights.publish (a future blogAdmin who
+ * reviews but never drafts) should still see the nav item, which the old
+ * single-`permission: "insights.create"` check would have hidden from them.
  */
 export const ADMIN_NAV: AdminNavItem[] = [
   { label: "Dashboard", href: "/admin" },
-  { label: "Insights", href: "/admin/insights", permission: "insights.create" },
+  {
+    label: "Insights",
+    href: "/admin/insights",
+    anyPermission: ["insights.create", "insights.edit_own", "insights.edit_any", "insights.publish", "insights.delete"],
+  },
   { label: "Practice Areas", href: "/admin/practice-areas", permission: "practice_areas.manage" },
   { label: "Team", href: "/admin/team", permission: "team.manage" },
   { label: "Offices", href: "/admin/offices", permission: "offices.manage" },

@@ -70,3 +70,95 @@ export interface AuditLogEntry {
   meta: Record<string, unknown> | null;
   created_at: string;
 }
+
+// ============ Phase 3 — CMS entities (project-plan.md §6) ============
+// Added in the same "hand-written, kept in sync by hand" spirit as the types
+// above — see the file-level note for why this isn't generated output.
+
+export type ContentStatus = "draft" | "published";
+export type InsightStatus = "draft" | "pending_review" | "published" | "rejected";
+export type InsightPostType = "original" | "external_link";
+
+export interface PracticeArea {
+  id: string;
+  slug: string;
+  title: string;
+  short_description: string | null;
+  content: unknown; // richtext jsonb (Tiptap JSON)
+  icon_key: string; // one of the locked keys in src/config/assets.ts
+  order_index: number;
+  status: ContentStatus;
+  seo_title: string | null;
+  seo_description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeamMember {
+  id: string;
+  slug: string;
+  name: string;
+  designation: string | null;
+  photo_url: string | null;
+  bio: unknown; // richtext jsonb
+  email: string | null;
+  phone: string | null;
+  linkedin_url: string | null;
+  order_index: number;
+  status: ContentStatus;
+  seo_title: string | null;
+  seo_description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeamMemberWithPracticeAreas extends TeamMember {
+  practiceAreaIds: string[];
+}
+
+export interface InsightCategory {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface Insight {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  content: unknown; // richtext jsonb, nullable for external_link posts
+  cover_image_url: string | null;
+  category_id: string | null;
+  author_id: string | null;
+  post_type: InsightPostType;
+  external_url: string | null;
+  source_name: string | null;
+  tags: string[]; // see migration 0002 — additive column, resolves a plan §5.2/§6 conflict
+  status: InsightStatus;
+  rejection_note: string | null;
+  submitted_by: string | null;
+  published_at: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Insight row joined with the bits list/edit screens need for display. */
+export interface InsightWithRelations extends Insight {
+  category: Pick<InsightCategory, "id" | "name" | "slug"> | null;
+  author: Pick<TeamMember, "id" | "name" | "slug"> | null;
+}
+
+export interface Office {
+  id: string;
+  name: string;
+  address: string | null;
+  city: string | null;
+  phone: string | null;
+  email: string | null;
+  map_embed_url: string | null;
+  is_headquarters: boolean;
+  order_index: number;
+}

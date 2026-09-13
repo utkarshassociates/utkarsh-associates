@@ -20,9 +20,12 @@ interface SidebarProps {
 export function Sidebar({ isSuper, permissions, adminName, roleName }: SidebarProps) {
   const pathname = usePathname();
   const permissionSet = new Set(permissions);
-  const visibleItems = ADMIN_NAV.filter(
-    (item) => !item.permission || isSuper || permissionSet.has(item.permission)
-  );
+  const visibleItems = ADMIN_NAV.filter((item) => {
+    if (isSuper) return true;
+    if (item.anyPermission) return item.anyPermission.some((p) => permissionSet.has(p));
+    if (item.permission) return permissionSet.has(item.permission);
+    return true; // no permission requirement — visible to every authenticated admin
+  });
 
   return (
     <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-gray-300 bg-white">
