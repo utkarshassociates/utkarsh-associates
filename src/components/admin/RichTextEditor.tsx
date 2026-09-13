@@ -39,6 +39,14 @@ export function RichTextEditor({ value, onChange, uploadContext }: RichTextEdito
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] }, // only H2/H3 exposed — H1 is reserved for the page title itself
+        // v3's StarterKit bundles Link and Underline itself now, which
+        // duplicated the separate Link/Underline instances below (Tiptap
+        // logged "Duplicate extension names found: ['link', 'underline']").
+        // Disabling the bundled copies here and keeping our own explicit
+        // instances (configured the way §5.4 needs — e.g. openOnClick:
+        // false) resolves the warning without changing any toolbar behavior.
+        link: false,
+        underline: false,
       }),
       Underline,
       Link.configure({ openOnClick: false, autolink: true }),

@@ -1,69 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { createColumnHelper } from "@tanstack/react-table";
 import { requirePermission } from "@/lib/auth/session";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui";
-import { StatusBadge } from "@/components/admin/StatusBadge";
-import { DeleteButton } from "@/components/admin/DeleteButton";
-import { OrderControls } from "@/components/admin/OrderControls";
-import { DataTable } from "@/components/admin/DataTable";
-import { deleteTeamMemberAction, reorderTeamMemberAction } from "@/actions/team";
+import { TeamTable, type TeamRow } from "@/components/admin/TeamTable";
 
 export const metadata: Metadata = { title: "Team" };
-
-interface TeamRow {
-  id: string;
-  name: string;
-  designation: string | null;
-  status: string;
-  order_index: number;
-  isFirst: boolean;
-  isLast: boolean;
-}
-
-const columnHelper = createColumnHelper<TeamRow>();
-
-// §5.2 specs "ordering" for Team alongside CRUD/photo/practice-area links.
-// The Order column uses the same up/down OrderControls as Practice
-// Areas/Offices (see PHASE-3-NOTES.md re: drag-to-reorder substitution) —
-// isFirst/isLast are precomputed from the order_index-sorted array *before*
-// this data reaches DataTable, so they stay correct even if the admin has
-// since sorted/searched the table by another column; the reorder action
-// itself always operates on the full order_index-ordered list server-side
-// regardless of what's currently visible.
-const columns = [
-  columnHelper.display({
-    id: "order",
-    header: "Order",
-    cell: (info) => (
-      <OrderControls id={info.row.original.id} isFirst={info.row.original.isFirst} isLast={info.row.original.isLast} action={reorderTeamMemberAction} />
-    ),
-  }),
-  columnHelper.accessor("name", { header: "Name", cell: (info) => <span className="font-medium">{info.getValue()}</span> }),
-  columnHelper.accessor("designation", { header: "Designation", cell: (info) => info.getValue() ?? "—" }),
-  columnHelper.accessor("status", { header: "Status", cell: (info) => <StatusBadge status={info.getValue()} /> }),
-  columnHelper.display({
-    id: "edit",
-    header: "",
-    cell: (info) => (
-      <Link href={`/admin/team/${info.row.original.id}`} className="font-semibold text-navy-700 hover:text-gold-700">
-        Edit →
-      </Link>
-    ),
-  }),
-  columnHelper.display({
-    id: "delete",
-    header: "",
-    cell: (info) => (
-      <DeleteButton
-        id={info.row.original.id}
-        action={deleteTeamMemberAction}
-        confirmMessage={`Delete "${info.row.original.name}"? This can't be undone.`}
-      />
-    ),
-  }),
-];
 
 export default async function TeamListPage() {
   await requirePermission("team.manage");
@@ -95,7 +37,7 @@ export default async function TeamListPage() {
         </div>
       )}
 
-      <DataTable columns={columns} data={rows} searchPlaceholder="Search by name…" emptyMessage="No team members yet." />
+      <TeamTable rows={rows} />
     </div>
   );
 }

@@ -16,6 +16,14 @@ import { z } from "zod";
  * structured CRUD via the `offices` table in Phase 3 (name/address/phone
  * live as rows there, not here). These are the page-level copy blocks that
  * don't have a natural home in a CMS entity table.
+ *
+ * Every entry explicitly sets `helpText` (to real text or `undefined`) —
+ * `as const` below infers one literal object type per entry, and without a
+ * `helpText` key present on *every* entry, SettingsForm.tsx's `field.helpText`
+ * fails to typecheck for whichever union members lack the property (this was
+ * caught by `npm run typecheck` after Phase 3 shipped; not something the
+ * untyped happy-path testing in Phase 2 would have caught either, since it
+ * only breaks the type checker, not runtime rendering).
  */
 export const SITE_SETTINGS_FIELDS = [
   {
@@ -31,42 +39,49 @@ export const SITE_SETTINGS_FIELDS = [
     label: "Home hero heading",
     section: "Home",
     multiline: false,
+    helpText: undefined,
   },
   {
     key: "home_hero_subheading",
     label: "Home hero subheading",
     section: "Home",
     multiline: true,
+    helpText: undefined,
   },
   {
     key: "about_intro_paragraph",
     label: "About — intro paragraph",
     section: "About",
     multiline: true,
+    helpText: undefined,
   },
   {
     key: "contact_intro",
     label: "Contact page intro text",
     section: "Contact",
     multiline: true,
+    helpText: undefined,
   },
   {
     key: "firm_phone",
     label: "Firm phone number",
     section: "Firm-wide",
     multiline: false,
+    helpText: undefined,
   },
   {
     key: "firm_email",
     label: "Firm contact email",
     section: "Firm-wide",
     multiline: false,
+    helpText: undefined,
   },
   {
     key: "social_linkedin_url",
     label: "LinkedIn URL",
     section: "Social",
     multiline: false,
+    helpText: undefined,
   },
 ] as const;
 

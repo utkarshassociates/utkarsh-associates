@@ -27,7 +27,16 @@ export default async function EditRolePage({ params }: EditRolePageProps) {
   // is_super) — bounce back to the list rather than showing a broken form.
   if (role.is_super) redirect("/admin/roles");
 
-  const permissionKeys = (grantedRows ?? [])
+  // Without generated Supabase Database types, TS infers `permissions` on
+  // this embed as *always* an array shape, which narrows the ternary's
+  // single-object branch below to `never` (caught by `npm run typecheck`
+  // after Phase 3 shipped — this file predates Phase 3 and was never
+  // typechecked before). Real Supabase behavior for a to-one embed like this
+  // (role_permissions.permission_id → permissions) is a single object at
+  // runtime, not an array, so the original defensive ternary was correct —
+  // it just needed an honest type instead of trusting TS's array-only guess.
+  type PermissionKeyRow = { permissions: { key: string } | { key: string }[] | null };
+  const permissionKeys = ((grantedRows ?? []) as PermissionKeyRow[])
     .map((row) => (Array.isArray(row.permissions) ? row.permissions[0]?.key : row.permissions?.key))
     .filter((key): key is NonNullable<typeof key> => Boolean(key));
 

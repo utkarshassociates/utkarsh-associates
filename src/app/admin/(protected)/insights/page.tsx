@@ -1,67 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { createColumnHelper } from "@tanstack/react-table";
 import { requireAnyPermission } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/auth/permissions";
 import { createServiceRoleClient } from "@/lib/supabase/server";
-import { Button, Tag } from "@/components/ui";
-import { StatusBadge } from "@/components/admin/StatusBadge";
-import { DeleteButton } from "@/components/admin/DeleteButton";
-import { DataTable } from "@/components/admin/DataTable";
+import { Button } from "@/components/ui";
+import { InsightsTable, type InsightRow } from "@/components/admin/InsightsTable";
 import { cn } from "@/lib/utils";
-import { deleteInsightAction } from "@/actions/insights";
-import type { InsightStatus } from "@/types/domain";
 
 export const metadata: Metadata = { title: "Insights" };
-
-interface InsightRow {
-  id: string;
-  title: string;
-  status: InsightStatus;
-  post_type: "original" | "external_link";
-  authorName: string;
-  submittedBy: string | null;
-  updated_at: string;
-  canEdit: boolean;
-  canDelete: boolean;
-}
-
-const columnHelper = createColumnHelper<InsightRow>();
-
-const columns = [
-  columnHelper.accessor("title", { header: "Title", cell: (info) => <span className="font-medium">{info.getValue()}</span> }),
-  columnHelper.accessor("status", { header: "Status", cell: (info) => <StatusBadge status={info.getValue()} /> }),
-  columnHelper.accessor("post_type", {
-    header: "Type",
-    cell: (info) => (info.getValue() === "external_link" ? <Tag variant="navy">External</Tag> : "Original"),
-  }),
-  columnHelper.accessor("authorName", { header: "Author" }),
-  columnHelper.accessor("updated_at", { header: "Updated", cell: (info) => new Date(info.getValue()).toLocaleDateString() }),
-  columnHelper.display({
-    id: "edit",
-    header: "",
-    cell: (info) =>
-      info.row.original.canEdit ? (
-        <Link href={`/admin/insights/${info.row.original.id}/edit`} className="font-semibold text-navy-700 hover:text-gold-700">
-          Edit →
-        </Link>
-      ) : (
-        <span className="text-gray-300">Edit →</span>
-      ),
-  }),
-  columnHelper.display({
-    id: "delete",
-    header: "",
-    cell: (info) =>
-      info.row.original.canDelete ? (
-        <DeleteButton
-          id={info.row.original.id}
-          action={deleteInsightAction}
-          confirmMessage={`Delete "${info.row.original.title}"? This can't be undone.`}
-        />
-      ) : null,
-  }),
-];
 
 // §5.2: "/admin/insights | insights.* | List with status filters
 // (draft/pending/published/rejected/external), search". Status filtering is
@@ -154,7 +100,7 @@ export default async function InsightsListPage({ searchParams }: InsightsListPag
         </div>
       )}
 
-      <DataTable columns={columns} data={rows} searchPlaceholder="Search by title…" emptyMessage="No insights match this filter." />
+      <InsightsTable rows={rows} />
     </div>
   );
 }
