@@ -5,15 +5,8 @@ import {
   richTextSchema,
   optionalTextSchema,
   optionalUrlOrPathSchema,
+  optionalEmailSchema,
 } from "./shared";
-
-const optionalEmailSchema = z
-  .string()
-  .trim()
-  .email("Enter a valid email address")
-  .optional()
-  .or(z.literal(""))
-  .transform((v) => (v ? v : null));
 
 export const teamMemberSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(200),

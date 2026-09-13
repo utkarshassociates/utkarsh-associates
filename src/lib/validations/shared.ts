@@ -24,15 +24,38 @@ export const richTextSchema = z.unknown().nullable().optional();
 // Loosely validated — could be a full URL or a relative path like
 // "/media/xyz.webp" returned by the upload action. Empty string means "no
 // image yet", normalized to null before hitting the DB.
+//
+// `.nullish()` (accepts string | null | undefined), not just `.optional()`,
+// is load-bearing here: every create/update schema built from this gets
+// used TWICE on the same value — once client-side as the zodResolver (whose
+// *parsed output* becomes `values` in the form's submit handler, so a blank
+// field is already transformed "" → null by the time it leaves the form),
+// and once server-side in the action, re-parsing that already-nulled data.
+// With only `.optional()` (string | undefined), that second parse rejected
+// `null` with "Expected string, received null" for any field left blank —
+// caught via a real Insight submission after the round-2 fixes shipped.
+// `.nullish()` makes null a valid input alongside undefined, so re-parsing
+// already-transformed data is idempotent instead of one-way.
 export const optionalUrlOrPathSchema = z
   .string()
   .trim()
-  .optional()
+  .nullish()
   .transform((v) => (v ? v : null));
 
 export const optionalTextSchema = z
   .string()
   .trim()
   .max(500)
-  .optional()
+  .nullish()
+  .transform((v) => (v ? v : null));
+
+// Was duplicated identically in team.ts and office.ts (both hit the same
+// double-parse bug described above) — consolidated here so there's one
+// definition to keep correct instead of two that can drift.
+export const optionalEmailSchema = z
+  .string()
+  .trim()
+  .email("Enter a valid email address")
+  .nullish()
+  .or(z.literal(""))
   .transform((v) => (v ? v : null));

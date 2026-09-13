@@ -1,13 +1,5 @@
 import { z } from "zod";
-import { optionalTextSchema } from "./shared";
-
-const optionalEmailSchema = z
-  .string()
-  .trim()
-  .email("Enter a valid email address")
-  .optional()
-  .or(z.literal(""))
-  .transform((v) => (v ? v : null));
+import { optionalTextSchema, optionalEmailSchema } from "./shared";
 
 // Offices have no `status` field in the §6 schema (unlike Practice
 // Areas/Team/Insights) — per plan §4 they're a "lightweight" CMS entity, not
