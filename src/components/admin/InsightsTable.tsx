@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { DataTable } from "@/components/admin/DataTable";
 import { deleteInsightAction } from "@/actions/insights";
+import { formatDateDDMMYYYY } from "@/lib/utils";
 import type { InsightStatus } from "@/types/domain";
 
 export interface InsightRow {
@@ -35,7 +36,7 @@ const columns = [
     cell: (info) => (info.getValue() === "external_link" ? <Tag variant="navy">External</Tag> : "Original"),
   }),
   columnHelper.accessor("authorName", { header: "Author" }),
-  columnHelper.accessor("updated_at", { header: "Updated", cell: (info) => new Date(info.getValue()).toLocaleDateString() }),
+  columnHelper.accessor("updated_at", { header: "Updated", cell: (info) => formatDateDDMMYYYY(info.getValue()) }),
   columnHelper.display({
     id: "edit",
     header: "",

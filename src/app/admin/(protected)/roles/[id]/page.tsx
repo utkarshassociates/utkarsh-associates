@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { requirePermission } from "@/lib/auth/session";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { RoleForm } from "@/components/admin/RoleForm";
+import type { Permission } from "@/config/permissions";
 
 export const metadata: Metadata = { title: "Edit Role" };
 
@@ -35,7 +36,7 @@ export default async function EditRolePage({ params }: EditRolePageProps) {
   // (role_permissions.permission_id → permissions) is a single object at
   // runtime, not an array, so the original defensive ternary was correct —
   // it just needed an honest type instead of trusting TS's array-only guess.
-  type PermissionKeyRow = { permissions: { key: string } | { key: string }[] | null };
+  type PermissionKeyRow = { permissions: { key: Permission } | { key: Permission }[] | null };
   const permissionKeys = ((grantedRows ?? []) as PermissionKeyRow[])
     .map((row) => (Array.isArray(row.permissions) ? row.permissions[0]?.key : row.permissions?.key))
     .filter((key): key is NonNullable<typeof key> => Boolean(key));
