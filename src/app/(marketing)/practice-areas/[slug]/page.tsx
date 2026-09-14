@@ -1,0 +1,55 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
+import { getPracticeAreaBySlug, getTeamMembersForPracticeArea } from "@/lib/data/public";
+import { getPracticeIconSrc } from "@/lib/utils";
+
+export default async function PracticeAreaDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const practiceArea = await getPracticeAreaBySlug(slug);
+  if (!practiceArea) notFound();
+
+  const relatedTeam = await getTeamMembersForPracticeArea(practiceArea.id);
+
+  return (
+    <div className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
+      <Link href="/practice-areas" className="text-small font-semibold text-navy-700 hover:text-gold-700">
+        ← All Practice Areas
+      </Link>
+
+      <div className="mt-6 flex items-start gap-4">
+        <img src={getPracticeIconSrc(practiceArea.icon_key)} alt="" width={40} height={40} className="mt-2 h-10 w-10 shrink-0" />
+        <div>
+          <h1 className="font-serif text-h1 text-navy-700">{practiceArea.title}</h1>
+          {practiceArea.short_description && (
+            <p className="mt-3 max-w-[640px] text-body-l text-gray-700">{practiceArea.short_description}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-12 grid gap-12 desktop:grid-cols-[1fr_320px]">
+        <div className="max-w-[720px]">
+          <RichTextRenderer content={practiceArea.content} />
+        </div>
+
+        {relatedTeam.length > 0 && (
+          <aside>
+            <h2 className="mb-4 font-mono text-[11px] uppercase tracking-wide text-gray-500">Team</h2>
+            <div className="flex flex-col gap-4">
+              {relatedTeam.map((member) => (
+                <Link
+                  key={member.id}
+                  href={`/team/${member.slug}`}
+                  className="block rounded-lg border border-gray-300 bg-white p-4 hover:shadow-sm"
+                >
+                  <p className="font-serif text-h4 text-navy-700">{member.name}</p>
+                  {member.designation && <p className="mt-0.5 text-small text-gray-700">{member.designation}</p>}
+                </Link>
+              ))}
+            </div>
+          </aside>
+        )}
+      </div>
+    </div>
+  );
+}

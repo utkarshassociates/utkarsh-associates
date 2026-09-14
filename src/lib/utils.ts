@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { ASSETS } from "@/config/assets";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -35,6 +36,19 @@ export function formatDateDDMMYYYY(isoOrDate: string | Date): string {
  * shared `slugSchema` in src/lib/validations/shared.ts), this is just a
  * convenience default so most admins never have to hand-type one.
  */
+/**
+ * Resolves a `practice_areas.icon_key` DB value to its SVG path via the
+ * locked `ASSETS.practiceIcons` map (src/config/assets.ts — "not an open
+ * upload field," per plan §3/§5.2). Falls back to the litigation icon for
+ * any key that doesn't match — defensive only; the admin icon picker
+ * (src/components/admin/PracticeAreaForm.tsx) only ever writes a valid key,
+ * so this should never actually trigger outside of hand-edited DB rows.
+ */
+export function getPracticeIconSrc(iconKey: string): string {
+  const icons = ASSETS.practiceIcons as Record<string, string>;
+  return icons[iconKey] ?? ASSETS.practiceIcons.litigation;
+}
+
 export function slugify(input: string): string {
   return input
     .trim()

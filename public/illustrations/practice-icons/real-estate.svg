@@ -1,0 +1,9 @@
+<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- PLACEHOLDER — real estate icon, 1.5px stroke, 40x40 grid, per locked icon spec -->
+  <g fill="none" stroke="#133458" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 19L20 8L33 19" />
+    <path d="M10 17V33H30V17" />
+    <path d="M17 33V24H23V33" />
+    <circle cx="26" cy="27" r="1.6" fill="#DBAF15" stroke="none" />
+  </g>
+</svg>

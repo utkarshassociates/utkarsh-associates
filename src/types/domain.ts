@@ -162,3 +162,18 @@ export interface Office {
   is_headquarters: boolean;
   order_index: number;
 }
+
+// ============ Phase 4 — Public site ============
+
+export type ContactSubmissionStatus = "new" | "read" | "archived";
+
+export interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string;
+  practice_area_interest: string | null;
+  status: ContactSubmissionStatus;
+  created_at: string;
+}
