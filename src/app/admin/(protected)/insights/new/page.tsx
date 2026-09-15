@@ -9,15 +9,16 @@ export default async function NewInsightPage() {
   await requirePermission("insights.create");
 
   const supabase = createServiceRoleClient();
-  const [{ data: categories }, { data: teamMembers }] = await Promise.all([
+  const [{ data: categories }, { data: teamMembers }, { data: practiceAreas }] = await Promise.all([
     supabase.from("insight_categories").select("id, name, slug").order("name"),
     supabase.from("team_members").select("id, name").order("name"),
+    supabase.from("practice_areas").select("id, title").order("order_index"),
   ]);
 
   return (
     <div>
       <h1 className="mb-6 font-serif text-h3 text-navy-700">New insight</h1>
-      <InsightForm mode="create" categories={categories ?? []} teamMembers={teamMembers ?? []} />
+      <InsightForm mode="create" categories={categories ?? []} teamMembers={teamMembers ?? []} practiceAreas={practiceAreas ?? []} />
     </div>
   );
 }

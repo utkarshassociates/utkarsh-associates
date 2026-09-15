@@ -11,13 +11,14 @@ import { Button, Input } from "@/components/ui";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { slugify } from "@/lib/utils";
-import type { InsightWithRelations, InsightCategory, TeamMember } from "@/types/domain";
+import type { InsightWithRelations, InsightCategory, TeamMember, PracticeArea } from "@/types/domain";
 
 interface InsightFormProps {
   mode: "create" | "edit";
   initialValues?: InsightWithRelations;
   categories: InsightCategory[];
   teamMembers: Pick<TeamMember, "id" | "name">[];
+  practiceAreas: Pick<PracticeArea, "id" | "title">[];
 }
 
 type FormValues = {
@@ -27,6 +28,7 @@ type FormValues = {
   coverImageUrl: string;
   categoryId: string;
   authorId: string;
+  practiceAreaId: string;
   postType: "original" | "external_link";
   content: JSONContent | null;
   externalUrl: string;
@@ -36,7 +38,7 @@ type FormValues = {
   seoDescription: string;
 };
 
-export function InsightForm({ mode, initialValues, categories: initialCategories, teamMembers }: InsightFormProps) {
+export function InsightForm({ mode, initialValues, categories: initialCategories, teamMembers, practiceAreas }: InsightFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string | null>(null);
@@ -62,6 +64,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
       coverImageUrl: initialValues?.cover_image_url ?? "",
       categoryId: initialValues?.category_id ?? "",
       authorId: initialValues?.author_id ?? "",
+      practiceAreaId: initialValues?.practice_area_id ?? "",
       postType: initialValues?.post_type ?? "original",
       content: (initialValues?.content as JSONContent | null) ?? null,
       externalUrl: initialValues?.external_url ?? "",
@@ -103,6 +106,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
       coverImageUrl: values.coverImageUrl,
       categoryId: values.categoryId || null,
       authorId: values.authorId || null,
+      practiceAreaId: values.practiceAreaId || null,
       postType: values.postType,
       content: values.content,
       externalUrl: values.externalUrl,
@@ -166,7 +170,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
         )}
       />
 
-      <div className="mb-4 grid grid-cols-2 gap-4">
+      <div className="mb-4 grid grid-cols-3 gap-4">
         <div>
           <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Category</label>
           <select
@@ -220,6 +224,22 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
               </option>
             ))}
           </select>
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Related practice area</label>
+          <select
+            {...register("practiceAreaId")}
+            className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
+          >
+            <option value="">— None —</option>
+            {practiceAreas.map((pa) => (
+              <option key={pa.id} value={pa.id}>
+                {pa.title}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1.5 text-[12px] text-gray-500">Optional — powers the &quot;Related Insights&quot; section on that practice area&apos;s page.</p>
         </div>
       </div>
 

@@ -19,7 +19,7 @@ export default async function EditInsightPage({ params }: EditInsightPageProps) 
   const { id } = await params;
 
   const supabase = createServiceRoleClient();
-  const [{ data: insight }, { data: categories }, { data: teamMembers }] = await Promise.all([
+  const [{ data: insight }, { data: categories }, { data: teamMembers }, { data: practiceAreas }] = await Promise.all([
     supabase
       .from("insights")
       .select("*, category:insight_categories(id, name, slug), author:team_members!insights_author_id_fkey(id, name, slug)")
@@ -27,6 +27,7 @@ export default async function EditInsightPage({ params }: EditInsightPageProps) 
       .maybeSingle(),
     supabase.from("insight_categories").select("id, name, slug").order("name"),
     supabase.from("team_members").select("id, name").order("name"),
+    supabase.from("practice_areas").select("id, title").order("order_index"),
   ]);
 
   if (!insight) notFound();
@@ -80,6 +81,7 @@ export default async function EditInsightPage({ params }: EditInsightPageProps) 
         initialValues={{ ...insight, category: category ?? null, author: author ?? null } as InsightWithRelations}
         categories={categories ?? []}
         teamMembers={teamMembers ?? []}
+        practiceAreas={practiceAreas ?? []}
       />
     </div>
   );

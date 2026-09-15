@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
-import { getPracticeAreaBySlug, getTeamMembersForPracticeArea } from "@/lib/data/public";
+import { Tag } from "@/components/ui";
+import { getInsightsForPracticeArea, getPracticeAreaBySlug, getTeamMembersForPracticeArea } from "@/lib/data/public";
 import { getPracticeIconSrc } from "@/lib/utils";
 
 export default async function PracticeAreaDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -9,7 +10,10 @@ export default async function PracticeAreaDetailPage({ params }: { params: Promi
   const practiceArea = await getPracticeAreaBySlug(slug);
   if (!practiceArea) notFound();
 
-  const relatedTeam = await getTeamMembersForPracticeArea(practiceArea.id);
+  const [relatedTeam, relatedInsights] = await Promise.all([
+    getTeamMembersForPracticeArea(practiceArea.id),
+    getInsightsForPracticeArea(practiceArea.id),
+  ]);
 
   return (
     <div className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
@@ -50,6 +54,29 @@ export default async function PracticeAreaDetailPage({ params }: { params: Promi
           </aside>
         )}
       </div>
+
+      {relatedInsights.length > 0 && (
+        <div className="mt-16 border-t border-gray-300 pt-12">
+          <h2 className="mb-6 font-serif text-h3 text-navy-700">Related Insights</h2>
+          <div className="grid gap-4 tablet:grid-cols-3">
+            {relatedInsights.map((insight) => (
+              <Link
+                key={insight.id}
+                href={`/insights/${insight.slug}`}
+                className="block rounded-lg border border-gray-300 bg-white p-5 transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md"
+              >
+                {insight.category && (
+                  <span className="mb-2 inline-block">
+                    <Tag variant="navy">{insight.category.name}</Tag>
+                  </span>
+                )}
+                <h4 className="mb-1.5 font-serif text-[16px] font-semibold text-navy-700">{insight.title}</h4>
+                {insight.excerpt && <p className="text-[13px] text-gray-700">{insight.excerpt}</p>}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

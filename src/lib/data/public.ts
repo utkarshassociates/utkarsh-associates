@@ -295,6 +295,22 @@ export async function getRelatedInsights(
   return (data ?? []) as unknown as InsightWithRelations[];
 }
 
+/** Related insights: same practice area (via the migration 0004 `practice_area_id` relation), newest first. Practice Area detail page's "related insights" section — see PHASE-4-NOTES.md for why this needed a schema addition. */
+export async function getInsightsForPracticeArea(practiceAreaId: string, limit = 3): Promise<InsightWithRelations[]> {
+  const { data, error } = await supabase()
+    .from("insights")
+    .select(INSIGHT_SELECT)
+    .eq("status", "published")
+    .eq("practice_area_id", practiceAreaId)
+    .order("published_at", { ascending: false, nullsFirst: false })
+    .limit(limit);
+  if (error) {
+    console.error("getInsightsForPracticeArea failed:", error);
+    return [];
+  }
+  return (data ?? []) as unknown as InsightWithRelations[];
+}
+
 // ============ Offices ============
 
 /** Wrapped in `cache()` for the same reason as getSiteSettings — called from both the shared layout (footer) and the /offices page. */

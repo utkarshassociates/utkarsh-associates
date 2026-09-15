@@ -131,6 +131,7 @@ export interface Insight {
   cover_image_url: string | null;
   category_id: string | null;
   author_id: string | null;
+  practice_area_id: string | null; // migration 0004 — related-insights relation, see PHASE-4-NOTES.md
   post_type: InsightPostType;
   external_url: string | null;
   source_name: string | null;

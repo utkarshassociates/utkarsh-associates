@@ -18,6 +18,7 @@ const baseInsightFields = z.object({
   coverImageUrl: optionalUrlOrPathSchema,
   categoryId: z.string().uuid().nullable().optional(),
   authorId: z.string().uuid().nullable().optional(),
+  practiceAreaId: z.string().uuid().nullable().optional(),
   postType: insightPostTypeSchema,
   tags: z.array(z.string().trim().min(1).max(50)).max(20).default([]),
   seoTitle: optionalTextSchema,
