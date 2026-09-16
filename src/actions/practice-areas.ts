@@ -57,6 +57,11 @@ export async function createPracticeAreaAction(input: CreatePracticeAreaInput): 
   await logAudit({ adminId: actor.adminId, action: "create", entity: "practice_areas", entityId: created.id, meta: { slug } });
 
   revalidatePath("/admin/practice-areas");
+  // Phase 5 (ISR): a brand-new row can't have a stale cached page yet, but
+  // the listing + Home's highlight grid are already cached and need to pick
+  // it up if it was created directly as "published".
+  revalidatePath("/practice-areas");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -75,6 +80,12 @@ export async function updatePracticeAreaAction(input: UpdatePracticeAreaInput): 
   if (slugOwner && slugOwner.id !== id) {
     return { success: false, error: `Slug "${slug}" is already in use by another practice area.` };
   }
+
+  // Old slug, fetched before the update, so the previously-cached public
+  // detail page can be revalidated even if this save also changes the slug
+  // or flips status published → draft (in which case the old path needs to
+  // start 404ing instead of serving stale cached content).
+  const { data: before } = await supabase.from("practice_areas").select("slug").eq("id", id).maybeSingle();
 
   const { error } = await supabase
     .from("practice_areas")
@@ -99,12 +110,18 @@ export async function updatePracticeAreaAction(input: UpdatePracticeAreaInput): 
 
   revalidatePath("/admin/practice-areas");
   revalidatePath(`/admin/practice-areas/${id}`);
+  revalidatePath("/practice-areas");
+  revalidatePath("/");
+  if (before?.slug) revalidatePath(`/practice-areas/${before.slug}`);
+  if (slug !== before?.slug) revalidatePath(`/practice-areas/${slug}`);
   return { success: true };
 }
 
 export async function deletePracticeAreaAction(id: string): Promise<ActionResult> {
   const actor = await requirePermission("practice_areas.manage");
   const supabase = createServiceRoleClient();
+
+  const { data: target } = await supabase.from("practice_areas").select("slug").eq("id", id).maybeSingle();
 
   const { error } = await supabase.from("practice_areas").delete().eq("id", id);
   if (error) {
@@ -114,6 +131,9 @@ export async function deletePracticeAreaAction(id: string): Promise<ActionResult
   await logAudit({ adminId: actor.adminId, action: "delete", entity: "practice_areas", entityId: id });
 
   revalidatePath("/admin/practice-areas");
+  revalidatePath("/practice-areas");
+  revalidatePath("/");
+  if (target?.slug) revalidatePath(`/practice-areas/${target.slug}`);
   return { success: true };
 }
 
@@ -144,5 +164,7 @@ export async function reorderPracticeAreaAction(id: string, direction: "up" | "d
   if (e1 || e2) return { success: false, error: "Could not reorder." };
 
   revalidatePath("/admin/practice-areas");
+  revalidatePath("/practice-areas");
+  revalidatePath("/"); // Home's highlight grid is the first 6 by order_index
   return { success: true };
 }

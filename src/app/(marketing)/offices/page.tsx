@@ -1,11 +1,26 @@
+import type { Metadata } from "next";
 import { Tag } from "@/components/ui";
+import { JsonLd } from "@/components/shared/JsonLd";
 import { getOffices } from "@/lib/data/public";
+import { localBusinessJsonLd } from "@/lib/seo";
+
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "Offices",
+  description: "Reach us at any of our office locations.",
+  alternates: { canonical: "/offices" },
+  openGraph: { title: "Offices", url: "/offices", type: "website" },
+};
 
 export default async function OfficesPage() {
   const offices = await getOffices();
 
   return (
     <div className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
+      {offices.map((office) => (
+        <JsonLd key={office.id} data={localBusinessJsonLd(office)} />
+      ))}
       <h1 className="font-serif text-h1 text-navy-700">Offices</h1>
       <p className="mt-4 max-w-[560px] text-body-l text-gray-700">Reach us at any of our office locations.</p>
 

@@ -1,10 +1,40 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Tag } from "@/components/ui";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
+import { JsonLd } from "@/components/shared/JsonLd";
 import { ASSETS } from "@/config/assets";
 import { getPracticeAreasByIds, getTeamMemberBySlug } from "@/lib/data/public";
+import { ORG_NAME, breadcrumbJsonLd, personJsonLd, richTextToPlainText } from "@/lib/seo";
+
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const member = await getTeamMemberBySlug(slug);
+  if (!member) return {};
+
+  const title = member.seo_title || member.name;
+  const description =
+    member.seo_description ||
+    (member.designation ? `${member.name}, ${member.designation} at ${ORG_NAME}.` : richTextToPlainText(member.bio)) ||
+    `${member.name} at ${ORG_NAME}.`;
+  const canonical = `/team/${member.slug}`;
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: "profile",
+      images: member.photo_url ? [member.photo_url] : undefined,
+    },
+  };
+}
 
 export default async function TeamMemberDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -15,6 +45,14 @@ export default async function TeamMemberDetailPage({ params }: { params: Promise
 
   return (
     <div className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
+      <JsonLd data={personJsonLd(member)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Team", path: "/team" },
+          { name: member.name, path: `/team/${member.slug}` },
+        ])}
+      />
       <Link href="/team" className="text-small font-semibold text-navy-700 hover:text-gold-700">
         ← All Team
       </Link>

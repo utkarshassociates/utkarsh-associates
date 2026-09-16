@@ -46,5 +46,14 @@ export async function updateSiteSettingsAction(input: UpdateSiteSettingsInput): 
   });
 
   revalidatePath("/admin/settings");
+  // Phase 5 (ISR): site_settings values are read across Home, About,
+  // Contact, and the shared (marketing)/layout.tsx (Footer, disclaimer
+  // gate) — the same "no single public detail page owns this data"
+  // situation as offices.ts, so the same sitewide fix applies. Not scoped
+  // to just the keys that changed, since that would mean hand-maintaining
+  // a key→path map that drifts the moment a new setting is added to
+  // SITE_SETTINGS_FIELDS; sitewide is the safe default for something this
+  // infrequently saved (superAdmin-only, low-churn).
+  revalidatePath("/", "layout");
   return { success: true };
 }

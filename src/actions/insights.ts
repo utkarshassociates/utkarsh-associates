@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requireAdmin, requirePermission } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/auth/permissions";
@@ -21,6 +22,26 @@ export interface ActionResult {
   success: boolean;
   error?: string;
   id?: string;
+}
+
+/**
+ * Phase 5 — on-demand ISR revalidation for every public path a single
+ * insight can appear on: its own detail page, the /insights listing, the
+ * Home page's "latest insights" strip, and (via migration 0004's
+ * `practice_area_id` relation) its linked Practice Area detail page's
+ * "Related Insights" section. Centralized here so publish/update/delete —
+ * the three actions that can each cause an insight to appear or disappear
+ * from the public site — all revalidate the exact same set of paths rather
+ * than three independently-maintained lists drifting apart over time.
+ */
+async function revalidatePublicInsightPaths(supabase: SupabaseClient, slug: string, practiceAreaId: string | null) {
+  revalidatePath(`/insights/${slug}`);
+  revalidatePath("/insights");
+  revalidatePath("/");
+  if (practiceAreaId) {
+    const { data: pa } = await supabase.from("practice_areas").select("slug").eq("id", practiceAreaId).maybeSingle();
+    if (pa?.slug) revalidatePath(`/practice-areas/${pa.slug}`);
+  }
 }
 
 // §5.1 workflow is enforced by which action a caller reaches, not by trusting
@@ -91,7 +112,11 @@ export async function updateInsightAction(input: UpdateInsightInput): Promise<Ac
 
   const supabase = createServiceRoleClient();
 
-  const { data: target } = await supabase.from("insights").select("submitted_by, cover_image_url").eq("id", data.id).single();
+  const { data: target } = await supabase
+    .from("insights")
+    .select("submitted_by, cover_image_url, status, slug, practice_area_id")
+    .eq("id", data.id)
+    .single();
   if (!target) return { success: false, error: "Insight not found." };
 
   // §5.1: insights.edit_own only covers the admin's own insights;
@@ -147,6 +172,20 @@ export async function updateInsightAction(input: UpdateInsightInput): Promise<Ac
 
   revalidatePath("/admin/insights");
   revalidatePath(`/admin/insights/${data.id}/edit`);
+
+  // Phase 5 finding (see PHASE-5-NOTES.md): updateInsightSchema only ever
+  // accepts status "draft"/"pending_review" (§5.1 — publish/reject are
+  // separate, insights.publish-gated actions), so if this insight was
+  // "published" before this call, this save just demoted it out of public
+  // visibility even though its content changed, not its status field per
+  // se. Without this, the page would sit in the cache showing the old
+  // (still-"published"-looking) content until the safety-net revalidate
+  // window expired — a real staleness bug now that ISR caching exists,
+  // where none existed in Phase 4's always-uncached-fetch world.
+  if (target.status === "published") {
+    await revalidatePublicInsightPaths(supabase, target.slug, target.practice_area_id);
+  }
+
   return { success: true, id: data.id };
 }
 
@@ -154,7 +193,11 @@ export async function deleteInsightAction(id: string): Promise<ActionResult> {
   const actor = await requirePermission("insights.delete");
   const supabase = createServiceRoleClient();
 
-  const { data: target } = await supabase.from("insights").select("cover_image_url").eq("id", id).single();
+  const { data: target } = await supabase
+    .from("insights")
+    .select("cover_image_url, status, slug, practice_area_id")
+    .eq("id", id)
+    .single();
 
   const { error } = await supabase.from("insights").delete().eq("id", id);
   if (error) {
@@ -169,6 +212,9 @@ export async function deleteInsightAction(id: string): Promise<ActionResult> {
   await logAudit({ adminId: actor.adminId, action: "delete", entity: "insights", entityId: id });
 
   revalidatePath("/admin/insights");
+  if (target?.status === "published") {
+    await revalidatePublicInsightPaths(supabase, target.slug, target.practice_area_id);
+  }
   return { success: true };
 }
 
@@ -177,18 +223,21 @@ export async function publishInsightAction(id: string): Promise<ActionResult> {
   const actor = await requirePermission("insights.publish");
   const supabase = createServiceRoleClient();
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("insights")
     .update({ status: "published", published_at: new Date().toISOString(), rejection_note: null })
-    .eq("id", id);
+    .eq("id", id)
+    .select("slug, practice_area_id")
+    .single();
 
-  if (error) {
-    return { success: false, error: "Could not publish. " + error.message };
+  if (error || !updated) {
+    return { success: false, error: "Could not publish. " + (error?.message ?? "") };
   }
 
   await logAudit({ adminId: actor.adminId, action: "publish", entity: "insights", entityId: id });
 
   revalidatePath("/admin/insights");
+  await revalidatePublicInsightPaths(supabase, updated.slug, updated.practice_area_id);
   return { success: true };
 }
 

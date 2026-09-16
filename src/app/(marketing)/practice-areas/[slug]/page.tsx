@@ -1,9 +1,31 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
+import { JsonLd } from "@/components/shared/JsonLd";
 import { Tag } from "@/components/ui";
 import { getInsightsForPracticeArea, getPracticeAreaBySlug, getTeamMembersForPracticeArea } from "@/lib/data/public";
 import { getPracticeIconSrc } from "@/lib/utils";
+import { breadcrumbJsonLd, richTextToPlainText } from "@/lib/seo";
+
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const practiceArea = await getPracticeAreaBySlug(slug);
+  if (!practiceArea) return {};
+
+  const title = practiceArea.seo_title || practiceArea.title;
+  const description = practiceArea.seo_description || practiceArea.short_description || richTextToPlainText(practiceArea.content);
+  const canonical = `/practice-areas/${practiceArea.slug}`;
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, type: "website" },
+    twitter: { card: "summary", title, description },
+  };
+}
 
 export default async function PracticeAreaDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -17,6 +39,13 @@ export default async function PracticeAreaDetailPage({ params }: { params: Promi
 
   return (
     <div className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Practice Areas", path: "/practice-areas" },
+          { name: practiceArea.title, path: `/practice-areas/${practiceArea.slug}` },
+        ])}
+      />
       <Link href="/practice-areas" className="text-small font-semibold text-navy-700 hover:text-gold-700">
         ← All Practice Areas
       </Link>

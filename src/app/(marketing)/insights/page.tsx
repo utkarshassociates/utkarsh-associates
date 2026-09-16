@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { InsightsFilter } from "@/components/marketing/InsightsFilter";
@@ -6,6 +7,31 @@ import { getInsightCategories, getPublishedInsights } from "@/lib/data/public";
 import { formatDateDDMMYYYY } from "@/lib/utils";
 
 const PER_PAGE = 9;
+
+// No `export const revalidate` — like /team, this page reads `searchParams`
+// (category/page filters) and is therefore already dynamically rendered
+// per request; see PHASE-5-NOTES.md.
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string; page?: string }>;
+}): Promise<Metadata> {
+  const { category, page } = await searchParams;
+  // Self-referencing canonical: each category/page combination is
+  // meaningfully different content, so it canonicalizes to itself rather
+  // than collapsing every filtered view onto the unfiltered first page.
+  const qs = new URLSearchParams();
+  if (category) qs.set("category", category);
+  if (page && page !== "1") qs.set("page", page);
+  const query = qs.toString();
+  const canonical = query ? `/insights?${query}` : "/insights";
+
+  return {
+    title: "Insights",
+    description: "Commentary and updates from our team across the practice areas we cover.",
+    alternates: { canonical },
+  };
+}
 
 export default async function InsightsPage({
   searchParams,

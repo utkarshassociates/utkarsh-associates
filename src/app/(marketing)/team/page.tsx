@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,19 @@ import {
   getPublishedTeamMembers,
   getTeamMembersForPracticeArea,
 } from "@/lib/data/public";
+
+// No `export const revalidate` here — this page reads `searchParams`
+// (below), which opts it into per-request dynamic rendering in Next.js
+// regardless of any revalidate config, so there's no static output for a
+// time-based window to apply to. That's the correct behavior for a
+// filtered listing anyway — see PHASE-5-NOTES.md's ISR section for why
+// this was a deliberate omission, not an oversight.
+export const metadata: Metadata = {
+  title: "Our Team",
+  description: "Meet the advocates and solicitors who advise our clients.",
+  alternates: { canonical: "/team" },
+  openGraph: { title: "Our Team", url: "/team", type: "website" },
+};
 
 export default async function TeamPage({
   searchParams,

@@ -1,6 +1,18 @@
+import type { Metadata } from "next";
 import { PracticeAreaCard } from "@/components/ui";
 import { getPublishedPracticeAreas } from "@/lib/data/public";
 import { getPracticeIconSrc } from "@/lib/utils";
+
+export const revalidate = 3600;
+
+const DESCRIPTION = "Full-service counsel across the practice areas that matter most to our clients.";
+
+export const metadata: Metadata = {
+  title: "Practice Areas",
+  description: DESCRIPTION,
+  alternates: { canonical: "/practice-areas" },
+  openGraph: { title: "Practice Areas", description: DESCRIPTION, url: "/practice-areas", type: "website" },
+};
 
 export default async function PracticeAreasPage() {
   const practiceAreas = await getPublishedPracticeAreas();

@@ -75,6 +75,7 @@ export async function createTeamMemberAction(input: CreateTeamMemberInput): Prom
   await logAudit({ adminId: actor.adminId, action: "create", entity: "team_members", entityId: created.id, meta: { slug } });
 
   revalidatePath("/admin/team");
+  revalidatePath("/team");
   return { success: true };
 }
 
@@ -96,7 +97,11 @@ export async function updateTeamMemberAction(input: UpdateTeamMemberInput): Prom
   }
 
   // Clean up the old photo if it's being replaced/removed. Non-blocking.
-  const { data: before } = await supabase.from("team_members").select("photo_url").eq("id", id).single();
+  // Also carries the pre-update slug, so the public detail page's previous
+  // path can be revalidated even if this save changes the slug or flips
+  // status published → draft (Phase 5 — see practice-areas.ts's identical
+  // pattern for the same reasoning).
+  const { data: before } = await supabase.from("team_members").select("photo_url, slug").eq("id", id).single();
   if (before?.photo_url && before.photo_url !== photoUrl) {
     const oldPath = pathFromPublicUrl(before.photo_url);
     if (oldPath) void deleteImageByPath(oldPath);
@@ -129,6 +134,16 @@ export async function updateTeamMemberAction(input: UpdateTeamMemberInput): Prom
 
   revalidatePath("/admin/team");
   revalidatePath(`/admin/team/${id}`);
+  revalidatePath("/team");
+  if (before?.slug) revalidatePath(`/team/${before.slug}`);
+  if (slug !== before?.slug) revalidatePath(`/team/${slug}`);
+  // Not revalidated: individual Practice Area detail pages whose "related
+  // team" sidebar includes this member — resolving that would mean an
+  // extra query per linked practice area on every team save. Left to the
+  // 1hr safety-net revalidate window; flagged in PHASE-5-NOTES.md rather
+  // than solved here, since it's a minor staleness case (a name/photo
+  // change lagging up to an hour on someone else's page), not a
+  // visibility bug like the insights.ts published→demoted case was.
   return { success: true };
 }
 
@@ -136,7 +151,7 @@ export async function deleteTeamMemberAction(id: string): Promise<ActionResult> 
   const actor = await requirePermission("team.manage");
   const supabase = createServiceRoleClient();
 
-  const { data: target } = await supabase.from("team_members").select("photo_url").eq("id", id).single();
+  const { data: target } = await supabase.from("team_members").select("photo_url, slug").eq("id", id).single();
 
   const { error } = await supabase.from("team_members").delete().eq("id", id);
   if (error) {
@@ -151,6 +166,8 @@ export async function deleteTeamMemberAction(id: string): Promise<ActionResult> 
   await logAudit({ adminId: actor.adminId, action: "delete", entity: "team_members", entityId: id });
 
   revalidatePath("/admin/team");
+  revalidatePath("/team");
+  if (target?.slug) revalidatePath(`/team/${target.slug}`);
   return { success: true };
 }
 
@@ -177,5 +194,6 @@ export async function reorderTeamMemberAction(id: string, direction: "up" | "dow
   if (e1 || e2) return { success: false, error: "Could not reorder." };
 
   revalidatePath("/admin/team");
+  revalidatePath("/team");
   return { success: true };
 }

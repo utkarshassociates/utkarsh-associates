@@ -1,6 +1,20 @@
+import type { Metadata } from "next";
 import { ContactForm } from "@/components/marketing/ContactForm";
 import { SITE_DEFAULTS } from "@/config/site";
 import { getPublishedPracticeAreas, getSiteSettings, readSetting } from "@/lib/data/public";
+
+export const revalidate = 3600;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const intro = readSetting(settings, "contact_intro", SITE_DEFAULTS.contact_intro);
+  return {
+    title: "Contact Us",
+    description: intro,
+    alternates: { canonical: "/contact" },
+    openGraph: { title: "Contact Us", description: intro, url: "/contact", type: "website" },
+  };
+}
 
 export default async function ContactPage() {
   const [settings, practiceAreas] = await Promise.all([getSiteSettings(), getPublishedPracticeAreas()]);

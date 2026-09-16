@@ -1,10 +1,35 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Button, PracticeAreaCard, StatStrip } from "@/components/ui";
+import { JsonLd } from "@/components/shared/JsonLd";
 import { ASSETS } from "@/config/assets";
 import { SITE_DEFAULTS } from "@/config/site";
 import { getLatestInsights, getPracticeAreaHighlights, getSiteSettings, readSetting } from "@/lib/data/public";
 import { getPracticeIconSrc } from "@/lib/utils";
+import { ORG_NAME, organizationJsonLd } from "@/lib/seo";
+
+// Plan §9 Phase 5 / PHASE-4-NOTES "Phase 5 planning note": on-demand
+// revalidatePath() from the relevant write actions is the primary
+// freshness mechanism (instant, exact); this is the safety-net time-based
+// window underneath it, in case an on-demand call is ever missed somewhere.
+export const revalidate = 3600;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const heroHeading = readSetting(settings, "home_hero_heading", SITE_DEFAULTS.home_hero_heading);
+  const heroSubheading = readSetting(settings, "home_hero_subheading", SITE_DEFAULTS.home_hero_subheading);
+  return {
+    // `title.absolute` bypasses the root layout's "%s | Utkarsh Associates"
+    // template — appending the org name a second time to a homepage title
+    // that already leads with it would be redundant.
+    title: { absolute: `${ORG_NAME} — ${heroHeading}` },
+    description: heroSubheading,
+    alternates: { canonical: "/" },
+    openGraph: { title: heroHeading, description: heroSubheading, url: "/", type: "website" },
+    twitter: { card: "summary_large_image", title: heroHeading, description: heroSubheading },
+  };
+}
 
 // Per project-plan.md §4/§4.1: Home is a code-defined layout (fastest to
 // build, can't be accidentally broken), but every piece of editable text —
@@ -20,9 +45,12 @@ export default async function HomePage() {
 
   const heroHeading = readSetting(settings, "home_hero_heading", SITE_DEFAULTS.home_hero_heading);
   const heroSubheading = readSetting(settings, "home_hero_subheading", SITE_DEFAULTS.home_hero_subheading);
+  const firmPhone = readSetting(settings, "firm_phone", SITE_DEFAULTS.firm_phone);
+  const firmEmail = readSetting(settings, "firm_email", SITE_DEFAULTS.firm_email);
 
   return (
     <>
+      <JsonLd data={organizationJsonLd({ phone: firmPhone || undefined, email: firmEmail || undefined })} />
       {/* Hero */}
       <section className="bg-navy-700 text-white">
         <div className="mx-auto grid max-w-wide gap-8 px-4 py-16 tablet:px-8 desktop:grid-cols-2 desktop:items-center desktop:px-16 desktop:py-24">

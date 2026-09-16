@@ -1,10 +1,44 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Tag } from "@/components/ui";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
+import { JsonLd } from "@/components/shared/JsonLd";
 import { getInsightBySlug, getRelatedInsights } from "@/lib/data/public";
 import { formatDateDDMMYYYY } from "@/lib/utils";
+import { articleJsonLd, breadcrumbJsonLd, richTextToPlainText } from "@/lib/seo";
+
+export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const insight = await getInsightBySlug(slug);
+  if (!insight) return {};
+
+  const title = insight.seo_title || insight.title;
+  const description = insight.seo_description || insight.excerpt || richTextToPlainText(insight.content);
+  const canonical = `/insights/${insight.slug}`;
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: "article",
+      images: insight.cover_image_url ? [insight.cover_image_url] : undefined,
+      publishedTime: insight.published_at ?? undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: insight.cover_image_url ? [insight.cover_image_url] : undefined,
+    },
+  };
+}
 
 export default async function InsightDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -15,6 +49,14 @@ export default async function InsightDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
+      <JsonLd data={articleJsonLd(insight)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Insights", path: "/insights" },
+          { name: insight.title, path: `/insights/${insight.slug}` },
+        ])}
+      />
       <Link href="/insights" className="text-small font-semibold text-navy-700 hover:text-gold-700">
         ← All Insights
       </Link>

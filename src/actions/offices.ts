@@ -11,6 +11,23 @@ export interface ActionResult {
   error?: string;
 }
 
+/**
+ * Phase 5 (ISR): Offices don't have their own public detail page, but every
+ * office row is read by (marketing)/layout.tsx and rendered in the Footer
+ * on literally every public page (plus the dedicated /offices listing).
+ * `revalidatePath("/", "layout")` revalidates every page that shares the
+ * root layout — i.e. the whole site — which is the correct scope here,
+ * rather than trying to enumerate every dynamic public path by hand.
+ * See PHASE-5-NOTES.md for the "please verify" flag on this: Next.js has
+ * had reported inconsistencies between `type: "layout"`-based invalidation
+ * and its underlying fetch Data Cache in some versions (vercel/next.js#62071)
+ * — worth a real-instance check, same as every other phase's caching work.
+ */
+function revalidatePublicOfficePaths() {
+  revalidatePath("/offices");
+  revalidatePath("/", "layout");
+}
+
 export async function createOfficeAction(input: CreateOfficeInput): Promise<ActionResult> {
   const actor = await requirePermission("offices.manage");
 
@@ -45,6 +62,7 @@ export async function createOfficeAction(input: CreateOfficeInput): Promise<Acti
   await logAudit({ adminId: actor.adminId, action: "create", entity: "offices", entityId: created.id, meta: { name } });
 
   revalidatePath("/admin/offices");
+  revalidatePublicOfficePaths();
   return { success: true };
 }
 
@@ -71,6 +89,7 @@ export async function updateOfficeAction(input: UpdateOfficeInput): Promise<Acti
 
   revalidatePath("/admin/offices");
   revalidatePath(`/admin/offices/${id}`);
+  revalidatePublicOfficePaths();
   return { success: true };
 }
 
@@ -86,6 +105,7 @@ export async function deleteOfficeAction(id: string): Promise<ActionResult> {
   await logAudit({ adminId: actor.adminId, action: "delete", entity: "offices", entityId: id });
 
   revalidatePath("/admin/offices");
+  revalidatePublicOfficePaths();
   return { success: true };
 }
 
@@ -112,5 +132,6 @@ export async function reorderOfficeAction(id: string, direction: "up" | "down"):
   if (e1 || e2) return { success: false, error: "Could not reorder." };
 
   revalidatePath("/admin/offices");
+  revalidatePublicOfficePaths();
   return { success: true };
 }
