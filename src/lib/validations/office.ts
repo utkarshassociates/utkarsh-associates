@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { optionalTextSchema, optionalEmailSchema } from "./shared";
+import { optionalTextSchema, optionalUrlOrPathSchema, optionalEmailSchema } from "./shared";
 
 // Offices have no `status` field in the §6 schema (unlike Practice
 // Areas/Team/Insights) — per plan §4 they're a "lightweight" CMS entity, not
@@ -10,7 +10,10 @@ export const officeSchema = z.object({
   city: optionalTextSchema,
   phone: optionalTextSchema,
   email: optionalEmailSchema,
-  mapEmbedUrl: optionalTextSchema,
+  // Consistency fix: was optionalTextSchema (no URL shape check at all) —
+  // every other URL-shaped field (coverImageUrl, photoUrl, linkedinUrl)
+  // uses optionalUrlOrPathSchema; this one had just been missed.
+  mapEmbedUrl: optionalUrlOrPathSchema,
   isHeadquarters: z.boolean().default(false),
 });
 

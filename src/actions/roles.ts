@@ -4,17 +4,13 @@ import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth/session";
 import { logAudit } from "@/lib/audit";
+import type { ActionResult } from "@/lib/action-result";
 import {
   createRoleSchema,
   updateRolePermissionsSchema,
   type CreateRoleInput,
   type UpdateRolePermissionsInput,
 } from "@/lib/validations/role";
-
-export interface ActionResult {
-  success: boolean;
-  error?: string;
-}
 
 /** Maps permission keys -> their row ids, since role_permissions stores the fk, not the key string. */
 async function permissionIdsFor(

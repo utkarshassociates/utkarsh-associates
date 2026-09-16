@@ -4,17 +4,13 @@ import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth/session";
 import { logAudit } from "@/lib/audit";
+import type { ActionResult } from "@/lib/action-result";
 import {
   createPracticeAreaSchema,
   updatePracticeAreaSchema,
   type CreatePracticeAreaInput,
   type UpdatePracticeAreaInput,
 } from "@/lib/validations/practice-area";
-
-export interface ActionResult {
-  success: boolean;
-  error?: string;
-}
 
 export async function createPracticeAreaAction(input: CreatePracticeAreaInput): Promise<ActionResult> {
   const actor = await requirePermission("practice_areas.manage");

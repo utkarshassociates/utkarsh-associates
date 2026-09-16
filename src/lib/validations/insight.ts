@@ -35,7 +35,16 @@ const baseInsightFields = z.object({
 // Enforced here rather than left to the UI alone, so a direct/malformed
 // action call can't save an external_link post with no link, or an original
 // post silently missing content.
-export const insightSchema = baseInsightFields.superRefine((data, ctx) => {
+//
+// Shared across insightSchema/insightFormSchema/updateInsightSchema below —
+// all three need this exact refinement (each is a differently-shaped view
+// of the same fields, so they can't just be one schema — see the comment
+// on insightFormSchema), but the refinement logic itself doesn't vary
+// between them. Was previously copy-pasted three times verbatim.
+function refineExternalLinkFields(
+  data: { postType: "original" | "external_link"; externalUrl?: string; sourceName?: string | null },
+  ctx: z.RefinementCtx
+) {
   if (data.postType === "external_link") {
     if (!data.externalUrl) {
       ctx.addIssue({
@@ -52,7 +61,9 @@ export const insightSchema = baseInsightFields.superRefine((data, ctx) => {
       });
     }
   }
-});
+}
+
+export const insightSchema = baseInsightFields.superRefine(refineExternalLinkFields);
 
 export const createInsightSchema = insightSchema;
 
@@ -77,37 +88,11 @@ export const createInsightSchema = insightSchema;
 export const insightFormSchema = baseInsightFields
   .omit({ status: true, tags: true })
   .passthrough()
-  .superRefine((data, ctx) => {
-    if (data.postType === "external_link") {
-      if (!data.externalUrl) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["externalUrl"], message: "External URL is required for an external-link post." });
-      }
-      if (!data.sourceName) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["sourceName"], message: "Source name is required for an external-link post." });
-      }
-    }
-  });
+  .superRefine(refineExternalLinkFields);
 
 export const updateInsightSchema = baseInsightFields
   .extend({ id: z.string().uuid() })
-  .superRefine((data, ctx) => {
-    if (data.postType === "external_link") {
-      if (!data.externalUrl) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["externalUrl"],
-          message: "External URL is required for an external-link post.",
-        });
-      }
-      if (!data.sourceName) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["sourceName"],
-          message: "Source name is required for an external-link post.",
-        });
-      }
-    }
-  });
+  .superRefine(refineExternalLinkFields);
 
 export const rejectInsightSchema = z.object({
   id: z.string().uuid(),

@@ -1,12 +1,8 @@
 "use server";
 
 import { createBrowserClient } from "@/lib/supabase/client";
+import type { ActionResult } from "@/lib/action-result";
 import { contactFormSchema, type ContactFormValues } from "@/lib/validations/contact";
-
-export interface ActionResult {
-  success: boolean;
-  error?: string;
-}
 
 /**
  * Submits the public contact form (project-plan.md §4/§10 — no email

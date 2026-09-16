@@ -4,12 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth/session";
 import { logAudit } from "@/lib/audit";
+import type { ActionResult } from "@/lib/action-result";
 import { createOfficeSchema, updateOfficeSchema, type CreateOfficeInput, type UpdateOfficeInput } from "@/lib/validations/office";
-
-export interface ActionResult {
-  success: boolean;
-  error?: string;
-}
 
 /**
  * Phase 5 (ISR): Offices don't have their own public detail page, but every

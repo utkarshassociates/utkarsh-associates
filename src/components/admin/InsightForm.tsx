@@ -170,7 +170,10 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
         )}
       />
 
-      <div className="mb-4 grid grid-cols-3 gap-4">
+      {/* Responsive audit fix: single column on mobile, 3 columns from tablet
+          (768px) up — was a fixed grid-cols-3 with no breakpoint prefix,
+          which crammed three selects into one row on narrow screens. */}
+      <div className="mb-4 grid grid-cols-1 gap-4 tablet:grid-cols-3">
         <div>
           <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Category</label>
           <select
@@ -269,7 +272,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
           />
         </div>
       ) : (
-        <div className="mb-4 grid grid-cols-2 gap-4 rounded-md border border-gray-300 bg-gray-100 p-4">
+        <div className="mb-4 grid grid-cols-1 gap-4 rounded-md border border-gray-300 bg-gray-100 p-4 tablet:grid-cols-2">
           <Input
             label="External URL"
             state={errors.externalUrl ? "error" : "default"}

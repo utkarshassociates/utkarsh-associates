@@ -17,7 +17,11 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
   const admin = await requireAdmin();
 
   return (
-    <div className="flex min-h-screen bg-cream">
+    // Responsive audit fix: `flex-col` (top bar + content stacked) below
+    // `desktop`, `desktop:flex-row` (sidebar + content side by side) at and
+    // above it — matches Sidebar.tsx's own breakpoint for switching between
+    // its mobile top-bar and its persistent desktop aside.
+    <div className="flex min-h-screen flex-col bg-cream desktop:flex-row">
       <Sidebar
         isSuper={admin.isSuper}
         permissions={Array.from(admin.permissions)}
@@ -25,7 +29,7 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
         roleName={admin.roleName}
       />
       <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-[1180px] px-8 py-8">{children}</div>
+        <div className="mx-auto max-w-[1180px] px-4 py-6 tablet:px-8 tablet:py-8">{children}</div>
       </main>
     </div>
   );

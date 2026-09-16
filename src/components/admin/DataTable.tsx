@@ -57,7 +57,11 @@ export function DataTable<TData>({ columns, data, searchPlaceholder, emptyMessag
         </div>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-gray-300 bg-white">
+      {/* Responsive audit fix: overflow-x-auto (was overflow-hidden), so a
+          table wider than the viewport scrolls horizontally instead of
+          having its right-hand columns silently clipped off on narrow
+          screens. */}
+      <div className="overflow-x-auto rounded-lg border border-gray-300 bg-white">
         <table className="w-full text-left text-small">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (

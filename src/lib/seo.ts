@@ -70,7 +70,7 @@ export function richTextToPlainText(content: unknown, maxLen = 160): string {
 // <JsonLd> component (src/components/shared/JsonLd.tsx) at each call site,
 // so every schema type lives next to the page/section it describes.
 
-/** LegalService/Organization schema — Home page (plan §8 item 2). */
+/** LegalService/Organization schema — Home page. */
 export function organizationJsonLd(opts: { phone?: string; email?: string } = {}) {
   return {
     "@context": "https://schema.org",
@@ -83,7 +83,7 @@ export function organizationJsonLd(opts: { phone?: string; email?: string } = {}
   } as const;
 }
 
-/** Person schema — each team profile (plan §8 item 2, "jobTitle, worksFor"). */
+/** Person schema — each team profile ("jobTitle", "worksFor"). */
 export function personJsonLd(member: {
   name: string;
   designation: string | null;
@@ -105,7 +105,7 @@ export function personJsonLd(member: {
   } as const;
 }
 
-/** Article schema — each Insight (plan §8 item 2, "headline, author, datePublished"). */
+/** Article schema — each Insight ("headline", "author", "datePublished"). */
 export function articleJsonLd(insight: {
   title: string;
   slug: string;
@@ -142,7 +142,7 @@ export interface BreadcrumbItem {
   path: string;
 }
 
-/** BreadcrumbList schema — every detail page (plan §8 item 2). */
+/** BreadcrumbList schema — every detail page. */
 export function breadcrumbJsonLd(items: BreadcrumbItem[]) {
   return {
     "@context": "https://schema.org",
@@ -156,7 +156,7 @@ export function breadcrumbJsonLd(items: BreadcrumbItem[]) {
   } as const;
 }
 
-/** LocalBusiness schema — one per office on the Offices page (plan §8 item 2). */
+/** LocalBusiness schema — one per office on the Offices page. */
 export function localBusinessJsonLd(office: {
   name: string;
   address: string | null;

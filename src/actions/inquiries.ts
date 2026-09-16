@@ -4,12 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth/session";
 import { logAudit } from "@/lib/audit";
+import type { ActionResult } from "@/lib/action-result";
 import { inquiryStatusSchema, type InquiryStatusInput } from "@/lib/validations/inquiry";
-
-export interface ActionResult {
-  success: boolean;
-  error?: string;
-}
 
 /**
  * §5.2: "/admin/inquiries | inquiries.view / manage | Contact form

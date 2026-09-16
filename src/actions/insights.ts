@@ -7,6 +7,7 @@ import { requireAdmin, requirePermission } from "@/lib/auth/session";
 import { hasPermission } from "@/lib/auth/permissions";
 import { logAudit } from "@/lib/audit";
 import { deleteImageByPath, pathFromPublicUrl } from "@/lib/media/upload";
+import type { ActionResult as BaseActionResult } from "@/lib/action-result";
 import {
   createInsightSchema,
   updateInsightSchema,
@@ -18,9 +19,9 @@ import {
   type CreateCategoryInput,
 } from "@/lib/validations/insight";
 
-export interface ActionResult {
-  success: boolean;
-  error?: string;
+// Extends the shared shape with `id` — create/update need to hand the new
+// or edited row's id back to the form (e.g. to redirect to its edit page).
+export interface ActionResult extends BaseActionResult {
   id?: string;
 }
 

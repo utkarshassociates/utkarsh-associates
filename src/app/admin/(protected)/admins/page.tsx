@@ -31,7 +31,8 @@ export default async function AdminsListPage() {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-gray-300 bg-white">
+      {/* overflow-x-auto (responsive audit fix), see DataTable.tsx for why */}
+      <div className="overflow-x-auto rounded-lg border border-gray-300 bg-white">
         <table className="w-full text-left text-small">
           <thead>
             <tr className="border-b border-gray-300 bg-gray-100 text-[12px] uppercase tracking-wide text-gray-500">

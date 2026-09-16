@@ -5,17 +5,13 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth/session";
 import { logAudit } from "@/lib/audit";
 import { deleteImageByPath, pathFromPublicUrl } from "@/lib/media/upload";
+import type { ActionResult } from "@/lib/action-result";
 import {
   createTeamMemberSchema,
   updateTeamMemberSchema,
   type CreateTeamMemberInput,
   type UpdateTeamMemberInput,
 } from "@/lib/validations/team";
-
-export interface ActionResult {
-  success: boolean;
-  error?: string;
-}
 
 async function syncPracticeAreaLinks(teamMemberId: string, practiceAreaIds: string[]) {
   const supabase = createServiceRoleClient();

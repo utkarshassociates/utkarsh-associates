@@ -1,13 +1,13 @@
 import type { Permission } from "@/config/permissions";
 
 /**
- * Hand-written domain types matching supabase/migrations/0001_init.sql.
+ * Hand-written domain types matching supabase/migrations/0001_init.sql
+ * through 0004_phase4_related_insights.sql.
  *
  * NOTE: this is deliberately NOT a full `supabase gen types typescript`
  * output — generating that requires the Supabase CLI linked to the live
  * project, which wasn't run in this environment (no network access here;
- * see PHASE-1-NOTES.md's environment note). Only the tables Phase 2 (Admin
- * core) touches are typed below. Recommended follow-up once convenient:
+ * see PHASE-1-NOTES.md's environment note). Recommended follow-up once convenient:
  *
  *   supabase gen types typescript --project-id <ref> > src/types/supabase.ts
  *
