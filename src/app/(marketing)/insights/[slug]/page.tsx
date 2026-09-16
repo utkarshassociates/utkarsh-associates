@@ -5,11 +5,20 @@ import { notFound } from "next/navigation";
 import { Tag } from "@/components/ui";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
 import { JsonLd } from "@/components/shared/JsonLd";
-import { getInsightBySlug, getRelatedInsights } from "@/lib/data/public";
+import { getInsightBySlug, getPublishedInsights, getRelatedInsights } from "@/lib/data/public";
 import { formatDateDDMMYYYY } from "@/lib/utils";
 import { articleJsonLd, breadcrumbJsonLd, richTextToPlainText } from "@/lib/seo";
 
 export const revalidate = 3600;
+
+// Phase 5 fix — see practice-areas/[slug]/page.tsx's identical comment for
+// why this is needed alongside `revalidate`, not instead of it. Reuses the
+// same perPage: 5000 "fetch effectively all published rows in one call"
+// approach as sitemap.ts, with the same scale caveat noted there.
+export async function generateStaticParams() {
+  const { insights } = await getPublishedInsights({ page: 1, perPage: 5000 });
+  return insights.map((i) => ({ slug: i.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

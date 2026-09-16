@@ -6,10 +6,17 @@ import { Tag } from "@/components/ui";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { ASSETS } from "@/config/assets";
-import { getPracticeAreasByIds, getTeamMemberBySlug } from "@/lib/data/public";
+import { getPracticeAreasByIds, getPublishedTeamMembers, getTeamMemberBySlug } from "@/lib/data/public";
 import { ORG_NAME, breadcrumbJsonLd, personJsonLd, richTextToPlainText } from "@/lib/seo";
 
 export const revalidate = 3600;
+
+// Phase 5 fix — see practice-areas/[slug]/page.tsx's identical comment for
+// why this is needed alongside `revalidate`, not instead of it.
+export async function generateStaticParams() {
+  const teamMembers = await getPublishedTeamMembers();
+  return teamMembers.map((m) => ({ slug: m.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

@@ -4,11 +4,23 @@ import { notFound } from "next/navigation";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { Tag } from "@/components/ui";
-import { getInsightsForPracticeArea, getPracticeAreaBySlug, getTeamMembersForPracticeArea } from "@/lib/data/public";
+import { getInsightsForPracticeArea, getPracticeAreaBySlug, getPublishedPracticeAreas, getTeamMembersForPracticeArea } from "@/lib/data/public";
 import { getPracticeIconSrc } from "@/lib/utils";
 import { breadcrumbJsonLd, richTextToPlainText } from "@/lib/seo";
 
 export const revalidate = 3600;
+
+// Phase 5 fix: without this, `export const revalidate` alone doesn't make a
+// dynamic-segment route ([slug]) prerender — Next.js has no known set of
+// slugs to build ahead of time, so it falls back to fully dynamic rendering
+// regardless of the revalidate value (confirmed via a real `next build`
+// output showing this route as "f Dynamic" with no Revalidate/Expire
+// column, instead of "o Static" like the listing pages). Reuses the same
+// query sitemap.ts already runs — no new query logic.
+export async function generateStaticParams() {
+  const practiceAreas = await getPublishedPracticeAreas();
+  return practiceAreas.map((pa) => ({ slug: pa.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
