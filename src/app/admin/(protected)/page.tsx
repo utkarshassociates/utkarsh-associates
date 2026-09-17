@@ -6,11 +6,11 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
-// §5.3 point 5: "the pending-review counter on /admin ... is how a
-// publisher-permission holder finds out there's something to review ...
-// it's functionally the notification system" (no email notifications — §2's
-// tech stack table). Counts below are real queries against tables that
-// already exist (insights, contact_submissions per §6), even though the
+// The pending-review counter on /admin is how a publisher-permission holder
+// finds out there's something to review — it's functionally the
+// notification system, since there are no email notifications (per the
+// tech stack decision). Counts below are real queries against tables that
+// already exist (insights, contact_submissions), even though the
 // CRUD screens to act on them are Phase 3 — so this dashboard is honest
 // about current state today, and will light up automatically once Phase 3
 // ships without any change needed here.

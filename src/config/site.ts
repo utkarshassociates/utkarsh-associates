@@ -1,10 +1,9 @@
 /**
  * Typed mirror of the `site_settings` keys defined in
- * src/lib/validations/settings.ts's `SITE_SETTINGS_FIELDS`. Per plan §4.1:
- * "A typed config file (src/config/site.ts) mirrors the same keys purely
- * for compile-time safety/autocomplete during development — it's a
+ * src/lib/validations/settings.ts's `SITE_SETTINGS_FIELDS`. This exists
+ * purely for compile-time safety/autocomplete during development — it's a
  * fallback layer, not a second source of truth; the database value always
- * wins at runtime."
+ * wins at runtime.
  *
  * Confirmed in PHASE-2-NOTES.md: `supabase/seed.sql` seeds no
  * `site_settings` rows at all, so every key here is genuinely blank in the

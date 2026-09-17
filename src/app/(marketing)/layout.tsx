@@ -4,7 +4,7 @@ import { DisclaimerGate } from "@/components/marketing/DisclaimerGate";
 import { SITE_DEFAULTS } from "@/config/site";
 import { getOffices, getSiteSettings, readSetting } from "@/lib/data/public";
 
-// Public nav/footer/disclaimer gate wrapper (project-plan.md §4). Settings
+// Public nav/footer/disclaimer gate wrapper. Settings
 // and offices are fetched once here rather than separately in every page —
 // both are small, firm-wide, and needed by the footer/disclaimer on every
 // route, so a single shared fetch per request is simpler than each page

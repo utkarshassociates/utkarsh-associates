@@ -71,7 +71,7 @@ export interface AuditLogEntry {
   created_at: string;
 }
 
-// ============ Phase 3 — CMS entities (project-plan.md §6) ============
+// ============ Phase 3 — CMS entities ============
 // Added in the same "hand-written, kept in sync by hand" spirit as the types
 // above — see the file-level note for why this isn't generated output.
 
@@ -135,7 +135,7 @@ export interface Insight {
   post_type: InsightPostType;
   external_url: string | null;
   source_name: string | null;
-  tags: string[]; // see migration 0002 — additive column, resolves a plan §5.2/§6 conflict
+  tags: string[]; // see migration 0002 — additive column, added after the original schema shipped without one
   status: InsightStatus;
   rejection_note: string | null;
   submitted_by: string | null;

@@ -23,13 +23,13 @@ async function permissionIdsFor(
 }
 
 /**
- * Creates a new role. This is the concrete mechanism behind project-plan.md
- * §5.1's "adding a future blogAdmin role is just a new row in `roles` with a
+ * Creates a new role. This is the concrete mechanism behind the plan's
+ * "adding a future blogAdmin role is just a new row in `roles` with a
  * chosen permission set" — no schema or code change needed, exactly as
  * described. New roles are always created with is_super = false; superAdmin
  * status isn't grantable through this UI (it's a hand-picked, rare thing —
- * per §5.3 the bootstrap superAdmin comes from a seed script, and no launch
- * flow needs a second one).
+ * the bootstrap superAdmin comes from a seed script, and no launch flow
+ * needs a second one).
  */
 export async function createRoleAction(input: CreateRoleInput): Promise<ActionResult> {
   const actor = await requirePermission("roles.manage");

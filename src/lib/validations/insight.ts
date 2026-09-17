@@ -3,7 +3,7 @@ import { slugSchema, richTextSchema, optionalTextSchema, optionalUrlOrPathSchema
 
 export const insightPostTypeSchema = z.enum(["original", "external_link"]);
 
-// §5.1's draft → pending_review → published(/rejected) workflow is enforced
+// The draft → pending_review → published(/rejected) workflow is enforced
 // by *which action gets called* (saveInsightAction only ever writes
 // draft/pending_review; publishInsightAction/rejectInsightAction — gated by
 // insights.publish — are the only path to published/rejected), not by
@@ -26,13 +26,13 @@ const baseInsightFields = z.object({
   status: insightOwnerStatusSchema,
   // Original-post-only:
   content: richTextSchema,
-  // External-link-only (§5.5):
+  // External-link-only:
   externalUrl: z.string().trim().url("Enter a full URL, e.g. https://...").optional().or(z.literal("")),
   sourceName: optionalTextSchema,
 });
 
-// §5.5: "external_url + source_name, used only when post_type = external_link."
-// Enforced here rather than left to the UI alone, so a direct/malformed
+// external_url + source_name are required, but only when
+// post_type = external_link. Enforced here rather than left to the UI alone, so a direct/malformed
 // action call can't save an external_link post with no link, or an original
 // post silently missing content.
 //

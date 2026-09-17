@@ -5,8 +5,8 @@ import type { ActionResult } from "@/lib/action-result";
 import { contactFormSchema, type ContactFormValues } from "@/lib/validations/contact";
 
 /**
- * Submits the public contact form (project-plan.md §4/§10 — no email
- * notification, `/admin/inquiries` is the source of truth per §5.2).
+ * Submits the public contact form. No email notification is sent —
+ * `/admin/inquiries` is the source of truth.
  *
  * Deliberately uses the ANON client here, not the service-role client every
  * other action in src/actions/ uses — contact_submissions has a narrow

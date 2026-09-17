@@ -8,10 +8,10 @@ import type { ActionResult } from "@/lib/action-result";
 import { updateSiteSettingsSchema, type UpdateSiteSettingsInput } from "@/lib/validations/settings";
 
 /**
- * Upserts every key in `values` into `site_settings`. Per project-plan.md
- * §4.1: "the database value always wins at runtime" — this is the only
- * write path for these rows; `src/config/site.ts` (if/when added) is a
- * compile-time-safety mirror only, never itself read at runtime.
+ * Upserts every key in `values` into `site_settings`. This is the only
+ * write path for these rows; `src/config/site.ts` is a compile-time-safety
+ * mirror only, never itself read at runtime — the database value always
+ * wins.
  */
 export async function updateSiteSettingsAction(input: UpdateSiteSettingsInput): Promise<ActionResult> {
   const actor = await requirePermission("settings.manage");

@@ -14,21 +14,21 @@ import type {
  * Public-site data-fetch layer (Phase 4). Every function here goes through
  * the ANON client (src/lib/supabase/client.ts), never the service-role
  * client — so even a bug in one of these can't read a draft row or write
- * anything; the database's own RLS policies (§6, plus the
+ * anything; the database's own RLS policies (plus the
  * supabase/migrations/0003_phase4.sql fix) are the actual enforcement, not
  * this file's query logic. That mirrors the two-layer model the plan
  * describes for admin writes, just for public reads instead.
  *
- * No ISR/`revalidate` tuning yet — that's explicitly Phase 5 scope per plan
- * §9 (SEO pass, "ISR (revalidate) on CMS-driven pages"). Every call here is
- * a plain, uncached fetch for now, so the public site always reflects the
- * latest published/rejected/draft state instantly — correct default before
- * caching strategy is deliberately chosen, not an oversight.
+ * This file's own fetches are always plain and uncached — the ISR/caching
+ * layer (added in Phase 5, see PHASE-5-NOTES.md) lives at the page level via
+ * `export const revalidate` and on-demand `revalidatePath()` calls from the
+ * write actions, not here. Supabase-js's fetch doesn't participate in
+ * Next's Data Cache, so there was nothing to cache in this file regardless.
  */
 
 const supabase = () => createBrowserClient();
 
-// ============ Site Settings (§4.1/§4.2) ============
+// ============ Site Settings ============
 
 export type SiteSettingsMap = Record<string, unknown>;
 
@@ -205,7 +205,7 @@ export interface PaginatedInsights {
   perPage: number;
 }
 
-/** Published insights, newest first (§4 — "Insights (blog listing) — Paginated, filterable by category"). */
+/** Published insights, newest first — paginated, filterable by category. */
 export async function getPublishedInsights(params: {
   page?: number;
   perPage?: number;

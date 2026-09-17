@@ -24,7 +24,7 @@ export default async function RolesListPage() {
         </Link>
       </div>
       <p className="mb-6 max-w-[560px] text-small text-gray-700">
-        Roles are named sets of permissions (§5.1) — adding a role like a future &quot;Blog Admin&quot;
+        Roles are named sets of permissions — adding a role like a future &quot;Blog Admin&quot;
         doesn&apos;t need a code change, just a new role here with the permissions it needs.
       </p>
 

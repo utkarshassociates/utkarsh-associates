@@ -1,14 +1,15 @@
 import { z } from "zod";
 
 /**
- * The curated set of `site_settings` keys the /admin/settings form renders,
- * per project-plan.md §4.1/§4.2 ("static info referenced from one place").
+ * The curated set of `site_settings` keys the /admin/settings form renders
+ * — static info referenced from one place rather than scattered across
+ * code.
  *
  * NOTE: supabase/seed.sql does not currently seed any site_settings rows —
  * confirmed while building this page (grepped the seed file, found none).
  * So on a fresh DB every field below starts blank until first saved here.
  * The disclaimer field in particular should be filled with the placeholder
- * text from §4.2 ("[PLACEHOLDER DISCLAIMER TEXT — pending final copy from
+ * text ("[PLACEHOLDER DISCLAIMER TEXT — pending final copy from
  * legal counsel]") on first save, not left empty, since <DisclaimerGate />
  * (Phase 4) will render whatever this key holds.
  *
@@ -32,7 +33,7 @@ export const SITE_SETTINGS_FIELDS = [
     section: "Legal",
     multiline: true,
     helpText:
-      "Shown once per session in <DisclaimerGate /> (§4.2). Bar Council of India advertising-restriction language belongs here.",
+      "Shown once per session in <DisclaimerGate />. Bar Council of India advertising-restriction language belongs here.",
   },
   {
     key: "home_hero_heading",

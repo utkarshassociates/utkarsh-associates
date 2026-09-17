@@ -10,14 +10,14 @@ export interface ResolvedAdmin {
   roleSlug: string;
   roleName: string;
   isSuper: boolean;
-  /** Role permissions + this admin's individual extra_permissions, merged. Empty/irrelevant for superAdmins (isSuper implies everything — §5.1). */
+  /** Role permissions + this admin's individual extra_permissions, merged. Empty/irrelevant for superAdmins (isSuper implies everything). */
   permissions: Set<Permission>;
 }
 
 /**
  * Resolves the logged-in admin's *current* permission set from the database.
  *
- * Deliberately NOT cached in the JWT: project-plan.md §5.1 lets a superAdmin
+ * Deliberately NOT cached in the JWT: a superAdmin can
  * grant/revoke a role's permissions or an individual admin's extra
  * permissions at any time from /admin/roles or /admin/admins/[id]. If we put
  * permissions in the token, a revoked admin would keep the old access until

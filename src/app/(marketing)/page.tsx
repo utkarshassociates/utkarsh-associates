@@ -9,9 +9,9 @@ import { getLatestInsights, getPracticeAreaHighlights, getSiteSettings, readSett
 import { getPracticeIconSrc } from "@/lib/utils";
 import { ORG_NAME, organizationJsonLd } from "@/lib/seo";
 
-// Plan §9 Phase 5 / PHASE-4-NOTES "Phase 5 planning note": on-demand
-// revalidatePath() from the relevant write actions is the primary
-// freshness mechanism (instant, exact); this is the safety-net time-based
+// See PHASE-4-NOTES's "Phase 5 planning note": on-demand revalidatePath()
+// from the relevant write actions is the primary freshness mechanism
+// (instant, exact); this is the safety-net time-based
 // window underneath it, in case an on-demand call is ever missed somewhere.
 export const revalidate = 3600;
 
@@ -31,11 +31,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Per project-plan.md §4/§4.1: Home is a code-defined layout (fastest to
-// build, can't be accidentally broken), but every piece of editable text —
-// hero heading/subheading — reads from `site_settings` at runtime, not a
-// hardcoded string. Practice area highlights and latest insights are
-// "pulled live from CMS" per the §4 pages table.
+// Home is a code-defined layout (fastest to build, can't be accidentally
+// broken), but every piece of editable text — hero heading/subheading —
+// reads from `site_settings` at runtime, not a hardcoded string. Practice
+// area highlights and latest insights are pulled live from the CMS.
 export default async function HomePage() {
   const [settings, practiceAreas, latestInsights] = await Promise.all([
     getSiteSettings(),

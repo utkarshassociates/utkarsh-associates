@@ -6,16 +6,16 @@ import { Fragment, type ReactNode } from "react";
  * `content`/`bio` jsonb columns (types/domain.ts types these as `unknown` —
  * intentionally, per that file's comment, since we don't validate Tiptap's
  * internal shape). This renders exactly the node/mark set the admin's
- * RichTextEditor.tsx toolbar can actually produce (§5.4's 14 tools) — no
- * more, since nothing else can ever be saved from that editor:
+ * RichTextEditor.tsx toolbar can actually produce (its 14-tool toolbar) —
+ * no more, since nothing else can ever be saved from that editor:
  *
  *   Nodes: doc, paragraph, heading (levels 2/3 only), blockquote,
  *          bulletList/orderedList/listItem, horizontalRule, image, hardBreak
  *   Marks: bold, italic, underline, strike, link
  *
  * Deliberately NOT a generic Tiptap-to-React library — a small hand-rolled
- * renderer matching exactly what §5.4 allows editors to create, same spirit
- * as the editor itself being a curated subset rather than the full
+ * renderer matching exactly what the editor allows people to create, same
+ * spirit as the editor itself being a curated subset rather than the full
  * extension library.
  */
 

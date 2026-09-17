@@ -15,9 +15,9 @@ interface SidebarProps {
   roleName: string;
 }
 
-// §5.2: "Sidebar navigation renders dynamically based on the logged-in
-// admin's resolved permission set — someone without team.manage simply
-// never sees a 'Team' item in their sidebar."
+// Sidebar navigation renders dynamically based on the logged-in admin's
+// resolved permission set — someone without team.manage simply never sees
+// a "Team" item in their sidebar.
 //
 // Responsive audit fix: below the `desktop` breakpoint (1024px, same
 // convention the public Navbar uses) there's no room for a persistent

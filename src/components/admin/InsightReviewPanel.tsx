@@ -10,10 +10,10 @@ interface InsightReviewPanelProps {
 }
 
 // Shown on the edit page only when: the insight's current status is
-// pending_review AND the viewer has insights.publish (§5.1 — "Anyone with
-// insights.publish ... can move pending_review → published, or → rejected").
-// Deliberately separate from InsightForm's own Save/Submit buttons — saving
-// content and approving it are different actions with different permission
+// pending_review AND the viewer has insights.publish — the permission that
+// lets someone move pending_review → published or → rejected. Deliberately
+// separate from InsightForm's own Save/Submit buttons — saving content and
+// approving it are different actions with different permission
 // requirements, so keeping them as two components makes the permission
 // boundary visible in the code, not just enforced at runtime.
 export function InsightReviewPanel({ insightId }: InsightReviewPanelProps) {

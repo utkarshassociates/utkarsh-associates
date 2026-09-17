@@ -18,17 +18,17 @@ interface RichTextEditorProps {
 }
 
 /**
- * Fixed, curated toolbar per project-plan.md §5.4 — deliberately NOT the
- * full Tiptap extension library, "so every Insight looks consistent with the
- * design system regardless of who wrote it." Excluded on purpose per the
- * plan: font-family/size pickers, custom text color, tables, embeds.
+ * Fixed, curated toolbar — deliberately NOT the full Tiptap extension
+ * library, so every Insight looks consistent with the design system
+ * regardless of who wrote it. Excluded on purpose: font-family/size
+ * pickers, custom text color, tables, embeds.
  *
- * Groups, matching §5.4's table exactly:
+ * Groups:
  *   Text style   — Bold, Italic, Underline, Strikethrough
  *   Structure    — Heading 2, Heading 3, Blockquote
  *   Lists        — Bullet list, Numbered list
  *   Insert       — Link, Image, Horizontal rule
- *   Layout       — Text align (left / center only — right/justify omitted per §5.4)
+ *   Layout       — Text align (left / center only — right/justify omitted)
  *   History      — Undo, Redo, Clear formatting
  */
 export function RichTextEditor({ value, onChange, uploadContext }: RichTextEditorProps) {
@@ -43,8 +43,9 @@ export function RichTextEditor({ value, onChange, uploadContext }: RichTextEdito
         // duplicated the separate Link/Underline instances below (Tiptap
         // logged "Duplicate extension names found: ['link', 'underline']").
         // Disabling the bundled copies here and keeping our own explicit
-        // instances (configured the way §5.4 needs — e.g. openOnClick:
-        // false) resolves the warning without changing any toolbar behavior.
+        // instances (configured the way this toolbar needs — e.g.
+        // openOnClick: false) resolves the warning without changing any
+        // toolbar behavior.
         link: false,
         underline: false,
       }),

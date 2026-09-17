@@ -1,8 +1,8 @@
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
 /**
- * Writes one row to `audit_log` (project-plan.md §6 — "lightweight
- * accountability trail"). Deliberately best-effort: a logging failure should
+ * Writes one row to `audit_log` (a lightweight accountability trail).
+ * Deliberately best-effort: a logging failure should
  * never fail the admin action it's describing, so this swallows its own
  * errors after a console.error. If audit completeness ever becomes a
  * compliance requirement, revisit this trade-off.

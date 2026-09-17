@@ -10,14 +10,14 @@ interface OrderControlsProps {
   action: (id: string, direction: "up" | "down") => Promise<{ success: boolean; error?: string }>;
 }
 
-// project-plan.md §5.2 specs "drag-to-reorder" for Practice Areas. No
-// drag-and-drop library is in package.json (Phase 1/2 didn't need one), and
-// adding one is a real new dependency, not a Phase-3-scope decision to make
-// silently. This ships the same *outcome* (reorderable list, order_index
-// persisted) via simple up/down buttons instead. Swapping this for real
-// drag-and-drop later is a component-level change only — order_index and the
-// reorder action underneath are already exactly what a drag implementation
-// would call on drop.
+// The plan specs "drag-to-reorder" for Practice Areas. No drag-and-drop
+// library is in package.json (Phase 1/2 didn't need one), and adding one is
+// a real new dependency, not a decision to make silently. This ships the
+// same *outcome* (reorderable list, order_index persisted) via simple
+// up/down buttons instead. Swapping this for real drag-and-drop later is a
+// component-level change only — order_index and the reorder action
+// underneath are already exactly what a drag implementation would call on
+// drop.
 export function OrderControls({ id, isFirst, isLast, action }: OrderControlsProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

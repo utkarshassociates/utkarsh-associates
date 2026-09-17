@@ -89,7 +89,14 @@ export default async function InsightDetailPage({ params }: { params: Promise<{ 
 
         {insight.cover_image_url && (
           <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-lg">
-            <Image src={insight.cover_image_url} alt={insight.title} fill className="object-cover" sizes="720px" priority />
+            <Image
+              src={insight.cover_image_url}
+              alt={insight.title}
+              fill
+              className="object-cover"
+              sizes="(min-width: 720px) 720px, 100vw"
+              priority
+            />
           </div>
         )}
 

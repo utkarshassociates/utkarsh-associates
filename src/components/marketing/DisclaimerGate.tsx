@@ -6,20 +6,18 @@ import { Button } from "@/components/ui/Button";
 const STORAGE_KEY = "utkarsh-disclaimer-acknowledged";
 
 /**
- * Global one-time consent modal per project-plan.md §4.2 — Indian law firm
- * sites conventionally gate the homepage behind this (Bar Council of India
- * advertising-restriction language). "Shown once per session" is
- * implemented with sessionStorage (clears when the browser tab/session
- * ends, unlike localStorage which would persist indefinitely) — matches the
- * plan's "per session" wording more literally than a permanent dismissal
- * would.
+ * Global one-time consent modal — Indian law firm sites conventionally gate
+ * the homepage behind this (Bar Council of India advertising-restriction
+ * language). "Shown once per session" is implemented with sessionStorage
+ * (clears when the browser tab/session ends, unlike localStorage which
+ * would persist indefinitely) — matches "per session" more literally than a
+ * permanent dismissal would.
  *
  * `text` is passed in from the (marketing) layout, already resolved from
- * site_settings with the §4.2 placeholder as fallback (see
- * src/config/site.ts's SITE_DEFAULTS.disclaimer_text) — this component
- * itself has no knowledge of where the text came from, so a superAdmin
- * editing it from /admin/settings takes effect on next load with zero
- * changes here.
+ * site_settings with a placeholder as fallback (see src/config/site.ts's
+ * SITE_DEFAULTS.disclaimer_text) — this component itself has no knowledge
+ * of where the text came from, so a superAdmin editing it from
+ * /admin/settings takes effect on next load with zero changes here.
  *
  * Rendered from a fresh `useState(false)` and only flipped to visible
  * inside `useEffect` (never during the initial render) specifically so the

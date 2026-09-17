@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 /**
- * Per project-plan.md §5.3: session strategy is `jwt`, not `database`. The
+ * Session strategy is `jwt`, not `database`. The
  * token carries only id + role (not the full resolved permission set) —
  * see src/lib/auth/permissions.ts for why permissions are resolved fresh
  * per request rather than embedded here.

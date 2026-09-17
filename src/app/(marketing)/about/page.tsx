@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Code-defined layout, editable copy from site_settings (§4.1).
+// Code-defined layout, editable copy from site_settings.
 export default async function AboutPage() {
   const settings = await getSiteSettings();
   const introParagraph = readSetting(settings, "about_intro_paragraph", SITE_DEFAULTS.about_intro_paragraph);

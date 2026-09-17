@@ -3,12 +3,12 @@ import { randomUUID } from "crypto";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
 /**
- * Server-only image pipeline. Per project-plan.md §2:
- * "On upload, a server action runs `sharp` once — cap longest side to
- * ~2000–2400px, convert to WebP at ~80–85% quality ... strip EXIF metadata —
- * before storing that single compressed master in the bucket."
+ * Server-only image pipeline: runs `sharp` once on upload — caps the
+ * longest side to ~2000–2400px, converts to WebP at ~80–85% quality, and
+ * strips EXIF metadata — before storing that single compressed master in
+ * the bucket.
  *
- * Only one master per image is ever stored (§2) — Vercel's next/image
+ * Only one master per image is ever stored — Vercel's next/image
  * generates and caches every display size on demand from that master at
  * request time, so this pipeline never produces multiple sizes itself.
  */
@@ -59,7 +59,7 @@ export async function processAndUploadImage(
       .webp({ quality: WEBP_QUALITY })
       .toBuffer();
       // No .withMetadata() call — sharp omits EXIF/ICC/etc. by default, which
-      // is the "strip EXIF metadata" step from §2.
+      // is the "strip EXIF metadata" step.
   } catch (err) {
     console.error("sharp processing failed:", err);
     return { success: false, error: "Could not process this image. Try a different file." };

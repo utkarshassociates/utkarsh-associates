@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  * Service-role Supabase client — SERVER ONLY. Never import this file from a
  * "use client" component; the service role key must never reach the browser.
  *
- * Per project-plan.md §6: this key bypasses RLS entirely. Every caller
+ * This key bypasses RLS entirely. Every caller
  * (server action / server component) is responsible for having already
  * verified the admin's session and checked their resolved permission set
  * (see src/lib/auth/session.ts) before using this client to read or write.

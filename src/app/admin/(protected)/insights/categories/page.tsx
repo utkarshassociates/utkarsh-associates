@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { requirePermission } from "@/lib/auth/session";
+import { hasPermission } from "@/lib/auth/permissions";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { AddCategoryForm } from "@/components/admin/AddCategoryForm";
@@ -14,7 +15,12 @@ export const metadata: Metadata = { title: "Insight Categories" };
 // (src/components/admin/InsightForm.tsx); this page exists for viewing the
 // full list and cleaning up unused ones, not as the primary creation path.
 export default async function InsightCategoriesPage() {
-  await requirePermission("insights.create");
+  const actor = await requirePermission("insights.create");
+  // deleteCategoryAction is gated on insights.delete, not insights.create —
+  // same canDelete-per-row pattern the Insights list itself uses, so an
+  // admin without it doesn't see a delete button that would just fail
+  // server-side when clicked.
+  const canDelete = hasPermission(actor, "insights.delete");
 
   const supabase = createServiceRoleClient();
   const { data: categories, error } = await supabase.from("insight_categories").select("id, name, slug").order("name");
@@ -55,7 +61,9 @@ export default async function InsightCategoriesPage() {
                 <td className="px-4 py-3 font-medium text-ink-900">{c.name}</td>
                 <td className="px-4 py-3 font-mono text-[12px] text-gray-700">{c.slug}</td>
                 <td className="px-4 py-3 text-right">
-                  <DeleteButton id={c.id} action={deleteCategoryAction} confirmMessage={`Delete category "${c.name}"?`} />
+                  {canDelete && (
+                    <DeleteButton id={c.id} action={deleteCategoryAction} confirmMessage={`Delete category "${c.name}"?`} />
+                  )}
                 </td>
               </tr>
             ))}

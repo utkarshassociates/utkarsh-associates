@@ -1,8 +1,8 @@
 import { Tag } from "@/components/ui";
 import type { TagVariant } from "@/components/ui/Tag";
 
-// Covers admin status (Phase 2) now, plus the content-workflow statuses from
-// §5.1 (draft/pending_review/published/rejected) and inquiries
+// Covers admin status (Phase 2) now, plus the content-workflow statuses
+// (draft/pending_review/published/rejected) and inquiries
 // (new/read/archived) so Phase 3 can reuse this without changes.
 const STATUS_STYLES: Record<string, { label: string; variant: TagVariant }> = {
   active: { label: "Active", variant: "success" },

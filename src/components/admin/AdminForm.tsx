@@ -109,7 +109,7 @@ export function AdminForm({ mode, roles, permissions, initialValues }: AdminForm
         message={
           errors.loginId?.message ??
           (mode === "create"
-            ? "Doesn't need to be a real email — any unique string works (§5.3)."
+            ? "Doesn't need to be a real email — any unique string works."
             : "Login ID can't be changed after creation.")
         }
         {...register("loginId")}

@@ -72,7 +72,12 @@ export default async function TeamMemberDetailPage({ params }: { params: Promise
               alt={member.name}
               fill
               className="object-cover"
-              sizes="280px"
+              // Responsive audit fix: the 280px fixed hint matched only the
+              // desktop grid column (grid-cols-[280px_1fr] applies at
+              // `desktop` and up); below that the photo displays at the full
+              // container width, so the browser was fetching a 280px source
+              // for a wider slot and it would render soft/upscaled.
+              sizes="(min-width: 1024px) 280px, 100vw"
             />
           </div>
 

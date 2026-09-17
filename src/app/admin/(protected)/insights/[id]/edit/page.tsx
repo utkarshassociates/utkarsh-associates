@@ -35,7 +35,7 @@ export default async function EditInsightPage({ params }: EditInsightPageProps) 
   const category = Array.isArray(insight.category) ? insight.category[0] : insight.category;
   const author = Array.isArray(insight.author) ? insight.author[0] : insight.author;
 
-  // §5.1: insights.edit_any covers everyone's; insights.edit_own only the
+  // insights.edit_any covers everyone's; insights.edit_own only the
   // admin's own. Mirrors the same check in updateInsightAction — this is the
   // page-level version, so a non-owner without edit_any sees a clear
   // explanation instead of a form that would fail on submit (same pattern as

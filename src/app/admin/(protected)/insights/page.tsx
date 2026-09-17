@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Insights" };
 
-// §5.2: "/admin/insights | insights.* | List with status filters
-// (draft/pending/published/rejected/external), search". Status filtering is
-// a server-side query-param filter (tabs below); "external" filters by
-// post_type instead of status, so it's handled as a separate tab value.
+// List with status filters (draft/pending/published/rejected/external),
+// search. Status filtering is a server-side query-param filter (tabs
+// below); "external" filters by post_type instead of status, so it's
+// handled as a separate tab value.
 const STATUS_TABS: { value: string; label: string }[] = [
   { value: "all", label: "All" },
   { value: "draft", label: "Draft" },

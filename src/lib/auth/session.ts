@@ -41,14 +41,14 @@ export async function requirePermission(key: Permission): Promise<ResolvedAdmin>
   return admin;
 }
 
-/** For server components/actions/pages gated behind "any one of several permissions" — e.g. /admin/insights, which any of insights.create/edit_own/edit_any/publish/delete should be able to open (§5.2's "insights.*"). Redirects to /admin if the admin has none of them. */
+/** For server components/actions/pages gated behind "any one of several permissions" — e.g. /admin/insights, which any of insights.create/edit_own/edit_any/publish/delete should be able to open. Redirects to /admin if the admin has none of them. */
 export async function requireAnyPermission(keys: Permission[]): Promise<ResolvedAdmin> {
   const admin = await requireAdmin();
   if (!admin.isSuper && !keys.some((key) => hasPermission(admin, key))) redirect("/admin");
   return admin;
 }
 
-/** For server components/actions restricted to superAdmin (Admins, Roles, Settings — §5.2). */
+/** For server components/actions restricted to superAdmin (Admins, Roles, Settings). */
 export async function requireSuperAdmin(): Promise<ResolvedAdmin> {
   const admin = await requireAdmin();
   if (!admin.isSuper) redirect("/admin");

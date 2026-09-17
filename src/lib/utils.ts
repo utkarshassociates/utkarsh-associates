@@ -38,8 +38,8 @@ export function formatDateDDMMYYYY(isoOrDate: string | Date): string {
  */
 /**
  * Resolves a `practice_areas.icon_key` DB value to its SVG path via the
- * locked `ASSETS.practiceIcons` map (src/config/assets.ts — "not an open
- * upload field," per plan §3/§5.2). Falls back to the litigation icon for
+ * locked `ASSETS.practiceIcons` map (src/config/assets.ts — not an open
+ * upload field). Falls back to the litigation icon for
  * any key that doesn't match — defensive only; the admin icon picker
  * (src/components/admin/PracticeAreaForm.tsx) only ever writes a valid key,
  * so this should never actually trigger outside of hand-edited DB rows.

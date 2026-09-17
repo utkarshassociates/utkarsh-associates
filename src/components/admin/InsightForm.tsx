@@ -305,11 +305,11 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
         <div className="mb-4 rounded-sm border border-error bg-error-bg px-3.5 py-3 text-[13px] text-error">{formError}</div>
       )}
 
-      {/* §5.1: "admin (default): can move draft ↔ pending_review." Both
-          buttons are available to anyone who can reach this form at all —
-          publishing/rejecting from pending_review is a separate,
-          insights.publish-gated action (see InsightReviewPanel), not part of
-          this form. */}
+      {/* Both buttons are available to anyone who can reach this form at
+          all — an owning admin can freely move between draft and
+          pending_review. Publishing/rejecting from pending_review is a
+          separate, insights.publish-gated action (see InsightReviewPanel),
+          not part of this form. */}
       <div className="flex gap-3">
         <Button type="button" variant="outline" disabled={isPending} onClick={handleSubmit((v) => submitWithStatus(v, "draft"))}>
           {isPending ? "Saving…" : "Save as draft"}

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { PERMISSIONS } from "@/config/permissions";
 
-// login_id is deliberately NOT validated as an email — project-plan.md §5.3:
+// login_id is deliberately NOT validated as an email — the plan calls for
 // "any string, doesn't need to resemble a real email, though an email-like
 // format ... is a fine convention for readability." We just require it be a
 // reasonable identifier: no whitespace, printable.

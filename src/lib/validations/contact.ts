@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { optionalTextSchema } from "./shared";
 
-// Contact form (project-plan.md §4/§10) — a hidden honeypot field is the
+// Contact form — a hidden honeypot field is the
 // spam guard, no third-party CAPTCHA. `website` is the honeypot: real users
 // never see or fill this field (it's visually hidden, not just tiny/off-
 // screen, and has no label a screen reader would announce as something to

@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { optionalTextSchema, optionalUrlOrPathSchema, optionalEmailSchema } from "./shared";
 
-// Offices have no `status` field in the §6 schema (unlike Practice
-// Areas/Team/Insights) — per plan §4 they're a "lightweight" CMS entity, not
+// Offices have no `status` field in the schema (unlike Practice
+// Areas/Team/Insights) — per the plan, they're a "lightweight" CMS entity, not
 // part of the draft/published workflow. Every saved office is live.
 export const officeSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(200),

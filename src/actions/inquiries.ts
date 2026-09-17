@@ -8,13 +8,12 @@ import type { ActionResult } from "@/lib/action-result";
 import { inquiryStatusSchema, type InquiryStatusInput } from "@/lib/validations/inquiry";
 
 /**
- * §5.2: "/admin/inquiries | inquiries.view / manage | Contact form
- * submissions, mark read/archived, export." Gated by `inquiries.manage`
- * (not `.view`) — viewing the list only needs `.view` (checked at the page
- * level, same as every other list page), but changing status is a write
- * and needs the stronger permission, matching the same view/manage split
- * every other entity uses (e.g. `insights.publish` for a write vs
- * `insights.create`/`edit_*` just to see the list).
+ * Gated by `inquiries.manage` (not `.view`) — viewing the list only needs
+ * `.view` (checked at the page level, same as every other list page), but
+ * changing status is a write and needs the stronger permission, matching
+ * the same view/manage split every other entity uses (e.g.
+ * `insights.publish` for a write vs `insights.create`/`edit_*` just to see
+ * the list).
  */
 export async function updateInquiryStatusAction(input: InquiryStatusInput): Promise<ActionResult> {
   const actor = await requirePermission("inquiries.manage");

@@ -6,7 +6,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  * safe to call from Server Components/Actions that want the public site's
  * read-only view of the data (see src/lib/data/public.ts).
  *
- * Per project-plan.md §6, RLS restricts this key to SELECT-only on rows
+ * RLS restricts this key to SELECT-only on rows
  * where status = 'published' for practice_areas/team_members/insights (open
  * SELECT for offices/insight_categories/site_settings, which have no draft
  * concept), plus one narrow, deliberate exception: an INSERT-only policy on

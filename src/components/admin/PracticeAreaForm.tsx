@@ -119,13 +119,17 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
       <div className="mb-4">
         <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Icon</label>
         <p className="mb-2 text-[12px] text-gray-500">
-          Locked set per the icon spec (design-system.html §icons) — not an open upload field.
+          Locked set per the design system's icon spec — not an open upload field.
         </p>
         <Controller
           control={control}
           name="iconKey"
           render={({ field }) => (
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+            <div className="grid grid-cols-3 gap-2 tablet:grid-cols-6">
+              {/* was `sm:grid-cols-6` — `sm` (640px) isn't one of this
+                  project's breakpoints (the design system defines
+                  tablet/desktop/wide, not Tailwind's stock `sm`); swapped to
+                  `tablet:` to match every other responsive class here. */}
               {iconKeys.map((key) => (
                 <button
                   type="button"

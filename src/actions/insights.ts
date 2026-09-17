@@ -45,8 +45,9 @@ async function revalidatePublicInsightPaths(supabase: SupabaseClient, slug: stri
   }
 }
 
-// §5.1 workflow is enforced by which action a caller reaches, not by trusting
-// a status value the client sent:
+// The draft → pending_review → published(/rejected) workflow is enforced by
+// which action a caller reaches, not by trusting a status value the client
+// sent:
 //   - createInsightAction / updateInsightAction only ever write
 //     draft/pending_review (insightOwnerStatusSchema in the zod schema makes
 //     any other value a validation failure before this code even runs).
@@ -120,7 +121,7 @@ export async function updateInsightAction(input: UpdateInsightInput): Promise<Ac
     .single();
   if (!target) return { success: false, error: "Insight not found." };
 
-  // §5.1: insights.edit_own only covers the admin's own insights;
+  // insights.edit_own only covers the admin's own insights;
   // insights.edit_any (superAdmin, or a future blogAdmin) covers everyone's.
   const canEditAny = hasPermission(actor, "insights.edit_any");
   const canEditOwn = hasPermission(actor, "insights.edit_own") && target.submitted_by === actor.adminId;
@@ -175,9 +176,9 @@ export async function updateInsightAction(input: UpdateInsightInput): Promise<Ac
   revalidatePath(`/admin/insights/${data.id}/edit`);
 
   // Phase 5 finding (see PHASE-5-NOTES.md): updateInsightSchema only ever
-  // accepts status "draft"/"pending_review" (§5.1 — publish/reject are
-  // separate, insights.publish-gated actions), so if this insight was
-  // "published" before this call, this save just demoted it out of public
+  // accepts status "draft"/"pending_review" (publish/reject are separate,
+  // insights.publish-gated actions), so if this insight was "published"
+  // before this call, this save just demoted it out of public
   // visibility even though its content changed, not its status field per
   // se. Without this, the page would sit in the cache showing the old
   // (still-"published"-looking) content until the safety-net revalidate
@@ -219,7 +220,7 @@ export async function deleteInsightAction(id: string): Promise<ActionResult> {
   return { success: true };
 }
 
-/** §5.1: "Anyone with insights.publish ... can move pending_review → published." */
+/** Anyone with insights.publish can move pending_review → published. */
 export async function publishInsightAction(id: string): Promise<ActionResult> {
   const actor = await requirePermission("insights.publish");
   const supabase = createServiceRoleClient();
@@ -242,7 +243,7 @@ export async function publishInsightAction(id: string): Promise<ActionResult> {
   return { success: true };
 }
 
-/** §5.1: "...or → rejected", with an optional note that sends it back to draft. */
+/** ...or moves it to rejected, with an optional note that sends it back to draft. */
 export async function rejectInsightAction(input: RejectInsightInput): Promise<ActionResult> {
   const actor = await requirePermission("insights.publish");
 
@@ -296,7 +297,14 @@ export async function createCategoryAction(input: CreateCategoryInput): Promise<
 }
 
 export async function deleteCategoryAction(id: string): Promise<ActionResult> {
-  const actor = await requirePermission("insights.create");
+  // Was gated on insights.create (same as the quick-add action above) —
+  // tightened to insights.delete, the permission deleteInsightAction itself
+  // already uses. A category is a shared taxonomy entity used across every
+  // admin's insights, not something scoped to what one admin authored, so
+  // "can create an insight" isn't the right bar for removing it; "can
+  // delete insight content" is the closer match already defined in
+  // src/config/permissions.ts.
+  const actor = await requirePermission("insights.delete");
   const supabase = createServiceRoleClient();
 
   const { error } = await supabase.from("insight_categories").delete().eq("id", id);

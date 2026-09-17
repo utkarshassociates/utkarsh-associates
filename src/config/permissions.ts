@@ -19,6 +19,6 @@ export const PERMISSIONS = [
 
 export type Permission = (typeof PERMISSIONS)[number];
 
-// Default grant for the launch "admin" role (§5.1). superAdmin implicitly
+// Default grant for the launch "admin" role. superAdmin implicitly
 // has every permission via `role.is_super` and is never stored as a list.
 export const DEFAULT_ADMIN_PERMISSIONS: Permission[] = ["insights.create", "insights.edit_own"];

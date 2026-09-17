@@ -10,13 +10,12 @@ import type { ContactSubmission, ContactSubmissionStatus } from "@/types/domain"
 
 export const metadata: Metadata = { title: "Inquiries" };
 
-// §5.2: "/admin/inquiries | inquiries.view / manage | Contact form
-// submissions, mark read/archived, export." Was scoped nowhere explicitly
-// in §9's phase breakdown (a genuine gap between Phase 2's "just wire the
-// permission/sidebar/dashboard-count" and Phase 3's CMS-entity list, which
-// only covers Practice Areas/Team/Offices/Insights) — built now, in Phase
-// 4, because the public contact form (this phase) is the first thing that
-// actually writes real rows here.
+// Contact form submissions — mark read/archived, export. Was scoped nowhere
+// explicitly in the plan's phase breakdown (a genuine gap between Phase 2's
+// "just wire the permission/sidebar/dashboard-count" and Phase 3's
+// CMS-entity list, which only covers Practice Areas/Team/Offices/Insights)
+// — built now, in Phase 4, because the public contact form (this phase) is
+// the first thing that actually writes real rows here.
 const STATUS_TABS: { value: "all" | ContactSubmissionStatus; label: string }[] = [
   { value: "all", label: "All" },
   { value: "new", label: "New" },

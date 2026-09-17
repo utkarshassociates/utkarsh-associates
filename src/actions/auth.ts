@@ -15,7 +15,7 @@ export interface LoginResult {
 }
 
 /**
- * Credentials check against the `admins` table (§5.3) — no Supabase Auth
+ * Credentials check against the `admins` table — no Supabase Auth
  * involved. Deliberately returns the SAME generic error for "no such
  * login_id" and "wrong password", so the login form can't be used to
  * enumerate valid login IDs.

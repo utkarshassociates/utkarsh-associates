@@ -4,8 +4,8 @@ import { ASSETS } from "@/config/assets";
 import { ORG_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
-// next/font self-hosts these at build time (no runtime request to fonts.googleapis.com),
-// matching §8's "self-hosted, no render-blocking Google Fonts request" requirement.
+// next/font self-hosts these at build time (no runtime request to fonts.googleapis.com) —
+// self-hosted fonts avoid a render-blocking Google Fonts request.
 const newsreader = Newsreader({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
@@ -28,11 +28,11 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-// Site-wide metadata defaults (plan §8). `metadataBase` is what lets every
+// Site-wide metadata defaults. `metadataBase` is what lets every
 // relative `alternates.canonical`/`openGraph.url`/`openGraph.images` value
 // set on individual pages resolve to an absolute URL — see src/lib/seo.ts
 // for why SITE_URL is currently a documented placeholder pending the real
-// domain (plan §9 Phase 7).
+// domain.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {

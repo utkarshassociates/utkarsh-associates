@@ -17,7 +17,7 @@ export const contentStatusSchema = z.enum(["draft", "published"]);
 
 // Tiptap's editor.getJSON() output — we don't validate its internal shape
 // (that's Tiptap's job), just that something was produced. `null`/empty is
-// allowed: a brand-new draft, or an external_link insight (§5.5) which has
+// allowed: a brand-new draft, or an external_link insight which has
 // no inline content at all.
 export const richTextSchema = z.unknown().nullable().optional();
 

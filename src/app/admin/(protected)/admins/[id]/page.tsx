@@ -75,7 +75,7 @@ export default async function EditAdminPage({ params }: EditAdminPageProps) {
           Reset password
         </h2>
         <p className="mb-4 max-w-[420px] text-[13px] text-gray-700">
-          Per §5.3, there&apos;s no self-service &quot;forgot password&quot; flow since login IDs aren&apos;t
+          There&apos;s no self-service &quot;forgot password&quot; flow since login IDs aren&apos;t
           real inboxes — this admin asks a superAdmin (or anyone with admins.manage) to set a new one here.
         </p>
         <ResetPasswordForm adminId={admin.id} />

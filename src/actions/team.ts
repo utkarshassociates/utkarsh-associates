@@ -16,7 +16,7 @@ import {
 async function syncPracticeAreaLinks(teamMemberId: string, practiceAreaIds: string[]) {
   const supabase = createServiceRoleClient();
   // Replace-the-whole-set, same trade-off as extraPermissions on the Admin
-  // form (§5.1 precedent) — simpler than diffing, fine at this data volume.
+  // form — simpler than diffing, fine at this data volume.
   await supabase.from("team_practice_areas").delete().eq("team_member_id", teamMemberId);
   if (practiceAreaIds.length > 0) {
     await supabase

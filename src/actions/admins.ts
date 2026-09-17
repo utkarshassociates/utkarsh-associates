@@ -176,9 +176,9 @@ export async function resetAdminPasswordAction(input: ResetPasswordInput): Promi
     return { success: false, error: "Could not reset password. " + error.message };
   }
 
-  // Per §5.3 step 4: manual reset is a deliberate, logged, superAdmin-driven
-  // flow — the audit trail here is doing double duty as the record of "who
-  // reset whose password and when."
+  // Manual reset is a deliberate, logged, superAdmin-driven flow — the
+  // audit trail here is doing double duty as the record of "who reset whose
+  // password and when."
   await logAudit({ adminId: actor.adminId, action: "reset_password", entity: "admins", entityId: adminId });
 
   revalidatePath(`/admin/admins/${adminId}`);

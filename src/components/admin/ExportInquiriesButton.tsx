@@ -3,12 +3,12 @@
 import { Button } from "@/components/ui";
 import type { ContactSubmission } from "@/types/domain";
 
-// §5.2: "/admin/inquiries ... export." Client-side CSV generation from the
-// rows already loaded for the current status tab — no new API route or
-// server-side CSV library needed for something this small, and it exports
-// exactly what's currently on screen (i.e. respects whichever status tab
-// is active), which is the more useful behavior for a superAdmin reviewing
-// a specific batch rather than always dumping the entire table.
+// Client-side CSV generation from the rows already loaded for the current
+// status tab — no new API route or server-side CSV library needed for
+// something this small, and it exports exactly what's currently on screen
+// (i.e. respects whichever status tab is active), which is the more useful
+// behavior for a superAdmin reviewing a specific batch rather than always
+// dumping the entire table.
 function toCsvValue(value: string | null): string {
   const v = value ?? "";
   if (v.includes(",") || v.includes('"') || v.includes("\n")) {

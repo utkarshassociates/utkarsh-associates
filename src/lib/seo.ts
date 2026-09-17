@@ -1,17 +1,17 @@
 import { ASSETS } from "@/config/assets";
 
 /**
- * Centralized SEO constants + helpers (Phase 5, plan §8/§9).
+ * Centralized SEO constants + helpers (Phase 5).
  *
- * SITE_URL: no production domain has been assigned yet — plan §9 Phase 7
- * ("domain DNS cutover, Namecheap → Vercel") is still pending per every
- * prior phase's notes. `NEXT_PUBLIC_SITE_URL` is read first; the fallback
+ * SITE_URL: no production domain has been assigned yet — the DNS cutover
+ * (Namecheap → Vercel) is still pending per every prior phase's notes.
+ * `NEXT_PUBLIC_SITE_URL` is read first; the fallback
  * below is a clearly-marked placeholder so metadata/sitemap/JSON-LD/
  * canonical URLs are never silently wrong or blank in local dev. Swap the
  * env var the moment a real domain exists — no code change needed, same
  * "placeholder now, real value later" pattern as `ASSETS`/`site_settings`.
  */
-const FALLBACK_SITE_URL = "https://www.utkarshassociates.example"; // TODO: replace via NEXT_PUBLIC_SITE_URL once the real domain is live (plan §9 Phase 7)
+const FALLBACK_SITE_URL = "https://www.utkarshassociates.example"; // TODO: replace via NEXT_PUBLIC_SITE_URL once the real domain is live
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || FALLBACK_SITE_URL).replace(/\/$/, "");
 
 export const ORG_NAME = "Utkarsh Associates";
@@ -25,7 +25,7 @@ export function absoluteUrl(path: string): string {
 // For meta-description / JSON-LD fallbacks ONLY when an entity has no
 // seo_description/excerpt of its own — never rendered to users
 // (RichTextRenderer.tsx, Phase 4, is the real content renderer). Mirrors
-// that component's node-shape assumptions (only the node/mark set §5.4's
+// that component's node-shape assumptions (only the node/mark set its
 // 14-tool toolbar can actually produce) rather than being a generic Tiptap
 // walker.
 
@@ -65,7 +65,7 @@ export function richTextToPlainText(content: unknown, maxLen = 160): string {
   return `${cut.slice(0, lastSpace > 0 ? lastSpace : maxLen)}…`;
 }
 
-// ============ JSON-LD builders (plan §8) ============
+// ============ JSON-LD builders ============
 // Plain object builders, not React components — rendered via the shared
 // <JsonLd> component (src/components/shared/JsonLd.tsx) at each call site,
 // so every schema type lives next to the page/section it describes.

@@ -2,11 +2,10 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
 import { getPublishedInsights, getPublishedPracticeAreas, getPublishedTeamMembers } from "@/lib/data/public";
 
-// Plan §8 item 3: "Dynamic sitemap.ts — queries all published practice
-// areas, team members, and insights at build/request time; resubmitted to
-// Search Console on deploy." Cached for the same window as the pages it
-// describes (see PHASE-5-NOTES.md for the ISR strategy this matches) rather
-// than regenerated on every crawler hit.
+// Queries all published practice areas, team members, and insights at
+// build/request time; resubmitted to Search Console on deploy. Cached for
+// the same window as the pages it describes (see PHASE-5-NOTES.md for the
+// ISR strategy this matches) rather than regenerated on every crawler hit.
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
