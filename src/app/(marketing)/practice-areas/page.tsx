@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PracticeAreaCard } from "@/components/ui";
 import { getPublishedPracticeAreas } from "@/lib/data/public";
-import { getPracticeIconSrc } from "@/lib/utils";
+import { getPracticeAreaIconSrc } from "@/lib/utils";
 
 export const revalidate = 3600;
 
@@ -34,7 +34,7 @@ export default async function PracticeAreasPage() {
               title={pa.title}
               description={pa.short_description ?? ""}
               href={`/practice-areas/${pa.slug}`}
-              icon={<img src={getPracticeIconSrc(pa.icon_key)} alt="" width={40} height={40} />}
+              icon={<img src={getPracticeAreaIconSrc(pa.icon_url)} alt="" width={40} height={40} />}
             />
           ))}
         </div>

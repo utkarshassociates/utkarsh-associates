@@ -85,7 +85,7 @@ export interface PracticeArea {
   title: string;
   short_description: string | null;
   content: unknown; // richtext jsonb (Tiptap JSON)
-  icon_key: string; // one of the locked keys in src/config/assets.ts
+  icon_url: string | null; // Phase 6 §7: uploaded via the same sharp/Storage pipeline as team photos; null renders ASSETS.practiceAreaIconFallback. Was icon_key (a fixed picker key) before Phase 6.
   order_index: number;
   status: ContentStatus;
   seo_title: string | null;
@@ -93,6 +93,12 @@ export interface PracticeArea {
   created_at: string;
   updated_at: string;
 }
+
+// Phase 6 §6: drives the segregated Team page display (leadership shown
+// separately from counsel/general team). Naming matches the plan's own
+// example ("leadership" / "counsel" / "team") — revisit if the eventual
+// reference design doc uses different labels.
+export type TeamTier = "leadership" | "counsel" | "team";
 
 export interface TeamMember {
   id: string;
@@ -104,6 +110,7 @@ export interface TeamMember {
   email: string | null;
   phone: string | null;
   linkedin_url: string | null;
+  tier: TeamTier;
   order_index: number;
   status: ContentStatus;
   seo_title: string | null;

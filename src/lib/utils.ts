@@ -37,16 +37,14 @@ export function formatDateDDMMYYYY(isoOrDate: string | Date): string {
  * convenience default so most admins never have to hand-type one.
  */
 /**
- * Resolves a `practice_areas.icon_key` DB value to its SVG path via the
- * locked `ASSETS.practiceIcons` map (src/config/assets.ts — not an open
- * upload field). Falls back to the litigation icon for
- * any key that doesn't match — defensive only; the admin icon picker
- * (src/components/admin/PracticeAreaForm.tsx) only ever writes a valid key,
- * so this should never actually trigger outside of hand-edited DB rows.
+ * Resolves a practice area's `icon_url` to what an `<img>`/`next/image` src
+ * should actually use — the uploaded icon if there is one, otherwise the
+ * generic fallback (Phase 6 §7: icons are now a per-practice-area upload,
+ * not a pick from a fixed set, so "no icon yet" is an expected, common
+ * state, not an error).
  */
-export function getPracticeIconSrc(iconKey: string): string {
-  const icons = ASSETS.practiceIcons as Record<string, string>;
-  return icons[iconKey] ?? ASSETS.practiceIcons.litigation;
+export function getPracticeAreaIconSrc(iconUrl: string | null): string {
+  return iconUrl ?? ASSETS.practiceAreaIconFallback;
 }
 
 export function slugify(input: string): string {

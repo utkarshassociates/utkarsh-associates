@@ -15,12 +15,10 @@ insert into permissions (key, label, category) values
   ('insights.delete',        'Delete insights',               'insights'),
   ('practice_areas.manage',  'Manage practice areas',         'content'),
   ('team.manage',            'Manage team members',           'content'),
-  ('offices.manage',         'Manage offices',                'content'),
   ('inquiries.view',         'View contact inquiries',        'inquiries'),
   ('inquiries.manage',       'Manage contact inquiries',      'inquiries'),
   ('admins.manage',          'Create / edit / disable admins','system'),
-  ('roles.manage',           'Create / edit roles',           'system'),
-  ('settings.manage',        'Manage site settings',          'system');
+  ('roles.manage',           'Create / edit roles',           'system');
 
 -- ---- roles ----
 -- superAdmin: is_super = true, implicitly has every permission — never given

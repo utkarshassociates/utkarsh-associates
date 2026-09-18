@@ -17,6 +17,10 @@ export const teamMemberSchema = z.object({
   email: optionalEmailSchema,
   phone: optionalTextSchema,
   linkedinUrl: optionalUrlOrPathSchema,
+  // Phase 6 §6/§11: drives the Team page's segregated display (leadership
+  // shown separately from counsel/general team). Defaults to "team" so
+  // nothing breaks for a row saved before this field existed on the form.
+  tier: z.enum(["leadership", "counsel", "team"]).default("team"),
   status: contentStatusSchema,
   seoTitle: optionalTextSchema,
   seoDescription: optionalTextSchema,

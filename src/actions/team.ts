@@ -32,7 +32,7 @@ export async function createTeamMemberAction(input: CreateTeamMemberInput): Prom
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
-  const { name, slug, designation, photoUrl, bio, email, phone, linkedinUrl, status, seoTitle, seoDescription, practiceAreaIds } =
+  const { name, slug, designation, photoUrl, bio, email, phone, linkedinUrl, tier, status, seoTitle, seoDescription, practiceAreaIds } =
     parsed.data;
 
   const supabase = createServiceRoleClient();
@@ -55,6 +55,7 @@ export async function createTeamMemberAction(input: CreateTeamMemberInput): Prom
       email,
       phone,
       linkedin_url: linkedinUrl,
+      tier,
       order_index: count ?? 0,
       status,
       seo_title: seoTitle,
@@ -82,7 +83,7 @@ export async function updateTeamMemberAction(input: UpdateTeamMemberInput): Prom
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
-  const { id, name, slug, designation, photoUrl, bio, email, phone, linkedinUrl, status, seoTitle, seoDescription, practiceAreaIds } =
+  const { id, name, slug, designation, photoUrl, bio, email, phone, linkedinUrl, tier, status, seoTitle, seoDescription, practiceAreaIds } =
     parsed.data;
 
   const supabase = createServiceRoleClient();
@@ -114,6 +115,7 @@ export async function updateTeamMemberAction(input: UpdateTeamMemberInput): Prom
       email,
       phone,
       linkedin_url: linkedinUrl,
+      tier,
       status,
       seo_title: seoTitle,
       seo_description: seoDescription,

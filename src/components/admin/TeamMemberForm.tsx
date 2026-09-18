@@ -28,6 +28,7 @@ type FormValues = {
   email: string;
   phone: string;
   linkedinUrl: string;
+  tier: "leadership" | "counsel" | "team";
   status: "draft" | "published";
   seoTitle: string;
   seoDescription: string;
@@ -58,6 +59,7 @@ export function TeamMemberForm({ mode, initialValues, practiceAreas }: TeamMembe
       email: initialValues?.email ?? "",
       phone: initialValues?.phone ?? "",
       linkedinUrl: initialValues?.linkedin_url ?? "",
+      tier: initialValues?.tier ?? "team",
       status: initialValues?.status ?? "draft",
       seoTitle: initialValues?.seo_title ?? "",
       seoDescription: initialValues?.seo_description ?? "",
@@ -154,6 +156,19 @@ export function TeamMemberForm({ mode, initialValues, practiceAreas }: TeamMembe
             </div>
           )}
         />
+      </div>
+
+      <div className="mb-4">
+        <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Tier</label>
+        <p className="mb-2 text-[12px] text-gray-500">Drives the segregated Team page display — leadership shown separately from counsel/general team.</p>
+        <select
+          {...register("tier")}
+          className="w-full max-w-[200px] rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
+        >
+          <option value="leadership">Leadership</option>
+          <option value="counsel">Counsel</option>
+          <option value="team">Team</option>
+        </select>
       </div>
 
       <div className="mb-6">

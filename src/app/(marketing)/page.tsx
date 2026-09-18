@@ -6,7 +6,7 @@ import { JsonLd } from "@/components/shared/JsonLd";
 import { ASSETS } from "@/config/assets";
 import { SITE_SETTINGS } from "@/config/content";
 import { getLatestInsights, getPracticeAreaHighlights } from "@/lib/data/public";
-import { getPracticeIconSrc } from "@/lib/utils";
+import { getPracticeAreaIconSrc } from "@/lib/utils";
 import { ORG_NAME, organizationJsonLd } from "@/lib/seo";
 
 // See PHASE-4-NOTES's "Phase 5 planning note": on-demand revalidatePath()
@@ -108,7 +108,7 @@ export default async function HomePage() {
                 title={pa.title}
                 description={pa.short_description ?? ""}
                 href={`/practice-areas/${pa.slug}`}
-                icon={<img src={getPracticeIconSrc(pa.icon_key)} alt="" width={40} height={40} />}
+                icon={<img src={getPracticeAreaIconSrc(pa.icon_url)} alt="" width={40} height={40} />}
               />
             ))}
           </div>

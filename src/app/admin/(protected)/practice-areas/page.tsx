@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import { OrderControls } from "@/components/admin/OrderControls";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { deletePracticeAreaAction, reorderPracticeAreaAction } from "@/actions/practice-areas";
+import { getPracticeAreaIconSrc } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Practice Areas" };
 
@@ -16,7 +17,7 @@ export default async function PracticeAreasListPage() {
   const supabase = createServiceRoleClient();
   const { data: practiceAreas, error } = await supabase
     .from("practice_areas")
-    .select("id, title, slug, icon_key, status, order_index")
+    .select("id, title, slug, icon_url, status, order_index")
     .order("order_index", { ascending: true });
 
   const rows = practiceAreas ?? [];
@@ -56,7 +57,10 @@ export default async function PracticeAreasListPage() {
                   <OrderControls id={pa.id} isFirst={i === 0} isLast={i === rows.length - 1} action={reorderPracticeAreaAction} />
                 </td>
                 <td className="px-4 py-3 font-medium text-ink-900">{pa.title}</td>
-                <td className="px-4 py-3 font-mono text-[12px] text-gray-700">{pa.icon_key}</td>
+                <td className="px-4 py-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- small admin-list thumbnail, either a Storage URL or the local fallback SVG, not a next/image candidate */}
+                  <img src={getPracticeAreaIconSrc(pa.icon_url)} alt="" width={24} height={24} className="h-6 w-6" />
+                </td>
                 <td className="px-4 py-3">
                   <StatusBadge status={pa.status} />
                 </td>

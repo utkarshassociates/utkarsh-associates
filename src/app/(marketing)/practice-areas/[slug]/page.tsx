@@ -5,7 +5,7 @@ import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { Tag } from "@/components/ui";
 import { getInsightsForPracticeArea, getPracticeAreaBySlug, getPublishedPracticeAreas, getTeamMembersForPracticeArea } from "@/lib/data/public";
-import { getPracticeIconSrc } from "@/lib/utils";
+import { getPracticeAreaIconSrc } from "@/lib/utils";
 import { breadcrumbJsonLd, richTextToPlainText } from "@/lib/seo";
 
 export const revalidate = 3600;
@@ -63,7 +63,7 @@ export default async function PracticeAreaDetailPage({ params }: { params: Promi
       </Link>
 
       <div className="mt-6 flex items-start gap-4">
-        <img src={getPracticeIconSrc(practiceArea.icon_key)} alt="" width={40} height={40} className="mt-2 h-10 w-10 shrink-0" />
+        <img src={getPracticeAreaIconSrc(practiceArea.icon_url)} alt="" width={40} height={40} className="mt-2 h-10 w-10 shrink-0" />
         <div>
           <h1 className="font-serif text-h1 text-navy-700">{practiceArea.title}</h1>
           {practiceArea.short_description && (

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/lib/auth/session";
 import { logAudit } from "@/lib/audit";
+import { deleteImageByPath, pathFromPublicUrl } from "@/lib/media/upload";
 import type { ActionResult } from "@/lib/action-result";
 import {
   createPracticeAreaSchema,
@@ -19,7 +20,7 @@ export async function createPracticeAreaAction(input: CreatePracticeAreaInput): 
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
-  const { title, slug, shortDescription, content, iconKey, status, seoTitle, seoDescription } = parsed.data;
+  const { title, slug, shortDescription, content, iconUrl, status, seoTitle, seoDescription } = parsed.data;
 
   const supabase = createServiceRoleClient();
 
@@ -37,7 +38,7 @@ export async function createPracticeAreaAction(input: CreatePracticeAreaInput): 
       slug,
       short_description: shortDescription,
       content: content ?? null,
-      icon_key: iconKey,
+      icon_url: iconUrl,
       order_index: count ?? 0,
       status,
       seo_title: seoTitle,
@@ -68,7 +69,7 @@ export async function updatePracticeAreaAction(input: UpdatePracticeAreaInput): 
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
-  const { id, title, slug, shortDescription, content, iconKey, status, seoTitle, seoDescription } = parsed.data;
+  const { id, title, slug, shortDescription, content, iconUrl, status, seoTitle, seoDescription } = parsed.data;
 
   const supabase = createServiceRoleClient();
 
@@ -77,11 +78,17 @@ export async function updatePracticeAreaAction(input: UpdatePracticeAreaInput): 
     return { success: false, error: `Slug "${slug}" is already in use by another practice area.` };
   }
 
-  // Old slug, fetched before the update, so the previously-cached public
-  // detail page can be revalidated even if this save also changes the slug
-  // or flips status published → draft (in which case the old path needs to
-  // start 404ing instead of serving stale cached content).
-  const { data: before } = await supabase.from("practice_areas").select("slug").eq("id", id).maybeSingle();
+  // Old slug + old icon, fetched before the update. Slug: so the
+  // previously-cached public detail page can be revalidated even if this
+  // save also changes the slug or flips status published → draft. Icon:
+  // clean up the old uploaded image if it's being replaced/removed —
+  // non-blocking, same pattern as team.ts's photo cleanup (Phase 6 §7 —
+  // icon is now an upload, not a fixed key, so it needs this too).
+  const { data: before } = await supabase.from("practice_areas").select("slug, icon_url").eq("id", id).maybeSingle();
+  if (before?.icon_url && before.icon_url !== iconUrl) {
+    const oldPath = pathFromPublicUrl(before.icon_url);
+    if (oldPath) void deleteImageByPath(oldPath);
+  }
 
   const { error } = await supabase
     .from("practice_areas")
@@ -90,7 +97,7 @@ export async function updatePracticeAreaAction(input: UpdatePracticeAreaInput): 
       slug,
       short_description: shortDescription,
       content: content ?? null,
-      icon_key: iconKey,
+      icon_url: iconUrl,
       status,
       seo_title: seoTitle,
       seo_description: seoDescription,
@@ -117,11 +124,16 @@ export async function deletePracticeAreaAction(id: string): Promise<ActionResult
   const actor = await requirePermission("practice_areas.manage");
   const supabase = createServiceRoleClient();
 
-  const { data: target } = await supabase.from("practice_areas").select("slug").eq("id", id).maybeSingle();
+  const { data: target } = await supabase.from("practice_areas").select("slug, icon_url").eq("id", id).maybeSingle();
 
   const { error } = await supabase.from("practice_areas").delete().eq("id", id);
   if (error) {
     return { success: false, error: "Could not delete. " + error.message };
+  }
+
+  if (target?.icon_url) {
+    const path = pathFromPublicUrl(target.icon_url);
+    if (path) void deleteImageByPath(path);
   }
 
   await logAudit({ adminId: actor.adminId, action: "delete", entity: "practice_areas", entityId: id });

@@ -1,0 +1,16 @@
+<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Generic practice-area fallback icon — shown whenever a practice area
+       has no uploaded icon_url (Phase 6 §7). Neutral "legal document"
+       subject, distinct from any of the specific practice icons, so it
+       reads as "icon pending" rather than miscategorizing the practice
+       area. Same locked spec: 1.5px navy stroke, 40x40 grid, line art only,
+       one gold accent max, rounded caps/joins. -->
+  <g fill="none" stroke="#133458" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 5H24L31 12V35H11V5Z" />
+    <path d="M24 5V12H31" />
+    <path d="M15.5 20H26.5" />
+    <path d="M15.5 25H26.5" />
+    <path d="M15.5 30H22" />
+    <circle cx="27" cy="30" r="1.6" fill="#DBAF15" stroke="none" />
+  </g>
+</svg>

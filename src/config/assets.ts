@@ -7,14 +7,15 @@ export const ASSETS = {
   heroIllustration: "/illustrations/hero-courtroom.svg",
   aboutIllustration: "/illustrations/about-approach.svg",
   teamAvatarPlaceholder: "/illustrations/team-avatar-placeholder.svg",
-  practiceIcons: {
-    litigation: "/illustrations/practice-icons/litigation.svg",
-    corporate_commercial: "/illustrations/practice-icons/corporate-commercial.svg",
-    banking_finance: "/illustrations/practice-icons/banking-finance.svg",
-    arbitration_adr: "/illustrations/practice-icons/arbitration-adr.svg",
-    real_estate: "/illustrations/practice-icons/real-estate.svg",
-    white_collar: "/illustrations/practice-icons/white-collar.svg",
-  },
+  // Phase 6 §7: practice areas now carry their own uploaded `icon_url`
+  // (same sharp/Storage pipeline as team photos) instead of picking from a
+  // fixed developer-maintained set — a practice area can be created from
+  // the CMS, so requiring a developer to pre-ship an icon for every future
+  // one was a structural contradiction. This renders whenever icon_url is
+  // null, so nothing is ever a broken image or a blocking requirement.
+  // The old six-icon `practiceIcons` set (litigation.svg etc.) is no longer
+  // referenced by code but the files are left in place under
+  // public/illustrations/practice-icons/ — harmless, and may still be
+  // useful as style reference for whatever gets uploaded later.
+  practiceAreaIconFallback: "/illustrations/practice-area-fallback.svg",
 } as const;
-
-export type PracticeIconKey = keyof typeof ASSETS.practiceIcons;
