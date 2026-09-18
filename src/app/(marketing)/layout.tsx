@@ -1,24 +1,20 @@
 import { Navbar } from "@/components/marketing/Navbar";
 import { Footer } from "@/components/marketing/Footer";
 import { DisclaimerGate } from "@/components/marketing/DisclaimerGate";
-import { SITE_DEFAULTS } from "@/config/site";
-import { getOffices, getSiteSettings, readSetting } from "@/lib/data/public";
 
-// Public nav/footer/disclaimer gate wrapper. Settings
-// and offices are fetched once here rather than separately in every page —
-// both are small, firm-wide, and needed by the footer/disclaimer on every
-// route, so a single shared fetch per request is simpler than each page
-// re-fetching the same rows.
-export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
-  const [settings, offices] = await Promise.all([getSiteSettings(), getOffices()]);
-  const disclaimerText = readSetting(settings, "disclaimer_text", SITE_DEFAULTS.disclaimer_text);
-
+// Phase 6 §1: settings and offices used to be fetched here once (via
+// getSiteSettings()/getOffices()) and passed down to Footer/DisclaimerGate
+// as props, since both were DB round trips worth deduping per request. Now
+// that both live in src/config/content.ts (a bundled, synchronous read),
+// there's nothing to fetch or dedupe — this layout no longer needs to be
+// async at all, and Footer/DisclaimerGate import their own data directly.
+export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
       <main>{children}</main>
-      <Footer settings={settings} offices={offices} />
-      <DisclaimerGate text={disclaimerText} />
+      <Footer />
+      <DisclaimerGate />
     </>
   );
 }

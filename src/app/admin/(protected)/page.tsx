@@ -42,7 +42,6 @@ export default async function AdminDashboardPage() {
     { label: "Manage Team", href: "/admin/team", show: hasPermission(admin, "team.manage") },
     { label: "Manage Admins", href: "/admin/admins", show: hasPermission(admin, "admins.manage") },
     { label: "Manage Roles", href: "/admin/roles", show: hasPermission(admin, "roles.manage") },
-    { label: "Site Settings", href: "/admin/settings", show: hasPermission(admin, "settings.manage") },
   ];
 
   return (

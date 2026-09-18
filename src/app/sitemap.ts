@@ -27,7 +27,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/team`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE_URL}/insights`, changeFrequency: "daily", priority: 0.8 },
     { url: `${SITE_URL}/offices`, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${SITE_URL}/contact`, changeFrequency: "monthly", priority: 0.5 },
   ];
 
   const practiceAreaRoutes: MetadataRoute.Sitemap = practiceAreas.map((pa) => ({

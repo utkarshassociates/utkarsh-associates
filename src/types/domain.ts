@@ -152,17 +152,9 @@ export interface InsightWithRelations extends Insight {
   author: Pick<TeamMember, "id" | "name" | "slug"> | null;
 }
 
-export interface Office {
-  id: string;
-  name: string;
-  address: string | null;
-  city: string | null;
-  phone: string | null;
-  email: string | null;
-  map_embed_url: string | null;
-  is_headquarters: boolean;
-  order_index: number;
-}
+// Office (formerly a DB entity here) was removed in Phase 6 §1 — offices
+// moved out of the database into src/config/content.json. See
+// src/config/content.ts's OfficeContent for the current type.
 
 // ============ Phase 4 — Public site ============
 

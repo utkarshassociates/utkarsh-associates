@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ASSETS } from "@/config/assets";
-import { SITE_DEFAULTS } from "@/config/site";
-import { getSiteSettings, readSetting } from "@/lib/data/public";
+import { SITE_SETTINGS } from "@/config/content";
 
 export const revalidate = 3600;
 
-export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
-  const intro = readSetting(settings, "about_intro_paragraph", SITE_DEFAULTS.about_intro_paragraph);
+export function generateMetadata(): Metadata {
+  const intro = SITE_SETTINGS.aboutIntroParagraph;
   return {
     title: "About Us",
     description: intro,
@@ -17,10 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Code-defined layout, editable copy from site_settings.
-export default async function AboutPage() {
-  const settings = await getSiteSettings();
-  const introParagraph = readSetting(settings, "about_intro_paragraph", SITE_DEFAULTS.about_intro_paragraph);
+// Code-defined layout, editable copy from content.ts (Phase 6 §1 — was site_settings).
+export default function AboutPage() {
+  const introParagraph = SITE_SETTINGS.aboutIntroParagraph;
 
   return (
     <div className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">

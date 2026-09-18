@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Button, PracticeAreaCard, StatStrip } from "@/components/ui";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { ASSETS } from "@/config/assets";
-import { SITE_DEFAULTS } from "@/config/site";
-import { getLatestInsights, getPracticeAreaHighlights, getSiteSettings, readSetting } from "@/lib/data/public";
+import { SITE_SETTINGS } from "@/config/content";
+import { getLatestInsights, getPracticeAreaHighlights } from "@/lib/data/public";
 import { getPracticeIconSrc } from "@/lib/utils";
 import { ORG_NAME, organizationJsonLd } from "@/lib/seo";
 
@@ -16,9 +16,7 @@ import { ORG_NAME, organizationJsonLd } from "@/lib/seo";
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
-  const heroHeading = readSetting(settings, "home_hero_heading", SITE_DEFAULTS.home_hero_heading);
-  const heroSubheading = readSetting(settings, "home_hero_subheading", SITE_DEFAULTS.home_hero_subheading);
+  const { homeHeroHeading: heroHeading, homeHeroSubheading: heroSubheading } = SITE_SETTINGS;
   return {
     // `title.absolute` bypasses the root layout's "%s | Utkarsh Associates"
     // template — appending the org name a second time to a homepage title
@@ -32,20 +30,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Home is a code-defined layout (fastest to build, can't be accidentally
-// broken), but every piece of editable text — hero heading/subheading —
-// reads from `site_settings` at runtime, not a hardcoded string. Practice
-// area highlights and latest insights are pulled live from the CMS.
+// broken). Phase 6 §1: hero heading/subheading now read from
+// src/config/content.ts (a static file), not `site_settings` at request
+// time — same "editable copy, code-defined structure" split as before, just
+// a file instead of a DB round trip. Practice area highlights and latest
+// insights are still pulled live from the CMS.
 export default async function HomePage() {
-  const [settings, practiceAreas, latestInsights] = await Promise.all([
-    getSiteSettings(),
+  const [practiceAreas, latestInsights] = await Promise.all([
     getPracticeAreaHighlights(6),
     getLatestInsights(3),
   ]);
 
-  const heroHeading = readSetting(settings, "home_hero_heading", SITE_DEFAULTS.home_hero_heading);
-  const heroSubheading = readSetting(settings, "home_hero_subheading", SITE_DEFAULTS.home_hero_subheading);
-  const firmPhone = readSetting(settings, "firm_phone", SITE_DEFAULTS.firm_phone);
-  const firmEmail = readSetting(settings, "firm_email", SITE_DEFAULTS.firm_email);
+  const { homeHeroHeading: heroHeading, homeHeroSubheading: heroSubheading, firmPhone, firmEmail } = SITE_SETTINGS;
 
   return (
     <>
@@ -57,7 +53,8 @@ export default async function HomePage() {
             <h1 className="font-serif text-h1 text-white">{heroHeading}</h1>
             <p className="mt-4 max-w-[520px] text-body-l text-cream">{heroSubheading}</p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/contact">
+              {/* Phase 6 §5/§8: was /contact — the contact form now lives on /offices */}
+              <Link href="/offices">
                 <Button variant="gold">Get in Touch</Button>
               </Link>
               <Link href="/practice-areas">
@@ -181,7 +178,8 @@ export default async function HomePage() {
             <h2 className="font-serif text-h3 text-white">Have a matter you'd like to discuss?</h2>
             <p className="mt-2 text-small text-gray-300">Reach out and a member of our team will respond promptly.</p>
           </div>
-          <Link href="/contact" className="shrink-0">
+          {/* Phase 6 §5/§8: was /contact — the contact form now lives on /offices */}
+          <Link href="/offices" className="shrink-0">
             <Button variant="gold">Contact Us</Button>
           </Link>
         </div>

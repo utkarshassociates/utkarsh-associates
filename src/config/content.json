@@ -1,0 +1,38 @@
+{
+  "offices": {
+    "_comment": "Used in: (marketing)/offices/page.tsx, Footer.tsx, sitemap-adjacent LocalBusiness JSON-LD via src/lib/seo.ts's localBusinessJsonLd(). Edit this array directly to add/remove/update an office — order in the array is display order, there's no separate order_index anymore. PLACEHOLDER DATA below (carried over from the old supabase/seed_phase3.sql sample rows) — replace with real firm addresses/phones/emails before launch, same as the other pre-launch placeholder swaps tracked in the original plan's §10 checklist.",
+    "locations": [
+      {
+        "id": "delhi-hq",
+        "name": "New Delhi",
+        "address": "123 Sample Marg, Connaught Place",
+        "city": "New Delhi",
+        "phone": "+91-11-0000-0000",
+        "email": "delhi@utkarsh-associates.example",
+        "isHeadquarters": true,
+        "mapEmbedUrl": null
+      },
+      {
+        "id": "mumbai",
+        "name": "Mumbai",
+        "address": "456 Sample Road, Nariman Point",
+        "city": "Mumbai",
+        "phone": "+91-22-0000-0000",
+        "email": "mumbai@utkarsh-associates.example",
+        "isHeadquarters": false,
+        "mapEmbedUrl": null
+      }
+    ]
+  },
+  "siteSettings": {
+    "_comment": "Used in: (marketing)/page.tsx (hero), about/page.tsx, offices/page.tsx (reach-us block, replaces the old standalone contact/page.tsx), Footer.tsx, DisclaimerGate.tsx. Values below are carried over unchanged from the old src/config/site.ts SITE_DEFAULTS — since supabase/seed.sql never seeded any site_settings rows (confirmed in PHASE-2-NOTES.md), these defaults were already the only copy the live site has ever actually shown. Moving them here is a like-for-like migration, not a content change.",
+    "homeHeroHeading": "Trusted counsel, clearly delivered.",
+    "homeHeroSubheading": "Utkarsh Associates advises businesses and individuals across litigation, corporate, and regulatory matters — with the clarity and rigor a serious matter deserves.",
+    "aboutIntroParagraph": "Utkarsh Associates is a full-service law firm built on the belief that sound legal counsel should be rigorous, responsive, and easy to understand — never more complicated than the matter requires.",
+    "contactIntro": "Tell us about your matter and a member of our team will get back to you shortly.",
+    "firmPhone": "",
+    "firmEmail": "",
+    "socialLinkedinUrl": "",
+    "disclaimerText": "[PLACEHOLDER DISCLAIMER TEXT — pending final copy from legal counsel] I acknowledge that I am seeking information relating to Utkarsh Associates of my own accord and that there has been no form of solicitation, advertisement, or inducement by the firm or its members. The information on this website is provided for general informational purposes only and does not constitute legal advice."
+  }
+}

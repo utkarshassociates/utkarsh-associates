@@ -1,24 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ASSETS } from "@/config/assets";
-import { SITE_DEFAULTS } from "@/config/site";
-import { readSetting, type SiteSettingsMap } from "@/lib/data/public";
-import type { Office } from "@/types/domain";
+import { OFFICES, SITE_SETTINGS, getHeadquartersOffice } from "@/config/content";
 
+// Phase 6 §2: "Contact" dropped from this list — the contact form now lives
+// on /offices (see (marketing)/offices/page.tsx), so "Offices" is the way
+// there; there's no separate /contact route left to link to.
 const FOOTER_LINKS = [
   { label: "About", href: "/about" },
   { label: "Practice Areas", href: "/practice-areas" },
   { label: "Team", href: "/team" },
   { label: "Insights", href: "/insights" },
   { label: "Offices", href: "/offices" },
-  { label: "Contact", href: "/contact" },
 ];
 
-export function Footer({ settings, offices }: { settings: SiteSettingsMap; offices: Office[] }) {
-  const phone = readSetting(settings, "firm_phone", SITE_DEFAULTS.firm_phone);
-  const email = readSetting(settings, "firm_email", SITE_DEFAULTS.firm_email);
-  const linkedin = readSetting(settings, "social_linkedin_url", SITE_DEFAULTS.social_linkedin_url);
-  const hq = offices.find((o) => o.is_headquarters) ?? offices[0];
+export function Footer() {
+  const { firmPhone: phone, firmEmail: email, socialLinkedinUrl: linkedin } = SITE_SETTINGS;
+  const hq = getHeadquartersOffice();
   const year = new Date().getFullYear();
 
   return (
@@ -67,7 +65,7 @@ export function Footer({ settings, offices }: { settings: SiteSettingsMap; offic
           <div>
             <h3 className="mb-3 font-mono text-[11px] uppercase tracking-wide text-gray-500">Offices</h3>
             <ul className="flex flex-col gap-1.5">
-              {offices.map((office) => (
+              {OFFICES.map((office) => (
                 <li key={office.id} className="text-small text-gray-300">
                   {office.name}
                 </li>

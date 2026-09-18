@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { SITE_SETTINGS } from "@/config/content";
 
 const STORAGE_KEY = "utkarsh-disclaimer-acknowledged";
 
@@ -13,11 +14,11 @@ const STORAGE_KEY = "utkarsh-disclaimer-acknowledged";
  * would persist indefinitely) — matches "per session" more literally than a
  * permanent dismissal would.
  *
- * `text` is passed in from the (marketing) layout, already resolved from
- * site_settings with a placeholder as fallback (see src/config/site.ts's
- * SITE_DEFAULTS.disclaimer_text) — this component itself has no knowledge
- * of where the text came from, so a superAdmin editing it from
- * /admin/settings takes effect on next load with zero changes here.
+ * Phase 6 §1: reads SITE_SETTINGS.disclaimerText directly from
+ * src/config/content.ts now, instead of receiving a `text` prop resolved
+ * from `site_settings` by the (marketing) layout. Editing the text post-
+ * launch means editing content.json and redeploying — there's no
+ * /admin/settings screen anymore.
  *
  * Rendered from a fresh `useState(false)` and only flipped to visible
  * inside `useEffect` (never during the initial render) specifically so the
@@ -26,7 +27,7 @@ const STORAGE_KEY = "utkarsh-disclaimer-acknowledged";
  * hydration mismatch (see PHASE-3-NOTES's "Lessons learned" #4 on
  * hydration pitfalls; same underlying principle, different API).
  */
-export function DisclaimerGate({ text }: { text: string }) {
+export function DisclaimerGate() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -52,7 +53,9 @@ export function DisclaimerGate({ text }: { text: string }) {
         <h2 id="disclaimer-heading" className="mb-4 font-serif text-h4 text-navy-700">
           Disclaimer
         </h2>
-        <p className="mb-6 max-h-[40vh] overflow-y-auto text-small leading-relaxed text-gray-700">{text}</p>
+        <p className="mb-6 max-h-[40vh] overflow-y-auto text-small leading-relaxed text-gray-700">
+          {SITE_SETTINGS.disclaimerText}
+        </p>
         <Button variant="primary" onClick={acknowledge} className="w-full justify-center">
           I Acknowledge &amp; Agree
         </Button>

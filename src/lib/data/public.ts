@@ -1,10 +1,8 @@
-import { cache } from "react";
 import { createBrowserClient } from "@/lib/supabase/client";
 import type {
   Insight,
   InsightCategory,
   InsightWithRelations,
-  Office,
   PracticeArea,
   TeamMember,
   TeamMemberWithPracticeAreas,
@@ -28,40 +26,11 @@ import type {
 
 const supabase = () => createBrowserClient();
 
-// ============ Site Settings ============
-
-export type SiteSettingsMap = Record<string, unknown>;
-
-/**
- * All site_settings rows as a flat key->value map. Missing keys are simply
- * absent — callers fall back to defaults inline.
- *
- * Wrapped in React's `cache()`: this is called once from
- * (marketing)/layout.tsx (for the footer + disclaimer text) AND again from
- * whichever page needs its own settings (Home's hero heading, Contact's
- * intro/phone/email) — `cache()` dedupes those into a single Supabase round
- * trip per request instead of one per call site, without either call site
- * needing to know about the other.
- */
-export const getSiteSettings = cache(async (): Promise<SiteSettingsMap> => {
-  const { data, error } = await supabase().from("site_settings").select("key, value");
-  if (error) {
-    console.error("getSiteSettings failed:", error);
-    return {};
-  }
-  const map: SiteSettingsMap = {};
-  for (const row of data ?? []) {
-    map[row.key] = row.value;
-  }
-  return map;
-});
-
-/** Reads one site_settings value out of an already-fetched map, falling back to `fallback` if absent/empty. */
-export function readSetting(map: SiteSettingsMap, key: string, fallback = ""): string {
-  const value = map[key];
-  if (typeof value === "string" && value.trim().length > 0) return value;
-  return fallback;
-}
+// Site Settings and Offices were removed from here in Phase 6 §1 — both are
+// now static content read synchronously from src/config/content.ts
+// (SITE_SETTINGS, OFFICES, getHeadquartersOffice), not fetched from the DB.
+// See PHASE-6 plan §1 for why (client's real day-to-day CMS needs are
+// Practice Areas/Team/Insights/Inquiries; this was config, not content).
 
 // ============ Practice Areas ============
 
@@ -310,17 +279,5 @@ export async function getInsightsForPracticeArea(practiceAreaId: string, limit =
   }
   return (data ?? []) as unknown as InsightWithRelations[];
 }
-
-// ============ Offices ============
-
-/** Wrapped in `cache()` for the same reason as getSiteSettings — called from both the shared layout (footer) and the /offices page. */
-export const getOffices = cache(async (): Promise<Office[]> => {
-  const { data, error } = await supabase().from("offices").select("*").order("order_index", { ascending: true });
-  if (error) {
-    console.error("getOffices failed:", error);
-    return [];
-  }
-  return data ?? [];
-});
 
 export type { Insight };

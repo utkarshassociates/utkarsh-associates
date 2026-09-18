@@ -156,19 +156,19 @@ export function breadcrumbJsonLd(items: BreadcrumbItem[]) {
   } as const;
 }
 
-/** LocalBusiness schema — one per office on the Offices page. */
+/** LocalBusiness schema — one per office on the Offices page. Shape matches src/config/content.ts's OfficeContent (Phase 6 §1 — offices moved out of the DB into content.json). */
 export function localBusinessJsonLd(office: {
   name: string;
   address: string | null;
   city: string | null;
   phone: string | null;
   email: string | null;
-  is_headquarters: boolean;
+  isHeadquarters: boolean;
 }) {
   return {
     "@context": "https://schema.org",
     "@type": "LegalService",
-    name: office.is_headquarters ? ORG_NAME : `${ORG_NAME} — ${office.name}`,
+    name: office.isHeadquarters ? ORG_NAME : `${ORG_NAME} — ${office.name}`,
     ...(office.address || office.city
       ? {
           address: {

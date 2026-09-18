@@ -32,9 +32,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   },
   { label: "Practice Areas", href: "/admin/practice-areas", permission: "practice_areas.manage" },
   { label: "Team", href: "/admin/team", permission: "team.manage" },
-  { label: "Offices", href: "/admin/offices", permission: "offices.manage" },
   { label: "Inquiries", href: "/admin/inquiries", permission: "inquiries.view" },
   { label: "Admins", href: "/admin/admins", permission: "admins.manage", superOnlyByDefault: true },
   { label: "Roles", href: "/admin/roles", permission: "roles.manage", superOnlyByDefault: true },
-  { label: "Settings", href: "/admin/settings", permission: "settings.manage", superOnlyByDefault: true },
 ];
