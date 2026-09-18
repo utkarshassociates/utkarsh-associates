@@ -45,7 +45,12 @@ const config: Config = {
         h2: ["40px", { lineHeight: "48px", fontWeight: "500" }],
         h3: ["28px", { lineHeight: "36px", fontWeight: "600" }],
         h4: ["20px", { lineHeight: "28px", fontWeight: "600" }],
-        "body-l": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+        // body-l revised in Phase 6 §3 (18/28 -> 17/26): the lede-paragraph
+        // pattern this token drives (Home hero subheading, About intro, and
+        // every listing/detail page's intro paragraph) read oversized.
+        // Still clearly distinct from `body` (16/26) below, just tightened.
+        // design-system.html's H1-Button spec table updated to match.
+        "body-l": ["17px", { lineHeight: "26px", fontWeight: "400" }],
         body: ["16px", { lineHeight: "26px", fontWeight: "400" }],
         small: ["14px", { lineHeight: "22px", fontWeight: "400" }],
         button: ["15px", { lineHeight: "20px", fontWeight: "600", letterSpacing: "0.01em" }],

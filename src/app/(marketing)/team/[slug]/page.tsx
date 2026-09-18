@@ -71,7 +71,7 @@ export default async function TeamMemberDetailPage({ params }: { params: Promise
               src={member.photo_url ?? ASSETS.teamAvatarPlaceholder}
               alt={member.name}
               fill
-              className="object-cover"
+              className="object-cover grayscale"
               // Responsive audit fix: the 280px fixed hint matched only the
               // desktop grid column (grid-cols-[280px_1fr] applies at
               // `desktop` and up); below that the photo displays at the full

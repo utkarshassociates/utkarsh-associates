@@ -57,7 +57,7 @@ export default async function TeamPage({
       {teamMembers.length === 0 ? (
         <p className="text-body text-gray-700">No team members found for this practice area.</p>
       ) : (
-        <div className="grid gap-6 tablet:grid-cols-2 desktop:grid-cols-3">
+        <div className="grid grid-cols-2 gap-6 tablet:grid-cols-3 desktop:grid-cols-4">
           {teamMembers.map((member) => (
             <Link
               key={member.id}
@@ -65,12 +65,15 @@ export default async function TeamPage({
               className="block overflow-hidden rounded-lg border border-gray-300 bg-white transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="relative aspect-[4/3] w-full bg-navy-100">
+                {/* Phase 6 §6: CSS-only grayscale, not baked into the stored
+                    file — trivially reversible (drop the `grayscale` class)
+                    if the client wants color later. */}
                 <Image
                   src={member.photo_url ?? ASSETS.teamAvatarPlaceholder}
                   alt={member.name}
                   fill
-                  className="object-cover"
-                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  className="object-cover grayscale"
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
                 />
               </div>
               <div className="p-5">

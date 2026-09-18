@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { ASSETS } from "@/config/assets";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -23,10 +22,11 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-gray-300 bg-white">
       <div className="mx-auto flex h-[72px] max-w-wide items-center justify-between px-4 tablet:px-8 desktop:px-16">
-        <Link href="/" className="flex items-center" onClick={() => setMobileOpen(false)}>
-          <Image src={ASSETS.logo} alt="Utkarsh Associates" width={160} height={40} priority />
-        </Link>
-
+        {/* Phase 6 §2: nav links moved to the left, logo to the right.
+            The standalone "Contact Us" CTA is removed entirely — "Offices"
+            (already in NAV_LINKS) is the way to reach the contact form once
+            it moves there in step 2/8; this isn't a dead link, it's just no
+            longer a separate header button. */}
         <nav className="hidden desktop:flex desktop:items-center desktop:gap-8">
           {NAV_LINKS.map((link) => {
             const active = pathname === link.href || (link.href !== "/" && pathname?.startsWith(link.href));
@@ -45,11 +45,9 @@ export function Navbar() {
           })}
         </nav>
 
-        <div className="hidden desktop:block">
-          <Link href="/contact">
-            <Button variant="primary">Contact Us</Button>
-          </Link>
-        </div>
+        <Link href="/" className="flex items-center desktop:order-last" onClick={() => setMobileOpen(false)}>
+          <Image src={ASSETS.logo} alt="Utkarsh Associates" width={160} height={40} priority />
+        </Link>
 
         <button
           type="button"
@@ -78,13 +76,6 @@ export function Navbar() {
                 </Link>
               </li>
             ))}
-            <li className="mt-2">
-              <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                <Button variant="primary" className="w-full justify-center">
-                  Contact Us
-                </Button>
-              </Link>
-            </li>
           </ul>
         </nav>
       )}

@@ -8,7 +8,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 // Matches design-system.html .btn / .btn-primary / .btn-gold / .btn-outline /
-// .btn-ghost / .btn-disabled exactly — pill radius, Inter 600 15px label.
+// .btn-ghost / .btn-disabled — pill radius, Inter 600 15px label. Padding
+// revised in Phase 6 §3 (buttons read oversized sitewide, incl. the
+// Home hero and CTA band): 28px/13px → 24px/10px. design-system.html's
+// .btn rule updated to match, per that file's own "change the source first"
+// convention. Font-size (15px) untouched — this is a padding-only change.
 const variantClasses: Record<ButtonVariant, string> = {
   primary: "bg-navy-700 text-white hover:bg-navy-900",
   gold: "bg-gold-500 text-navy-900 hover:bg-gold-700",
@@ -24,7 +28,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled}
         className={cn(
           "inline-flex items-center gap-2 rounded-pill font-sans text-button transition-colors duration-150",
-          variant !== "ghost" && "px-7 py-[13px]",
+          variant !== "ghost" && "px-6 py-2.5",
           disabled
             ? "cursor-not-allowed bg-gray-300 text-gray-500 hover:bg-gray-300"
             : variantClasses[variant],
