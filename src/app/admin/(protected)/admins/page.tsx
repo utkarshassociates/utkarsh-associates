@@ -21,7 +21,7 @@ export default async function AdminsListPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-serif text-h3 text-navy-700">Admins</h1>
         <Link href="/admin/admins/new">
-          <Button variant="primary">New admin</Button>
+          <Button variant="primary">New Admin</Button>
         </Link>
       </div>
 

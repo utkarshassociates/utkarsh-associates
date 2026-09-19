@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Select";
 import { submitContactAction } from "@/actions/contact";
 import { contactFormSchema, type ContactFormValues } from "@/lib/validations/contact";
 import type { PracticeArea } from "@/types/domain";
@@ -83,10 +84,9 @@ export function ContactForm({ practiceAreas }: { practiceAreas: PracticeArea[] }
         <label htmlFor="practice-area-interest" className="mb-1.5 block text-[13px] font-semibold text-ink-900">
           Practice area (optional)
         </label>
-        <select
+        <Select
           id="practice-area-interest"
           {...register("practiceAreaInterest")}
-          className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
         >
           <option value="">Not sure / general inquiry</option>
           {practiceAreas.map((pa) => (
@@ -94,7 +94,7 @@ export function ContactForm({ practiceAreas }: { practiceAreas: PracticeArea[] }
               {pa.title}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div className="mb-4">

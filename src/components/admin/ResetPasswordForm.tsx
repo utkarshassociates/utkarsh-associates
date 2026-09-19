@@ -56,7 +56,7 @@ export function ResetPasswordForm({ adminId }: { adminId: string }) {
         </div>
       )}
       <Button type="submit" variant="outline" disabled={isPending}>
-        {isPending ? "Resetting…" : "Reset password"}
+        {isPending ? "Resetting…" : "Reset Password"}
       </Button>
     </form>
   );

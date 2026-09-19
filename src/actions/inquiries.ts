@@ -38,3 +38,20 @@ export async function updateInquiryStatusAction(input: InquiryStatusInput): Prom
   revalidatePath("/admin"); // dashboard's "new inquiries" count
   return { success: true };
 }
+
+/** Same `inquiries.manage` gate as the status action — deleting is a write. */
+export async function deleteInquiryAction(id: string): Promise<ActionResult> {
+  const actor = await requirePermission("inquiries.manage");
+
+  const supabase = createServiceRoleClient();
+  const { error } = await supabase.from("contact_submissions").delete().eq("id", id);
+  if (error) {
+    return { success: false, error: "Could not delete. " + error.message };
+  }
+
+  await logAudit({ adminId: actor.adminId, action: "delete", entity: "contact_submissions", entityId: id });
+
+  revalidatePath("/admin/inquiries");
+  revalidatePath("/admin");
+  return { success: true };
+}

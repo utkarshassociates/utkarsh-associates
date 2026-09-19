@@ -61,7 +61,7 @@ export function LoginForm({ redirectTo }: { redirectTo: string }) {
       )}
 
       <Button type="submit" variant="primary" disabled={isPending} className="w-full justify-center">
-        {isPending ? "Signing in…" : "Sign in"}
+        {isPending ? "Signing In…" : "Sign In"}
       </Button>
     </form>
   );

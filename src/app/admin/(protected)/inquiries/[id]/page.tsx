@@ -6,6 +6,8 @@ import { hasPermission } from "@/lib/auth/permissions";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InquiryStatusActions } from "@/components/admin/InquiryStatusActions";
+import { DeleteButton } from "@/components/admin/DeleteButton";
+import { deleteInquiryAction } from "@/actions/inquiries";
 import { formatDateDDMMYYYY } from "@/lib/utils";
 import type { ContactSubmission } from "@/types/domain";
 
@@ -63,8 +65,9 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
       </div>
 
       {canManage && (
-        <div className="mt-8 border-t border-gray-300 pt-6">
+        <div className="mt-8 flex items-center justify-between border-t border-gray-300 pt-6">
           <InquiryStatusActions id={submission.id} status={submission.status} />
+          <DeleteButton id={submission.id} action={deleteInquiryAction} confirmMessage="Delete this inquiry? This can't be undone." />
         </div>
       )}
     </div>

@@ -27,7 +27,7 @@ export default async function PracticeAreasListPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-serif text-h3 text-navy-700">Practice Areas</h1>
         <Link href="/admin/practice-areas/new">
-          <Button variant="primary">New practice area</Button>
+          <Button variant="primary">New Practice Area</Button>
         </Link>
       </div>
 

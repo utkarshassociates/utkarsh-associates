@@ -21,7 +21,7 @@ export default async function NewInsightPage() {
   // is a required FK to team_members). Rather than open a confusing form
   // with an empty, unexplained author dropdown, check for this dependency
   // upfront and guide the admin to the fix directly. No status filter here
-  // (matches the author <select> below, which also has none) — a draft team
+  // (matches the author <Select> below, which also has none) — a draft team
   // member is a valid author just as much as a published one.
   if (!teamMembers || teamMembers.length === 0) {
     return (

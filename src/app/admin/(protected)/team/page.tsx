@@ -27,7 +27,7 @@ export default async function TeamListPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-serif text-h3 text-navy-700">Team</h1>
         <Link href="/admin/team/new">
-          <Button variant="primary">New team member</Button>
+          <Button variant="primary">New Team Member</Button>
         </Link>
       </div>
 

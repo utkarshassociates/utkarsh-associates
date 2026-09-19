@@ -73,7 +73,7 @@ export default async function InsightsListPage({ searchParams }: InsightsListPag
           </Link>
           {hasPermission(actor, "insights.create") && (
             <Link href="/admin/insights/new">
-              <Button variant="primary">New insight</Button>
+              <Button variant="primary">New Insight</Button>
             </Link>
           )}
         </div>

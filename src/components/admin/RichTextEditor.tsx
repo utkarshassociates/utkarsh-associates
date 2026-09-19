@@ -59,8 +59,27 @@ export function RichTextEditor({ value, onChange, uploadContext }: RichTextEdito
     onUpdate: ({ editor }) => onChange(editor.getJSON()),
     editorProps: {
       attributes: {
-        class:
-          "prose-sm min-h-[240px] max-w-none rounded-b-md border border-t-0 border-gray-300 bg-white px-4 py-3 font-sans text-body text-ink-900 focus:outline-none",
+        // `prose-sm` (Tailwind Typography plugin) doesn't do anything here —
+        // that plugin isn't installed (see tailwind.config.ts's `plugins: []`
+        // and package.json). Without it, headings/lists/blockquote/links/hr
+        // rendered as bare unstyled HTML — Bold/Italic/Underline/Strike only
+        // ever "worked" because those are native browser tag behavior, not
+        // plugin-dependent. Fixed with explicit scoped styles instead of
+        // adding the dependency, matching the exact classes
+        // RichTextRenderer.tsx (the public-facing renderer) uses for the
+        // same node types, so the editor now visually matches what actually
+        // publishes.
+        class: cn(
+          "min-h-[240px] max-w-none rounded-b-md border border-t-0 border-gray-300 bg-white px-4 py-3 font-sans text-body text-ink-900 focus:outline-none",
+          "[&_p]:mb-4",
+          "[&_h2]:mb-4 [&_h2]:mt-6 [&_h2]:font-serif [&_h2]:text-h2 [&_h2]:text-navy-700",
+          "[&_h3]:mb-3 [&_h3]:mt-6 [&_h3]:font-serif [&_h3]:text-h3 [&_h3]:text-navy-700",
+          "[&_blockquote]:mb-4 [&_blockquote]:border-l-[3px] [&_blockquote]:border-gold-500 [&_blockquote]:py-1 [&_blockquote]:pl-5 [&_blockquote]:font-serif [&_blockquote]:text-h4 [&_blockquote]:italic [&_blockquote]:text-navy-700",
+          "[&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-1",
+          "[&_a]:text-navy-700 [&_a]:underline [&_a:hover]:text-gold-700",
+          "[&_hr]:my-8 [&_hr]:border-gray-300",
+          "[&_img]:max-w-full [&_img]:rounded-lg"
+        ),
       },
     },
   });

@@ -4,7 +4,9 @@ import Link from "next/link";
 import { createColumnHelper } from "@tanstack/react-table";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { InquiryStatusActions } from "@/components/admin/InquiryStatusActions";
+import { DeleteButton } from "@/components/admin/DeleteButton";
 import { DataTable } from "@/components/admin/DataTable";
+import { deleteInquiryAction } from "@/actions/inquiries";
 import { formatDateDDMMYYYY } from "@/lib/utils";
 import type { ContactSubmissionStatus } from "@/types/domain";
 
@@ -42,17 +44,30 @@ const columns = [
   }),
   columnHelper.accessor("messagePreview", {
     header: "Message",
-    cell: (info) => <span className="text-gray-700">{info.getValue()}</span>,
+    cell: (info) => (
+      <Link href={`/admin/inquiries/${info.row.original.id}`} className="text-gray-700 hover:text-navy-700">
+        {info.getValue()}
+      </Link>
+    ),
   }),
   columnHelper.accessor("status", { header: "Status", cell: (info) => <StatusBadge status={info.getValue()} /> }),
   columnHelper.accessor("created_at", { header: "Received", cell: (info) => formatDateDDMMYYYY(info.getValue()) }),
   columnHelper.display({
     id: "actions",
     header: "",
-    cell: (info) =>
-      info.row.original.canManage ? (
-        <InquiryStatusActions id={info.row.original.id} status={info.row.original.status} />
-      ) : null,
+    cell: (info) => (
+      <div className="flex flex-wrap items-center gap-3">
+        <Link href={`/admin/inquiries/${info.row.original.id}`} className="font-semibold text-navy-700 hover:text-gold-700">
+          View →
+        </Link>
+        {info.row.original.canManage && (
+          <>
+            <InquiryStatusActions id={info.row.original.id} status={info.row.original.status} />
+            <DeleteButton id={info.row.original.id} action={deleteInquiryAction} confirmMessage="Delete this inquiry? This can't be undone." />
+          </>
+        )}
+      </div>
+    ),
   }),
 ];
 

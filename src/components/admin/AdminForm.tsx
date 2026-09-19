@@ -6,7 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createAdminSchema, updateAdminSchema } from "@/lib/validations/admin";
 import { createAdminAction, updateAdminAction } from "@/actions/admins";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Select } from "@/components/ui";
 import type { Permission } from "@/config/permissions";
 import type { PermissionRow, Role } from "@/types/domain";
 
@@ -134,9 +134,8 @@ export function AdminForm({ mode, roles, permissions, initialValues }: AdminForm
 
       <div className="mb-4">
         <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Role</label>
-        <select
+        <Select
           {...register("roleId")}
-          className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
         >
           {roles.map((role) => (
             <option key={role.id} value={role.id}>
@@ -144,19 +143,18 @@ export function AdminForm({ mode, roles, permissions, initialValues }: AdminForm
               {role.is_super ? " (implicit — all permissions)" : ""}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       {mode === "edit" && (
         <div className="mb-4">
           <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Status</label>
-          <select
+          <Select
             {...register("status")}
-            className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
           >
             <option value="active">Active</option>
             <option value="disabled">Disabled</option>
-          </select>
+          </Select>
         </div>
       )}
 
@@ -213,7 +211,7 @@ export function AdminForm({ mode, roles, permissions, initialValues }: AdminForm
       )}
 
       <Button type="submit" variant="primary" disabled={isPending}>
-        {isPending ? "Saving…" : mode === "create" ? "Create admin" : "Save changes"}
+        {isPending ? "Saving…" : mode === "create" ? "Create Admin" : "Save Changes"}
       </Button>
     </form>
   );

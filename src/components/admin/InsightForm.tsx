@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { JSONContent } from "@tiptap/react";
 import { insightFormSchema } from "@/lib/validations/insight";
 import { createInsightAction, updateInsightAction, createCategoryAction } from "@/actions/insights";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Select } from "@/components/ui";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { slugify } from "@/lib/utils";
@@ -158,7 +158,6 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
           {...register("excerpt")}
           rows={2}
           placeholder="Shown on the /insights listing card, and as the full content for external-link posts."
-          className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
         />
       </div>
 
@@ -176,9 +175,8 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
       <div className="mb-4 grid grid-cols-1 gap-4 tablet:grid-cols-3">
         <div>
           <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Category</label>
-          <select
+          <Select
             {...register("categoryId")}
-            className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
           >
             <option value="">— None —</option>
             {categories.map((c) => (
@@ -186,7 +184,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
                 {c.name}
               </option>
             ))}
-          </select>
+          </Select>
           {!isAddingCategory ? (
             <button
               type="button"
@@ -216,9 +214,8 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
 
         <div>
           <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Author</label>
-          <select
+          <Select
             {...register("authorId")}
-            className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
           >
             <option value="">— None —</option>
             {teamMembers.map((tm) => (
@@ -226,14 +223,13 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
                 {tm.name}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         <div>
           <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Related practice area</label>
-          <select
+          <Select
             {...register("practiceAreaId")}
-            className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
           >
             <option value="">— None —</option>
             {practiceAreas.map((pa) => (
@@ -241,7 +237,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
                 {pa.title}
               </option>
             ))}
-          </select>
+          </Select>
           <p className="mt-1.5 text-[12px] text-gray-500">Optional — powers the &quot;Related Insights&quot; section on that practice area&apos;s page.</p>
         </div>
       </div>
@@ -297,7 +293,6 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
         <textarea
           {...register("seoDescription")}
           rows={2}
-          className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
         />
       </div>
 
@@ -312,10 +307,10 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
           not part of this form. */}
       <div className="flex gap-3">
         <Button type="button" variant="outline" disabled={isPending} onClick={handleSubmit((v) => submitWithStatus(v, "draft"))}>
-          {isPending ? "Saving…" : "Save as draft"}
+          {isPending ? "Saving…" : "Save as Draft"}
         </Button>
         <Button type="button" variant="primary" disabled={isPending} onClick={handleSubmit((v) => submitWithStatus(v, "pending_review"))}>
-          {isPending ? "Saving…" : "Submit for review"}
+          {isPending ? "Saving…" : "Submit for Review"}
         </Button>
       </div>
     </form>

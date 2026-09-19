@@ -76,7 +76,7 @@ export function InsightReviewPanel({ insightId }: InsightReviewPanelProps) {
           />
           <div className="flex gap-3">
             <Button type="button" variant="primary" disabled={isPending} onClick={reject}>
-              {isPending ? "Rejecting…" : "Confirm reject"}
+              {isPending ? "Rejecting…" : "Confirm Reject"}
             </Button>
             <Button type="button" variant="ghost" disabled={isPending} onClick={() => setShowRejectNote(false)}>
               Cancel

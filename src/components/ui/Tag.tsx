@@ -20,7 +20,7 @@ export function Tag({ variant = "navy", className, children, ...props }: TagProp
   return (
     <span
       className={cn(
-        "inline-block rounded-pill px-3 py-[5px] font-sans text-[12px] font-semibold",
+        "inline-block whitespace-nowrap rounded-pill px-3 py-[5px] font-sans text-[12px] font-semibold",
         variantClasses[variant],
         className
       )}

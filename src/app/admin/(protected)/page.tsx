@@ -48,7 +48,6 @@ export default async function AdminDashboardPage() {
       <h1 className="font-serif text-h3 text-navy-700">Welcome, {admin.name}</h1>
       <p className="mt-1 text-small text-gray-700">
         Signed in as <span className="font-semibold">{admin.roleName}</span>
-        {admin.isSuper && " (superAdmin)"}
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-4 tablet:grid-cols-3">

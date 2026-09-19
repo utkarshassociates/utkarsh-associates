@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { JSONContent } from "@tiptap/react";
 import { createPracticeAreaSchema } from "@/lib/validations/practice-area";
 import { createPracticeAreaAction, updatePracticeAreaAction } from "@/actions/practice-areas";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Select } from "@/components/ui";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { slugify } from "@/lib/utils";
@@ -98,7 +98,6 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
         <textarea
           {...register("shortDescription")}
           rows={2}
-          className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
           placeholder="Shown on the Practice Area card — a sentence or two."
         />
       </div>
@@ -130,13 +129,13 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
 
       <div className="mb-6">
         <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Status</label>
-        <select
+        <Select
           {...register("status")}
-          className="w-full max-w-[200px] rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
+          className="max-w-[200px]"
         >
           <option value="draft">Draft</option>
           <option value="published">Published</option>
-        </select>
+        </Select>
       </div>
 
       <h3 className="mb-3 text-[14px] font-semibold uppercase tracking-wide text-gray-700">SEO</h3>
@@ -146,7 +145,6 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
         <textarea
           {...register("seoDescription")}
           rows={2}
-          className="w-full rounded-sm border-[1.5px] border-gray-300 px-3.5 py-[11px] font-sans text-small text-ink-900 focus:border-navy-700 focus:outline-none focus:ring-4 focus:ring-navy-100"
         />
       </div>
 
@@ -155,7 +153,7 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
       )}
 
       <Button type="submit" variant="primary" disabled={isPending}>
-        {isPending ? "Saving…" : mode === "create" ? "Create practice area" : "Save changes"}
+        {isPending ? "Saving…" : mode === "create" ? "Create Practice Area" : "Save Changes"}
       </Button>
     </form>
   );
