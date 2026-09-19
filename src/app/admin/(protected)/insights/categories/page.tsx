@@ -33,7 +33,7 @@ export default async function InsightCategoriesPage() {
         </Link>
       </div>
 
-      <h1 className="mb-6 font-serif text-h3 text-navy-700">Insight categories</h1>
+      <h1 className="mb-6 font-serif text-h3 text-navy-700">Insight Categories</h1>
 
       {error && (
         <div className="mb-4 rounded-sm border border-error bg-error-bg px-3.5 py-3 text-[13px] text-error">

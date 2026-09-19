@@ -26,7 +26,7 @@ export default async function NewInsightPage() {
   if (!teamMembers || teamMembers.length === 0) {
     return (
       <div>
-        <h1 className="mb-6 font-serif text-h3 text-navy-700">New insight</h1>
+        <h1 className="mb-6 font-serif text-h3 text-navy-700">New Insight</h1>
         <div className="max-w-[480px] rounded-lg border border-gray-300 bg-gray-100 p-6">
           <p className="text-body text-ink-900">
             You need at least one Team Member before you can create an Insight, since every Insight needs an author.
@@ -41,7 +41,7 @@ export default async function NewInsightPage() {
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-h3 text-navy-700">New insight</h1>
+      <h1 className="mb-6 font-serif text-h3 text-navy-700">New Insight</h1>
       <InsightForm mode="create" categories={categories ?? []} teamMembers={teamMembers} practiceAreas={practiceAreas ?? []} />
     </div>
   );

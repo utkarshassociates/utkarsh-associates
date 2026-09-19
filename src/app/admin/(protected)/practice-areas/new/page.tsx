@@ -9,7 +9,7 @@ export default async function NewPracticeAreaPage() {
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-h3 text-navy-700">New practice area</h1>
+      <h1 className="mb-6 font-serif text-h3 text-navy-700">New Practice Area</h1>
       <PracticeAreaForm mode="create" />
     </div>
   );

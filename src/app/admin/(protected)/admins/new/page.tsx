@@ -26,7 +26,7 @@ export default async function NewAdminPage() {
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-h3 text-navy-700">New admin</h1>
+      <h1 className="mb-6 font-serif text-h3 text-navy-700">New Admin</h1>
       <AdminForm mode="create" roles={visibleRoles} permissions={permissions ?? []} />
     </div>
   );

@@ -13,7 +13,7 @@ export default async function NewTeamMemberPage() {
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-h3 text-navy-700">New team member</h1>
+      <h1 className="mb-6 font-serif text-h3 text-navy-700">New Team Member</h1>
       <TeamMemberForm mode="create" practiceAreas={practiceAreas ?? []} />
     </div>
   );
