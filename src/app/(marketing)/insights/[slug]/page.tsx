@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Tag } from "@/components/ui";
+import { ASSETS } from "@/config/assets";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { getInsightBySlug, getPublishedInsights, getRelatedInsights } from "@/lib/data/public";
@@ -127,6 +128,44 @@ export default async function InsightDetailPage({ params }: { params: Promise<{ 
                 {tag}
               </Tag>
             ))}
+          </div>
+        )}
+
+        {/* Phase 6 §7: related team member(s) and practice area, as small
+            related-content elements — no reference design doc available for
+            this yet (§9), so this follows the same compact card treatment
+            already used for the practice-area detail page's related-team
+            sidebar. Each piece is independent: an insight with an author but
+            no linked practice area (or vice versa) just shows the one it
+            has — "missing related practice area" means this whole block
+            simply doesn't render that part, not a placeholder. */}
+        {(insight.author || insight.practiceArea) && (
+          <div className="mt-10 flex flex-wrap gap-4 border-t border-gray-300 pt-6">
+            {insight.author && (
+              <Link
+                href={`/team/${insight.author.slug}`}
+                className="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3 pr-5 hover:shadow-sm"
+              >
+                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-navy-100">
+                  <Image src={insight.author.photo_url ?? ASSETS.teamAvatarPlaceholder} alt="" fill className="object-cover grayscale" sizes="40px" />
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-wide text-gray-500">Written by</p>
+                  <p className="text-small font-semibold text-navy-700">{insight.author.name}</p>
+                </div>
+              </Link>
+            )}
+            {insight.practiceArea && (
+              <Link
+                href={`/practice-areas/${insight.practiceArea.slug}`}
+                className="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3 pr-5 hover:shadow-sm"
+              >
+                <div>
+                  <p className="text-[11px] uppercase tracking-wide text-gray-500">Practice area</p>
+                  <p className="text-small font-semibold text-navy-700">{insight.practiceArea.title}</p>
+                </div>
+              </Link>
+            )}
           </div>
         )}
       </article>

@@ -1,46 +1,56 @@
 # Utkarsh Associates — Website & CMS
 
 Next.js 16 (App Router) + Supabase + Tailwind, per `utkarsh-associates-project-plan.md`
-(kept as the project's Claude Projects knowledge base — update it as decisions evolve).
+and `PHASE-6-PUBLIC-UX-AND-SIMPLIFICATION-PLAN.md` (both kept as the project's
+Claude Projects knowledge base — update them as decisions evolve).
 
-## Phase 1 status — Foundation
+## Status
 
-Done in this scaffold:
-- [x] Folder structure (`src/app`, `src/components`, `src/lib`, `src/config`, `supabase/`, `.github/`)
-- [x] `tailwind.config.ts` — every color/type/spacing/radius/shadow token mapped 1:1 from the design system
-- [x] `src/styles/tokens.css` — raw CSS variables for SVG/inline use (icons reference these directly)
-- [x] Fonts — Newsreader / Inter / IBM Plex Mono, self-hosted via `next/font`
-- [x] Shared UI component library first pass: `Button`, `Tag`, `Input` (default/error/success), `PracticeAreaCard`, `StatStrip`
-- [x] `src/config/assets.ts` — central placeholder-swap asset registry
-- [x] `src/config/permissions.ts` — permission key list (single source of truth, mirrored in `seed.sql`)
-- [x] `supabase/migrations/0001_init.sql` — full schema + RLS policies from plan §6
-- [x] `supabase/seed.sql` + `scripts/hash-password.js` — roles/permissions/bootstrap superAdmin
-- [x] `.github/workflows/supabase-keep-alive.yml` — twice-weekly ping, wired up now per §9
+Phases 1–5 built. Phase 6 (public UX pass, `content.json` migration, schema
+finalization, empty-state UI) is in progress — see
+`PHASE-6-PUBLIC-UX-AND-SIMPLIFICATION-PLAN.md` for scope and §13 for the
+work sequence.
 
-Still to do before Phase 1 is fully closed out (needs your actual accounts/network — I can't reach these from here):
-- [ ] `npm install` locally
-- [ ] Create the Supabase project, run `supabase/migrations/0001_init.sql`
-- [ ] Generate a real bootstrap password hash (`node scripts/hash-password.js "..."`) and paste it into `seed.sql` before running it
-- [ ] Add `SUPABASE_URL` / `SUPABASE_ANON_KEY` as GitHub repo Actions secrets so the keep-alive workflow can run
-- [ ] Push to GitHub, connect the repo to Vercel
-
-## Getting started
+## Getting started — fresh Supabase project (per Phase 6 §10's relaunch plan)
 
 ```bash
 npm install
 cp .env.example .env.local   # fill in Supabase + JWT_SECRET values
-npm run dev
 ```
+
+1. Create a new Supabase project.
+2. Run every migration in `supabase/migrations/` **in order** (`0001` through
+   the highest-numbered file) — there's no single combined schema file,
+   each one is additive on top of the last.
+3. Generate a real bootstrap password hash: `node scripts/hash-password.js "..."`,
+   paste it into `supabase/seed.sql` in place of the placeholder.
+4. Run `supabase/seed.sql` — this is the **only** seed file now (roles,
+   permissions, the bootstrap superAdmin). Phase 6 §10 deliberately launches
+   with empty CMS tables — every public listing has a defined empty state,
+   so there's nothing else to seed. (The earlier `seed_phase3.sql`/
+   `seed_phase4.sql` sample-content files were removed in Phase 6 §11's
+   schema migration, since they referenced the `offices` table and
+   `icon_key` column that migration drops/renames.)
+5. Copy the project's URL / anon key / service role key into `.env.local`.
+6. Fill in real values in `src/config/content.json` (Offices, hero copy,
+   disclaimer text, etc. — Phase 6 §1 moved this out of the database; see
+   that file's own `_comment` fields for what's placeholder vs. real).
+7. Add `SUPABASE_URL` / `SUPABASE_ANON_KEY` as GitHub repo Actions secrets
+   so the keep-alive workflow can run.
+8. `npm run dev`.
 
 ## Placeholder assets
 
-Logo and illustrations are placeholders for now (see plan §3 and §10 checklist).
-Nothing in the code changes when final SVGs arrive — they get dropped in at the
-same filename under `public/`, per `src/config/assets.ts`.
+Logo and illustrations are placeholders for now (see plan §3 and §10
+checklist). Nothing in the code changes when final SVGs arrive — they get
+dropped in at the same filename under `public/`, per `src/config/assets.ts`.
+Practice area icons are the one exception as of Phase 6 §7 — those are now
+a real per-practice-area upload in the admin, not a placeholder file swap.
 
 ## Design system reference
 
 The full token sheet with live rendered components lives in
 `utkarsh-associates-design-system.html` — treat it as the visual source of
 truth; `tailwind.config.ts` and `tokens.css` are generated from it, not the
-other way around.
+other way around. A few tokens (button padding, the `body-l` type size)
+were revised in Phase 6 §3 — that file's own copy was updated to match.

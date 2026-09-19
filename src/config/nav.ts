@@ -34,5 +34,4 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { label: "Team", href: "/admin/team", permission: "team.manage" },
   { label: "Inquiries", href: "/admin/inquiries", permission: "inquiries.view" },
   { label: "Admins", href: "/admin/admins", permission: "admins.manage", superOnlyByDefault: true },
-  { label: "Roles", href: "/admin/roles", permission: "roles.manage", superOnlyByDefault: true },
 ];

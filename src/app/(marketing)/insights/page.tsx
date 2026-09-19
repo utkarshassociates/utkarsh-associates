@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { InsightsFilter } from "@/components/marketing/InsightsFilter";
 import { Tag } from "@/components/ui";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { getInsightCategories, getPublishedInsights } from "@/lib/data/public";
 import { formatDateDDMMYYYY } from "@/lib/utils";
 
@@ -70,7 +71,10 @@ export default async function InsightsPage({
       </div>
 
       {insights.length === 0 ? (
-        <p className="text-body text-gray-700">No insights found.</p>
+        <EmptyState
+          title="No Insights Found"
+          description={category ? "No insights match this category yet." : "New articles are on the way — please check back soon."}
+        />
       ) : (
         <>
           <div className="grid gap-4 tablet:grid-cols-2 desktop:grid-cols-3">

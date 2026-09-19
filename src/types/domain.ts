@@ -156,7 +156,12 @@ export interface Insight {
 /** Insight row joined with the bits list/edit screens need for display. */
 export interface InsightWithRelations extends Insight {
   category: Pick<InsightCategory, "id" | "name" | "slug"> | null;
-  author: Pick<TeamMember, "id" | "name" | "slug"> | null;
+  author: (Pick<TeamMember, "id" | "name" | "slug"> & { photo_url?: string | null }) | null;
+  // Optional: only populated where the query actually joins practice_areas
+  // (src/lib/data/public.ts's INSIGHT_SELECT). The admin edit page's own
+  // narrower query doesn't need it — practice area selection there goes
+  // through a separate `practice_area_id` + dropdown, not this relation.
+  practiceArea?: Pick<PracticeArea, "id" | "title" | "slug"> | null;
 }
 
 // Office (formerly a DB entity here) was removed in Phase 6 §1 — offices

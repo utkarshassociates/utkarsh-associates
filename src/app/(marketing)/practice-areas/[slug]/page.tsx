@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { Tag } from "@/components/ui";
+import { ASSETS } from "@/config/assets";
 import { getInsightsForPracticeArea, getPracticeAreaBySlug, getPublishedPracticeAreas, getTeamMembersForPracticeArea } from "@/lib/data/public";
 import { getPracticeAreaIconSrc } from "@/lib/utils";
 import { breadcrumbJsonLd, richTextToPlainText } from "@/lib/seo";
@@ -85,10 +87,21 @@ export default async function PracticeAreaDetailPage({ params }: { params: Promi
                 <Link
                   key={member.id}
                   href={`/team/${member.slug}`}
-                  className="block rounded-lg border border-gray-300 bg-white p-4 hover:shadow-sm"
+                  className="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-4 hover:shadow-sm"
                 >
-                  <p className="font-serif text-h4 text-navy-700">{member.name}</p>
-                  {member.designation && <p className="mt-0.5 text-small text-gray-700">{member.designation}</p>}
+                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-navy-100">
+                    <Image
+                      src={member.photo_url ?? ASSETS.teamAvatarPlaceholder}
+                      alt=""
+                      fill
+                      className="object-cover grayscale"
+                      sizes="48px"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-serif text-h4 text-navy-700">{member.name}</p>
+                    {member.designation && <p className="mt-0.5 text-small text-gray-700">{member.designation}</p>}
+                  </div>
                 </Link>
               ))}
             </div>

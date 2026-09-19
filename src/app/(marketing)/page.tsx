@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Button, PracticeAreaCard, StatStrip } from "@/components/ui";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { ASSETS } from "@/config/assets";
 import { SITE_SETTINGS } from "@/config/content";
@@ -88,19 +89,23 @@ export default async function HomePage() {
       </section>
 
       {/* Practice area highlights */}
-      {practiceAreas.length > 0 && (
-        <section className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
-          <div className="mb-8 flex items-end justify-between gap-4">
-            <div>
-              <h2 className="font-serif text-h2 text-navy-700">Our Expertise</h2>
-              <p className="mt-2 max-w-[520px] text-body text-gray-700">
-                Full-service counsel across the practice areas that matter most to our clients.
-              </p>
-            </div>
+      <section className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <h2 className="font-serif text-h2 text-navy-700">Our Expertise</h2>
+            <p className="mt-2 max-w-[520px] text-body text-gray-700">
+              Full-service counsel across the practice areas that matter most to our clients.
+            </p>
+          </div>
+          {practiceAreas.length > 0 && (
             <Link href="/practice-areas" className="hidden shrink-0 text-small font-semibold text-navy-700 hover:text-gold-700 tablet:block">
               View all →
             </Link>
-          </div>
+          )}
+        </div>
+        {practiceAreas.length === 0 ? (
+          <EmptyState title="No Practice Areas Found" description="Practice area details are being added — please check back soon." />
+        ) : (
           <div className="grid gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
             {practiceAreas.map((pa) => (
               <PracticeAreaCard
@@ -112,8 +117,8 @@ export default async function HomePage() {
               />
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* Why clients stay */}
       <section className="bg-cream">
@@ -143,14 +148,18 @@ export default async function HomePage() {
       </section>
 
       {/* Latest insights */}
-      {latestInsights.length > 0 && (
-        <section className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
-          <div className="mb-8 flex items-end justify-between gap-4">
-            <h2 className="font-serif text-h2 text-navy-700">Latest Insights</h2>
+      <section className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <h2 className="font-serif text-h2 text-navy-700">Latest Insights</h2>
+          {latestInsights.length > 0 && (
             <Link href="/insights" className="hidden shrink-0 text-small font-semibold text-navy-700 hover:text-gold-700 tablet:block">
               View all →
             </Link>
-          </div>
+          )}
+        </div>
+        {latestInsights.length === 0 ? (
+          <EmptyState title="No Insights Found" description="New articles are on the way — please check back soon." />
+        ) : (
           <div className="grid gap-4 tablet:grid-cols-3">
             {latestInsights.map((insight) => (
               <Link
@@ -168,8 +177,8 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* CTA band */}
       <section className="bg-navy-900">

@@ -17,9 +17,11 @@ export interface ResolvedAdmin {
 /**
  * Resolves the logged-in admin's *current* permission set from the database.
  *
- * Deliberately NOT cached in the JWT: a superAdmin can
- * grant/revoke a role's permissions or an individual admin's extra
- * permissions at any time from /admin/roles or /admin/admins/[id]. If we put
+ * Deliberately NOT cached in the JWT: a superAdmin can grant/revoke an
+ * individual admin's extra permissions at any time from /admin/admins/[id]
+ * (Phase 6 §12 removed the custom role-permission-builder this comment used
+ * to also reference — roles are fixed now, but per-admin extra grants still
+ * work exactly as before). If we put
  * permissions in the token, a revoked admin would keep the old access until
  * their 8h session expired. Resolving fresh means a permission change takes
  * effect on the admin's very next request.

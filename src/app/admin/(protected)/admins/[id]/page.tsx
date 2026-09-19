@@ -4,6 +4,7 @@ import { requirePermission } from "@/lib/auth/session";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { AdminForm } from "@/components/admin/AdminForm";
 import { ResetPasswordForm } from "@/components/admin/ResetPasswordForm";
+import { FIXED_ADMIN_ROLE_SLUGS } from "@/config/roles";
 
 export const metadata: Metadata = { title: "Edit Admin" };
 
@@ -49,7 +50,18 @@ export default async function EditAdminPage({ params }: EditAdminPageProps) {
     );
   }
 
-  const visibleRoles = actor.isSuper ? (roles ?? []) : (roles ?? []).filter((r) => !r.is_super);
+  // Phase 6 §12: fixed to Admin/Author for the normal case — but if the
+  // account being edited is already a superAdmin (only reachable here when
+  // actor.isSuper, since the guard above sends everyone else to the
+  // read-only notice), the dropdown must still include Super Admin so it
+  // shows their real current role instead of silently defaulting to
+  // whichever fixed option comes first — that would look like "save" quietly
+  // demotes them. This is not a new way to *grant* superAdmin to someone
+  // who doesn't already have it; it only preserves an accurate view of an
+  // existing one.
+  const visibleRoles = targetIsSuper
+    ? (roles ?? [])
+    : (roles ?? []).filter((r) => (FIXED_ADMIN_ROLE_SLUGS as readonly string[]).includes(r.slug));
 
   return (
     <div>

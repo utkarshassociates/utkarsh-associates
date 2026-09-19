@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PracticeAreaCard } from "@/components/ui";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { getPublishedPracticeAreas } from "@/lib/data/public";
 import { getPracticeAreaIconSrc } from "@/lib/utils";
 
@@ -25,7 +26,9 @@ export default async function PracticeAreasPage() {
       </p>
 
       {practiceAreas.length === 0 ? (
-        <p className="mt-12 text-body text-gray-700">Practice area details are being updated — please check back soon.</p>
+        <div className="mt-12">
+          <EmptyState title="No Practice Areas Found" description="Practice area details are being added — please check back soon." />
+        </div>
       ) : (
         <div className="mt-12 grid gap-4 tablet:grid-cols-2 desktop:grid-cols-3">
           {practiceAreas.map((pa) => (

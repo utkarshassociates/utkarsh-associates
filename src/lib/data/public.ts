@@ -164,8 +164,13 @@ export async function getInsightCategories(): Promise<InsightCategory[]> {
 
 // ============ Insights ============
 
+// Phase 6 §7: added the practice_area join (for the detail page's
+// "related content" element) and author.photo_url (so that element can show
+// a small author photo, matching the practice-area detail page's related-
+// team treatment). Supabase aliases the FK relation as `practiceArea` here
+// since the DB column is `practice_area_id`, not `practice_area`.
 const INSIGHT_SELECT =
-  "*, category:insight_categories(id, name, slug), author:team_members(id, name, slug)";
+  "*, category:insight_categories(id, name, slug), author:team_members(id, name, slug, photo_url), practiceArea:practice_areas(id, title, slug)";
 
 export interface PaginatedInsights {
   insights: InsightWithRelations[];

@@ -7,7 +7,7 @@ import { Sidebar } from "@/components/admin/Sidebar";
 // requireAdmin() ran for /admin/login too, an unauthenticated visit would
 // redirect to /admin/login, re-run this same layout, redirect again —
 // an infinite loop. Route groups don't affect the URL (this layout still
-// covers /admin, /admin/admins, /admin/roles, /admin/settings, etc.).
+// covers /admin, /admin/admins, /admin/insights, etc.).
 //
 // middleware.ts already bounced unauthenticated requests before this layout
 // runs; requireAdmin() here is the second, DB-backed layer — it also catches
