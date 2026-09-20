@@ -31,6 +31,7 @@ export interface OfficeContent {
 }
 
 export interface SiteSettingsContent {
+  firmTagline: string;
   homeHeroHeading: string;
   homeHeroSubheading: string;
   aboutIntroParagraph: string;
