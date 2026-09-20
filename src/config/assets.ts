@@ -4,8 +4,8 @@
 export const ASSETS = {
   logo: "/brand/logo.svg",
   favicon: "/brand/favicon.svg",
-  heroIllustration: "/illustrations/hero-courtroom.svg",
-  aboutIllustration: "/illustrations/about-approach.svg",
+  heroIllustration: "/illustrations/hero-courtroom.png",
+  aboutIllustration: "/illustrations/about-approach.png",
   teamAvatarPlaceholder: "/illustrations/team-avatar-placeholder.svg",
   // Phase 6 §7: practice areas now carry their own uploaded `icon_url`
   // (same sharp/Storage pipeline as team photos) instead of picking from a
