@@ -1,13 +1,11 @@
 -- Seeds: roles, permissions, role_permissions, and the bootstrap superAdmin.
--- Run once against a fresh database, after every file in supabase/migrations/
--- has been run in order (0001 through the highest-numbered file — see
--- README.md's "Getting started" for the full sequence).
+-- Run once against a fresh database, after supabase/schema.sql has been run.
 --
 -- This is the only seed file (Phase 6 §10/§13 step 7 — no sample content;
 -- every public listing has a defined empty state instead). The earlier
--- seed_phase3.sql/seed_phase4.sql sample-data files were removed when
--- migration 0006 dropped the `offices` table and renamed `icon_key`, which
--- both files referenced.
+-- seed_phase3.sql/seed_phase4.sql sample-data files were removed since they
+-- referenced the `offices` table and `icon_key` column, both gone from the
+-- schema now.
 --
 -- IMPORTANT: replace the password_hash placeholder below before running this
 -- against anything but a local/dev database. Generate a real bcrypt hash with:
