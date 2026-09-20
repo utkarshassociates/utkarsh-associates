@@ -25,7 +25,7 @@
     ]
   },
   "siteSettings": {
-    "_comment": "Used in: (marketing)/page.tsx (hero), about/page.tsx, offices/page.tsx (reach-us block, replaces the old standalone contact/page.tsx), Footer.tsx, DisclaimerGate.tsx, Navbar.tsx (utility bar tagline). Values below are carried over unchanged from the old src/config/site.ts SITE_DEFAULTS — since supabase/seed.sql never seeded any site_settings rows (confirmed in PHASE-2-NOTES.md), these defaults were already the only copy the live site has ever actually shown. Moving them here is a like-for-like migration, not a content change.",
+    "_comment": "Used in: (marketing)/page.tsx (hero), about/page.tsx, offices/page.tsx (reach-us block, replaces the old standalone contact/page.tsx), Footer.tsx, DisclaimerGate.tsx, Navbar.tsx (utility bar tagline + LinkedIn icon — socialLinkedinUrl below is a PLACEHOLDER link, replace with the firm's real LinkedIn company page URL before launch). Values below are carried over unchanged from the old src/config/site.ts SITE_DEFAULTS — since supabase/seed.sql never seeded any site_settings rows (confirmed in PHASE-2-NOTES.md), these defaults were already the only copy the live site has ever actually shown. Moving them here is a like-for-like migration, not a content change.",
     "firmTagline": "Full-Service Law Firm",
     "homeHeroHeading": "Trusted counsel, clearly delivered.",
     "homeHeroSubheading": "Utkarsh Associates is a disputes-led law firm advising companies, institutions, associations and individuals on complex commercial, regulatory and public law matters.",
@@ -33,7 +33,7 @@
     "contactIntro": "Tell us about your matter and a member of our team will get back to you shortly.",
     "firmPhone": "",
     "firmEmail": "",
-    "socialLinkedinUrl": "",
+    "socialLinkedinUrl": "https://www.linkedin.com/company/utkarsh-associates/",
     "disclaimerText": "[PLACEHOLDER DISCLAIMER TEXT — pending final copy from legal counsel] I acknowledge that I am seeking information relating to Utkarsh Associates of my own accord and that there has been no form of solicitation, advertisement, or inducement by the firm or its members. The information on this website is provided for general informational purposes only and does not constitute legal advice."
   }
 }
