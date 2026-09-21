@@ -1,6 +1,6 @@
 {
   "offices": {
-    "_comment": "Used in: (marketing)/offices/page.tsx, Footer.tsx, sitemap-adjacent LocalBusiness JSON-LD via src/lib/seo.ts's localBusinessJsonLd(). Edit this array directly to add/remove/update an office — order in the array is display order, there's no separate order_index anymore. PLACEHOLDER DATA below (carried over from the old supabase/seed_phase3.sql sample rows) — replace with real firm addresses/phones/emails before launch, same as the other pre-launch placeholder swaps tracked in the original plan's §10 checklist.",
+    "_comment": "Used in: (marketing)/offices/page.tsx, Footer.tsx, sitemap-adjacent LocalBusiness JSON-LD via src/lib/seo.ts's localBusinessJsonLd(). Edit this array directly to add/remove/update an office — order in the array is display order, there's no separate order_index anymore. PLACEHOLDER DATA below (carried over from the old supabase/seed_phase3.sql sample rows) — replace with real firm addresses/phones/emails before launch, same as the other pre-launch placeholder swaps tracked in the original plan's §10 checklist. mapEmbedUrl values are real, working Google Maps embeds (no API key needed, using the ?q=...&output=embed pattern) but only centered on the general area name (Connaught Place / Nariman Point) — swap for a precise pinned embed of the actual office address once that's finalized (Google Maps → Share → Embed a map, for the real address, gives the exact iframe src to paste in here).",
     "locations": [
       {
         "id": "delhi-hq",
@@ -10,7 +10,7 @@
         "phone": "+91-11-0000-0000",
         "email": "delhi@utkarsh-associates.example",
         "isHeadquarters": true,
-        "mapEmbedUrl": null
+        "mapEmbedUrl": "https://www.google.com/maps?q=Connaught+Place,+New+Delhi&output=embed"
       },
       {
         "id": "mumbai",
@@ -20,7 +20,7 @@
         "phone": "+91-22-0000-0000",
         "email": "mumbai@utkarsh-associates.example",
         "isHeadquarters": false,
-        "mapEmbedUrl": null
+        "mapEmbedUrl": "https://www.google.com/maps?q=Nariman+Point,+Mumbai&output=embed"
       }
     ]
   },

@@ -49,39 +49,53 @@ export default async function OfficesPage() {
         </div>
       )}
 
-      {/* Offices — "left and right" per Phase 6 §8: a 2-col grid at tablet+
-          puts the first two offices side by side; additional offices wrap
-          onto further rows in the same pattern. */}
+      {/* Stacked rows — one office per row, map shown beside its details
+          rather than a small embed stacked below inside a narrow card
+          (the previous 2-col grid). Row on tablet+, stacks to
+          info-above-map on mobile where there's no room for both side by
+          side. */}
       {OFFICES.length === 0 ? (
         <p className="mt-12 text-body text-gray-700">Office details are being updated — please check back soon.</p>
       ) : (
-        <div className="mt-12 grid gap-6 tablet:grid-cols-2">
+        <div className="mt-12 flex flex-col gap-6">
           {OFFICES.map((office) => (
-            <div key={office.id} className="rounded-lg border border-gray-300 bg-white p-6">
-              <div className="mb-3 flex items-start justify-between gap-2">
-                <h3 className="font-serif text-h4 text-navy-700">{office.name}</h3>
-                {office.isHeadquarters && <Tag variant="gold">Headquarters</Tag>}
-              </div>
-              {office.address && <p className="whitespace-pre-line text-small text-gray-700">{office.address}</p>}
-              {office.city && <p className="mt-1 text-small text-gray-500">{office.city}</p>}
-              <div className="mt-4 flex flex-col gap-1">
-                {office.phone && (
-                  <a href={`tel:${office.phone.replace(/\s+/g, "")}`} className="text-small font-semibold text-navy-700 hover:text-gold-700">
-                    {office.phone}
-                  </a>
-                )}
-                {office.email && (
-                  <a href={`mailto:${office.email}`} className="text-small font-semibold text-navy-700 hover:text-gold-700">
-                    {office.email}
-                  </a>
-                )}
+            <div
+              key={office.id}
+              className="flex flex-col overflow-hidden rounded-lg border border-gray-300 bg-white tablet:flex-row"
+            >
+              <div className="flex-1 p-6">
+                <div className="mb-3 flex items-start justify-between gap-2">
+                  <h3 className="font-serif text-h4 text-navy-700">{office.name}</h3>
+                  {office.isHeadquarters && <Tag variant="gold">Headquarters</Tag>}
+                </div>
+                {office.address && <p className="whitespace-pre-line text-small text-gray-700">{office.address}</p>}
+                {office.city && <p className="mt-1 text-small text-gray-500">{office.city}</p>}
+                <div className="mt-4 flex flex-col gap-1">
+                  {office.phone && (
+                    <a
+                      href={`tel:${office.phone.replace(/\s+/g, "")}`}
+                      className="text-small font-semibold text-navy-700 hover:text-gold-700"
+                    >
+                      {office.phone}
+                    </a>
+                  )}
+                  {office.email && (
+                    <a
+                      href={`mailto:${office.email}`}
+                      className="text-small font-semibold text-navy-700 hover:text-gold-700"
+                    >
+                      {office.email}
+                    </a>
+                  )}
+                </div>
               </div>
               {office.mapEmbedUrl && (
-                <div className="mt-4 overflow-hidden rounded-md border border-gray-300">
+                <div className="h-56 w-full border-t border-gray-300 tablet:h-auto tablet:w-[420px] tablet:shrink-0 tablet:border-l tablet:border-t-0">
                   <iframe
                     src={office.mapEmbedUrl}
                     title={`Map — ${office.name}`}
-                    className="h-[180px] w-full"
+                    className="h-full w-full"
+                    style={{ border: 0 }}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                   />
