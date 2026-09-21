@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { TeamFilter } from "@/components/marketing/TeamFilter";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ASSETS } from "@/config/assets";
-import {
-  getPracticeAreaBySlug,
-  getPublishedPracticeAreas,
-  getPublishedTeamMembers,
-  getTeamMembersForPracticeArea,
-} from "@/lib/data/public";
+import { getPracticeAreaBySlug, getPublishedTeamMembers, getTeamMembersForPracticeArea } from "@/lib/data/public";
 import type { TeamMember, TeamTier } from "@/types/domain";
 
 // No `export const revalidate` here — this page reads `searchParams`
@@ -74,8 +67,6 @@ export default async function TeamPage({
 }) {
   const { practice_area: practiceAreaSlug } = await searchParams;
 
-  const practiceAreas = await getPublishedPracticeAreas();
-
   let teamMembers: TeamMember[];
   if (practiceAreaSlug) {
     const practiceArea = await getPracticeAreaBySlug(practiceAreaSlug);
@@ -90,12 +81,6 @@ export default async function TeamPage({
       <p className="mt-4 max-w-[560px] text-body-l text-gray-700">
         Meet the advocates and solicitors who advise our clients.
       </p>
-
-      <div className="mt-10">
-        <Suspense fallback={<div className="mb-8 h-[70px] max-w-[280px]" />}>
-          <TeamFilter practiceAreas={practiceAreas} />
-        </Suspense>
-      </div>
 
       {teamMembers.length === 0 ? (
         <EmptyState
