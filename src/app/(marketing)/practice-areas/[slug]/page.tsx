@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RichTextRenderer } from "@/components/shared/RichTextRenderer";
 import { JsonLd } from "@/components/shared/JsonLd";
+import { TeamGrid } from "@/components/marketing/TeamGrid";
 import { Tag } from "@/components/ui";
-import { ASSETS } from "@/config/assets";
 import { getInsightsForPracticeArea, getPracticeAreaBySlug, getPublishedPracticeAreas, getTeamMembersForPracticeArea } from "@/lib/data/public";
 import { getPracticeAreaIconSrc } from "@/lib/utils";
 import { breadcrumbJsonLd, richTextToPlainText } from "@/lib/seo";
@@ -93,40 +92,21 @@ export default async function PracticeAreaDetailPage({ params }: { params: Promi
         </div>
       </div>
 
-      <div className="mt-12 grid gap-12 desktop:grid-cols-[1fr_320px]">
-        <div className="max-w-[720px]">
-          <RichTextRenderer content={practiceArea.content} />
-        </div>
-
-        {relatedTeam.length > 0 && (
-          <aside>
-            <h2 className="mb-4 font-mono text-[11px] uppercase tracking-wide text-gray-500">Team</h2>
-            <div className="flex flex-col gap-4">
-              {relatedTeam.map((member) => (
-                <Link
-                  key={member.id}
-                  href={`/team/${member.slug}`}
-                  className="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-4 hover:shadow-sm"
-                >
-                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-navy-100">
-                    <Image
-                      src={member.photo_url ?? ASSETS.teamAvatarPlaceholder}
-                      alt=""
-                      fill
-                      className="object-cover grayscale"
-                      sizes="48px"
-                    />
-                  </div>
-                  <div>
-                    <p className="font-serif text-h4 text-navy-700">{member.name}</p>
-                    {member.designation && <p className="mt-0.5 text-small text-gray-700">{member.designation}</p>}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </aside>
-        )}
+      {/* Content is now full-width — the sidebar "Team" list (small avatar +
+          name/designation rows, off to the right of the body copy) is
+          replaced by a proper section below the content, using the exact
+          same TeamGrid card the /team page itself uses, for real
+          consistency rather than a visually-similar-but-separate layout. */}
+      <div className="mt-12 max-w-[720px]">
+        <RichTextRenderer content={practiceArea.content} />
       </div>
+
+      {relatedTeam.length > 0 && (
+        <div className="mt-16 border-t border-gray-300 pt-12">
+          <h2 className="mb-6 font-serif text-h3 text-navy-700">Team</h2>
+          <TeamGrid members={relatedTeam} />
+        </div>
+      )}
 
       {relatedInsights.length > 0 && (
         <div className="mt-16 border-t border-gray-300 pt-12">

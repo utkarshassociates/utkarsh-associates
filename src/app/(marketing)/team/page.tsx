@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { ASSETS } from "@/config/assets";
+import { TeamGrid } from "@/components/marketing/TeamGrid";
 import { getPracticeAreaBySlug, getPublishedTeamMembers, getTeamMembersForPracticeArea } from "@/lib/data/public";
 import type { TeamMember, TeamTier } from "@/types/domain";
 
@@ -28,37 +26,6 @@ const TIER_SECTIONS: { tier: TeamTier; label: string }[] = [
   { tier: "counsel", label: "Counsel" },
   { tier: "team", label: "Team" },
 ];
-
-function TeamGrid({ members }: { members: TeamMember[] }) {
-  return (
-    <div className="grid grid-cols-2 gap-6 tablet:grid-cols-3 desktop:grid-cols-4">
-      {members.map((member) => (
-        <Link
-          key={member.id}
-          href={`/team/${member.slug}`}
-          className="block overflow-hidden rounded-lg border border-gray-300 bg-white transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md"
-        >
-          <div className="relative aspect-[4/3] w-full bg-navy-100">
-            {/* Phase 6 §6: CSS-only grayscale, not baked into the stored
-                file — trivially reversible (drop the `grayscale` class)
-                if the client wants color later. */}
-            <Image
-              src={member.photo_url ?? ASSETS.teamAvatarPlaceholder}
-              alt={member.name}
-              fill
-              className="object-cover grayscale"
-              sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-            />
-          </div>
-          <div className="p-5">
-            <h3 className="font-serif text-h4 text-navy-700">{member.name}</h3>
-            {member.designation && <p className="mt-1 text-small text-gray-700">{member.designation}</p>}
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-}
 
 export default async function TeamPage({
   searchParams,
