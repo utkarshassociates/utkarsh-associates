@@ -64,13 +64,32 @@ export default async function PracticeAreaDetailPage({ params }: { params: Promi
         ← All Practice Areas
       </Link>
 
-      <div className="mt-6 flex items-start gap-4">
-        <img src={getPracticeAreaIconSrc(practiceArea.icon_url)} alt="" width={40} height={40} className="mt-2 h-10 w-10 shrink-0" />
-        <div>
+      {/* Side-by-side, not stacked: the previous vertical layouts (image
+          above the heading, with or without overlap) all shared the same
+          root problem — as long as the image sits above the heading in
+          document flow, the heading necessarily starts "after" it, and any
+          overlap amount aggressive enough to look intentional risked
+          clipping into a two-line title. A side-by-side layout removes the
+          problem structurally instead of tuning around it: the heading
+          starts immediately at the top, at a fixed position, regardless of
+          the image's height or the title's line count. Image is `scale-150`
+          for the same reason as the cards — the source artwork has a lot of
+          transparent padding baked in, and a plain object-fit alone can't
+          compensate for that. Stacks to image-below-text on mobile/tablet,
+          where there isn't room for two columns. */}
+      <div className="mt-8 flex flex-col gap-8 desktop:flex-row desktop:items-center desktop:gap-12">
+        <div className="max-w-[640px] desktop:flex-1">
           <h1 className="font-serif text-h1 text-navy-700">{practiceArea.title}</h1>
           {practiceArea.short_description && (
-            <p className="mt-3 max-w-[640px] text-body-l text-gray-700">{practiceArea.short_description}</p>
+            <p className="mt-3 text-body-l text-gray-700">{practiceArea.short_description}</p>
           )}
+        </div>
+        <div className="relative h-56 w-full overflow-hidden rounded-lg desktop:h-72 desktop:w-[360px] desktop:shrink-0">
+          <img
+            src={getPracticeAreaIconSrc(practiceArea.icon_url)}
+            alt=""
+            className="absolute inset-0 h-full w-full scale-150 object-contain object-center"
+          />
         </div>
       </div>
 

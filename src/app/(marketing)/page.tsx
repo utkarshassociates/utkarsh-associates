@@ -113,7 +113,13 @@ export default async function HomePage() {
                 title={pa.title}
                 description={pa.short_description ?? ""}
                 href={`/practice-areas/${pa.slug}`}
-                icon={<img src={getPracticeAreaIconSrc(pa.icon_url)} alt="" width={40} height={40} />}
+                icon={
+                  <img
+                    src={getPracticeAreaIconSrc(pa.icon_url)}
+                    alt=""
+                    className="absolute inset-0 h-full w-full scale-150 object-cover object-top"
+                  />
+                }
               />
             ))}
           </div>

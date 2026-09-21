@@ -54,8 +54,7 @@ export default async function PracticeAreasPage() {
                 <img
                   src={getPracticeAreaIconSrc(pa.icon_url)}
                   alt=""
-                  width={40}
-                  height={40}
+                  className="absolute inset-0 h-full w-full scale-150 object-cover object-top"
                 />
               }
             />
