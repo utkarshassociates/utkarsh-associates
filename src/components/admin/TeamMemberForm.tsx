@@ -125,7 +125,7 @@ export function TeamMemberForm({ mode, initialValues, practiceAreas }: TeamMembe
         <Controller
           control={control}
           name="bio"
-          render={({ field }) => <RichTextEditor value={field.value} onChange={field.onChange} uploadContext="insights/content" />}
+          render={({ field }) => <RichTextEditor value={field.value} onChange={field.onChange} />}
         />
       </div>
 

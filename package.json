@@ -23,7 +23,6 @@
     "@tiptap/react": "^3.31.0",
     "@tiptap/starter-kit": "^3.31.0",
     "@tiptap/extension-link": "^3.31.0",
-    "@tiptap/extension-image": "^3.31.0",
     "@tiptap/extension-text-align": "^3.31.0",
     "@tiptap/extension-underline": "^3.31.0",
     "sharp": "^0.35.4",

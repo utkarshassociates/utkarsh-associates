@@ -6,17 +6,36 @@ import { Fragment, type ReactNode } from "react";
  * `content`/`bio` jsonb columns (types/domain.ts types these as `unknown` —
  * intentionally, per that file's comment, since we don't validate Tiptap's
  * internal shape). This renders exactly the node/mark set the admin's
- * RichTextEditor.tsx toolbar can actually produce (its 14-tool toolbar) —
- * no more, since nothing else can ever be saved from that editor:
+ * RichTextEditor.tsx toolbar can actually produce — no more, since nothing
+ * else can ever be saved from that editor:
  *
- *   Nodes: doc, paragraph, heading (levels 2/3 only), blockquote,
- *          bulletList/orderedList/listItem, horizontalRule, image, hardBreak
+ *   Nodes: doc, paragraph, heading (levels 2–6), blockquote,
+ *          bulletList/orderedList/listItem, horizontalRule, hardBreak
  *   Marks: bold, italic, underline, strike, link
+ *
+ * `image` is also still handled below, even though the editor's toolbar no
+ * longer offers a way to insert one — purely for backward compatibility
+ * with any already-published content that has one from before that was
+ * removed. New content can't produce this node anymore.
  *
  * Deliberately NOT a generic Tiptap-to-React library — a small hand-rolled
  * renderer matching exactly what the editor allows people to create, same
  * spirit as the editor itself being a curated subset rather than the full
  * extension library.
+ *
+ * The per-tag classes below are intentionally the same values as
+ * RichTextEditor.tsx's own `[&_h2]:...` etc. wrapper classes, so the editor
+ * preview matches what actually publishes. They're hand-kept-in-sync
+ * between the two files rather than pulled from one shared source — a true
+ * single source would mean either (a) Tailwind-unsafe runtime string
+ * concatenation (its class scanner needs literal, static class strings, not
+ * ones built via .map()/template-interpolation, so a naive "shared
+ * constants" file wouldn't actually generate the right CSS), or (b)
+ * overriding Tiptap's node `renderHTML` per heading level to inject a
+ * shared class programmatically — a real option, just more surface area
+ * than this pass's explicit low-risk scope. Flagged here rather than
+ * silently deferred: if these two files drift out of sync later, the
+ * proper fix is (b), not more manual re-syncing.
  */
 
 interface TiptapNode {
@@ -68,6 +87,16 @@ function renderInline(nodes: TiptapNode[] | undefined): ReactNode {
   });
 }
 
+// One place mapping a heading level to its tag + class, used below — keeps
+// the level→tag mapping in one spot rather than repeated per-level branches.
+const HEADING_STYLES: Record<number, string> = {
+  2: "mb-4 mt-10 font-serif text-h2 text-navy-700",
+  3: "mb-3 mt-8 font-serif text-h3 text-navy-700",
+  4: "mb-3 mt-6 font-serif text-h4 text-navy-700",
+  5: "mb-2 mt-6 font-serif text-body-l font-semibold text-navy-700",
+  6: "mb-2 mt-5 font-sans text-small font-bold uppercase tracking-wide text-gray-700",
+};
+
 function renderBlock(node: TiptapNode, key: number): ReactNode {
   switch (node.type) {
     case "paragraph":
@@ -78,18 +107,12 @@ function renderBlock(node: TiptapNode, key: number): ReactNode {
       );
     case "heading": {
       const level = typeof node.attrs?.level === "number" ? node.attrs.level : 2;
-      const className =
-        level === 3
-          ? "mb-3 mt-8 font-serif text-h3 text-navy-700"
-          : "mb-4 mt-10 font-serif text-h2 text-navy-700";
-      return level === 3 ? (
-        <h3 key={key} className={className}>
+      const className = HEADING_STYLES[level] ?? HEADING_STYLES[2];
+      const Tag = `h${level}` as "h2" | "h3" | "h4" | "h5" | "h6";
+      return (
+        <Tag key={key} className={className}>
           {renderInline(node.content)}
-        </h3>
-      ) : (
-        <h2 key={key} className={className}>
-          {renderInline(node.content)}
-        </h2>
+        </Tag>
       );
     }
     case "blockquote":

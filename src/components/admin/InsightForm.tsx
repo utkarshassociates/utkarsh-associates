@@ -264,7 +264,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
           <Controller
             control={control}
             name="content"
-            render={({ field }) => <RichTextEditor value={field.value} onChange={field.onChange} uploadContext="insights/content" />}
+            render={({ field }) => <RichTextEditor value={field.value} onChange={field.onChange} />}
           />
         </div>
       ) : (

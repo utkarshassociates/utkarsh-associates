@@ -108,7 +108,7 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
           control={control}
           name="content"
           render={({ field }) => (
-            <RichTextEditor value={field.value} onChange={field.onChange} uploadContext="insights/content" />
+            <RichTextEditor value={field.value} onChange={field.onChange} />
           )}
         />
       </div>
