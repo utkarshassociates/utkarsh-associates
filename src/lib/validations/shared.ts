@@ -15,10 +15,12 @@ export const slugSchema = z
 
 export const contentStatusSchema = z.enum(["draft", "published"]);
 
-// Tiptap's editor.getJSON() output — we don't validate its internal shape
-// (that's Tiptap's job), just that something was produced. `null`/empty is
-// allowed: a brand-new draft, or an external_link insight which has
-// no inline content at all.
+// Content is a plain HTML string (CKEditor 5's editor.getData() output,
+// since the switch away from Tiptap) — we don't validate its internal
+// structure here (DOMPurify sanitizes it at render time in
+// RichTextRenderer.tsx instead), just that something was produced.
+// `null`/empty is allowed: a brand-new draft, or an external_link insight
+// which has no inline content at all.
 export const richTextSchema = z.unknown().nullable().optional();
 
 // Loosely validated — could be a full URL or a relative path like

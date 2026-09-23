@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { JSONContent } from "@tiptap/react";
 import { createPracticeAreaSchema } from "@/lib/validations/practice-area";
 import { createPracticeAreaAction, updatePracticeAreaAction } from "@/actions/practice-areas";
 import { Button, Input, Select } from "@/components/ui";
@@ -22,7 +21,7 @@ type FormValues = {
   title: string;
   slug: string;
   shortDescription: string;
-  content: JSONContent | null;
+  content: string | null;
   iconUrl: string;
   status: "draft" | "published";
   seoTitle: string;
@@ -48,7 +47,7 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
       title: initialValues?.title ?? "",
       slug: initialValues?.slug ?? "",
       shortDescription: initialValues?.short_description ?? "",
-      content: (initialValues?.content as JSONContent | null) ?? null,
+      content: (initialValues?.content as string | null) ?? null,
       iconUrl: initialValues?.icon_url ?? "",
       status: initialValues?.status ?? "draft",
       seoTitle: initialValues?.seo_title ?? "",

@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { JSONContent } from "@tiptap/react";
 import { insightFormSchema } from "@/lib/validations/insight";
 import { createInsightAction, updateInsightAction, createCategoryAction } from "@/actions/insights";
 import { Button, Input, Select } from "@/components/ui";
@@ -30,7 +29,7 @@ type FormValues = {
   authorId: string;
   practiceAreaId: string;
   postType: "original" | "external_link";
-  content: JSONContent | null;
+  content: string | null;
   externalUrl: string;
   sourceName: string;
   tagsInput: string; // comma-separated in the UI, split into tags[] on submit
@@ -66,7 +65,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
       authorId: initialValues?.author_id ?? "",
       practiceAreaId: initialValues?.practice_area_id ?? "",
       postType: initialValues?.post_type ?? "original",
-      content: (initialValues?.content as JSONContent | null) ?? null,
+      content: (initialValues?.content as string | null) ?? null,
       externalUrl: initialValues?.external_url ?? "",
       sourceName: initialValues?.source_name ?? "",
       tagsInput: (initialValues?.tags ?? []).join(", "),

@@ -84,7 +84,7 @@ export interface PracticeArea {
   slug: string;
   title: string;
   short_description: string | null;
-  content: unknown; // richtext jsonb (Tiptap JSON)
+  content: unknown; // richtext jsonb (HTML string — CKEditor 5's editor.getData() output)
   icon_url: string | null; // Phase 6 §7: uploaded via the same sharp/Storage pipeline as team photos; null renders ASSETS.practiceAreaIconFallback. Was icon_key (a fixed picker key) before Phase 6.
   order_index: number;
   status: ContentStatus;
@@ -106,7 +106,7 @@ export interface TeamMember {
   name: string;
   designation: string | null;
   photo_url: string | null;
-  bio: unknown; // richtext jsonb
+  bio: unknown; // richtext jsonb (HTML string — CKEditor 5's editor.getData() output)
   email: string | null;
   phone: string | null;
   linkedin_url: string | null;
@@ -134,7 +134,7 @@ export interface Insight {
   slug: string;
   title: string;
   excerpt: string | null;
-  content: unknown; // richtext jsonb, nullable for external_link posts
+  content: unknown; // richtext jsonb (HTML string), nullable for external_link posts
   cover_image_url: string | null;
   category_id: string | null;
   author_id: string | null;

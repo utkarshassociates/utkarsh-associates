@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { JSONContent } from "@tiptap/react";
 import { createTeamMemberSchema } from "@/lib/validations/team";
 import { createTeamMemberAction, updateTeamMemberAction } from "@/actions/team";
 import { Button, Input, Select } from "@/components/ui";
@@ -24,7 +23,7 @@ type FormValues = {
   slug: string;
   designation: string;
   photoUrl: string;
-  bio: JSONContent | null;
+  bio: string | null;
   email: string;
   phone: string;
   linkedinUrl: string;
@@ -55,7 +54,7 @@ export function TeamMemberForm({ mode, initialValues, practiceAreas }: TeamMembe
       slug: initialValues?.slug ?? "",
       designation: initialValues?.designation ?? "",
       photoUrl: initialValues?.photo_url ?? "",
-      bio: (initialValues?.bio as JSONContent | null) ?? null,
+      bio: (initialValues?.bio as string | null) ?? null,
       email: initialValues?.email ?? "",
       phone: initialValues?.phone ?? "",
       linkedinUrl: initialValues?.linkedin_url ?? "",

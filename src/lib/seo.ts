@@ -21,44 +21,34 @@ export function absoluteUrl(path: string): string {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-// ============ Plain-text extraction from Tiptap JSON ============
+// ============ Plain-text extraction from stored rich-text HTML ============
 // For meta-description / JSON-LD fallbacks ONLY when an entity has no
 // seo_description/excerpt of its own — never rendered to users
-// (RichTextRenderer.tsx, Phase 4, is the real content renderer). Mirrors
-// that component's node-shape assumptions (only the node/mark set its
-// 14-tool toolbar can actually produce) rather than being a generic Tiptap
-// walker.
-
-interface TiptapNodeLike {
-  type?: string;
-  text?: string;
-  content?: TiptapNodeLike[];
-}
-
-function collectText(node: TiptapNodeLike | null | undefined, out: string[]): void {
-  if (!node) return;
-  if (node.type === "text" && node.text) out.push(node.text);
-  if (node.content) {
-    for (const child of node.content) collectText(child, out);
-    // Insert a separator at block boundaries (paragraph/heading/listItem/etc.)
-    // so words from adjacent blocks don't run together.
-    if (node.type && node.type !== "text") out.push(" ");
-  }
-}
+// (RichTextRenderer.tsx is the real content renderer). Content is now a
+// plain HTML string (CKEditor 5's `editor.getData()` output, since the
+// switch away from Tiptap — see RichTextEditor.tsx for the full backstory)
+// rather than a Tiptap JSON document tree, so this strips tags instead of
+// walking a node tree.
 
 /**
- * Best-effort plain-text extraction from a Tiptap JSON doc (as stored in
+ * Best-effort plain-text extraction from stored rich-text HTML (as stored in
  * `content`/`bio` jsonb columns), truncated to `maxLen` on a word boundary.
  * Used as a last-resort fallback for meta descriptions and JSON-LD
  * `description`/`articleBody`-style fields when no `seo_description` or
  * `excerpt` has been set. Never used for on-page rendering.
  */
 export function richTextToPlainText(content: unknown, maxLen = 160): string {
-  const doc = content as TiptapNodeLike | null;
-  if (!doc) return "";
-  const parts: string[] = [];
-  collectText(doc, parts);
-  const text = parts.join("").replace(/\s+/g, " ").trim();
+  if (typeof content !== "string" || content.trim() === "") return "";
+  const text = content
+    .replace(/<[^>]+>/g, " ") // strip tags
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
   if (text.length <= maxLen) return text;
   const cut = text.slice(0, maxLen);
   const lastSpace = cut.lastIndexOf(" ");
