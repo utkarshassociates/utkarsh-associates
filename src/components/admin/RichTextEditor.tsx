@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { richTextToHtml } from "@/lib/legacyTiptapToHtml";
 
 interface RichTextEditorProps {
   // Typed `unknown`, not `string`, to match `richTextSchema` in
@@ -8,7 +9,11 @@ interface RichTextEditorProps {
   // so every existing <Controller render={({ field }) => <RichTextEditor
   // value={field.value} ... />}> call site (InsightForm, PracticeAreaForm,
   // TeamMemberForm) keeps working unchanged, with no cast needed at any of
-  // those three call sites. Coerced to a real string just below.
+  // those three call sites. Normalized to a real HTML string just below —
+  // see richTextToHtml() for why this isn't just a plain string cast: any
+  // content written before the CKEditor 5 switch is still a Tiptap JSON
+  // object in the database, not an HTML string, and needs converting
+  // rather than blanking out.
   value: unknown;
   onChange: (html: string) => void;
 }
@@ -59,6 +64,6 @@ const RichTextEditorInner = dynamic(
  * open source.
  */
 export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
-  const html = typeof value === "string" ? value : "";
+  const html = richTextToHtml(value);
   return <RichTextEditorInner value={html} onChange={onChange} />;
 }

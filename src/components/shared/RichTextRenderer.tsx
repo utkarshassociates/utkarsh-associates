@@ -1,5 +1,6 @@
 import DOMPurify from "isomorphic-dompurify";
 import { RICH_TEXT_PROSE_CLASSES, RICH_TEXT_ALLOWED_TAGS, RICH_TEXT_ALLOWED_ATTR } from "@/lib/richTextProse";
+import { richTextToHtml } from "@/lib/legacyTiptapToHtml";
 
 /**
  * Read-only renderer for rich-text content stored in `content`/`bio` jsonb
@@ -24,11 +25,19 @@ import { RICH_TEXT_PROSE_CLASSES, RICH_TEXT_ALLOWED_TAGS, RICH_TEXT_ALLOWED_ATTR
  * compatibility with any already-published content from before inline
  * images were removed from the toolbar (see RICH_TEXT_ALLOWED_TAGS's own
  * comment in src/lib/richTextProse.ts).
+ *
+ * `richTextToHtml()` normalizes `content` regardless of which format it's
+ * actually stored in — content written before the CKEditor 5 switch is
+ * still a Tiptap JSON object in the database, not an HTML string, and
+ * would otherwise render as silently blank. See
+ * src/lib/legacyTiptapToHtml.ts for why this is the permanent fix rather
+ * than a one-off migration.
  */
 export function RichTextRenderer({ content, className }: { content: unknown; className?: string }) {
-  if (typeof content !== "string" || content.trim() === "") return null;
+  const html = richTextToHtml(content);
+  if (html.trim() === "") return null;
 
-  const clean = DOMPurify.sanitize(content, {
+  const clean = DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [...RICH_TEXT_ALLOWED_TAGS],
     ALLOWED_ATTR: [...RICH_TEXT_ALLOWED_ATTR],
   });

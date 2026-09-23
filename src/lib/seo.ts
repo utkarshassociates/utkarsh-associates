@@ -1,4 +1,5 @@
 import { ASSETS } from "@/config/assets";
+import { richTextToHtml } from "@/lib/legacyTiptapToHtml";
 
 /**
  * Centralized SEO constants + helpers (Phase 5).
@@ -28,18 +29,23 @@ export function absoluteUrl(path: string): string {
 // plain HTML string (CKEditor 5's `editor.getData()` output, since the
 // switch away from Tiptap — see RichTextEditor.tsx for the full backstory)
 // rather than a Tiptap JSON document tree, so this strips tags instead of
-// walking a node tree.
+// walking a node tree. richTextToHtml() normalizes older content that's
+// still in the pre-switch Tiptap JSON format first — same reasoning as
+// RichTextRenderer.tsx's identical call, see src/lib/legacyTiptapToHtml.ts.
 
 /**
- * Best-effort plain-text extraction from stored rich-text HTML (as stored in
- * `content`/`bio` jsonb columns), truncated to `maxLen` on a word boundary.
- * Used as a last-resort fallback for meta descriptions and JSON-LD
- * `description`/`articleBody`-style fields when no `seo_description` or
- * `excerpt` has been set. Never used for on-page rendering.
+ * Best-effort plain-text extraction from stored rich-text content (as
+ * stored in `content`/`bio` jsonb columns, in either the current HTML-string
+ * format or the pre-CKEditor-5 Tiptap-JSON format), truncated to `maxLen`
+ * on a word boundary. Used as a last-resort fallback for meta descriptions
+ * and JSON-LD `description`/`articleBody`-style fields when no
+ * `seo_description` or `excerpt` has been set. Never used for on-page
+ * rendering.
  */
 export function richTextToPlainText(content: unknown, maxLen = 160): string {
-  if (typeof content !== "string" || content.trim() === "") return "";
-  const text = content
+  const html = richTextToHtml(content);
+  if (html.trim() === "") return "";
+  const text = html
     .replace(/<[^>]+>/g, " ") // strip tags
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
