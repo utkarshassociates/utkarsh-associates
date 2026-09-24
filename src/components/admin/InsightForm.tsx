@@ -6,7 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insightFormSchema } from "@/lib/validations/insight";
 import { createInsightAction, updateInsightAction, createCategoryAction } from "@/actions/insights";
-import { Button, Input, Select } from "@/components/ui";
+import { Button, Input, Select, Textarea } from "@/components/ui";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { slugify } from "@/lib/utils";
@@ -132,33 +132,39 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
   }
 
   return (
-    <form noValidate className="max-w-[720px]">
-      <Input
-        label="Title"
-        state={errors.title ? "error" : "default"}
-        message={errors.title?.message}
-        {...register("title", {
-          onChange: (e) => {
-            if (!slugTouched) setValue("slug", slugify(e.target.value));
-          },
-        })}
-      />
+    // Widened from a flat max-w-[720px] (same at every breakpoint) to
+    // actually use the desktop admin layout's available width — the
+    // surrounding page content area (src/app/admin/(protected)/layout.tsx)
+    // caps at 1180px, so a 720px form was leaving 400px+ of unused
+    // horizontal space on any real desktop/laptop screen. Below `desktop`
+    // it stays a single comfortable-reading-width column, same as before.
+    <form noValidate className="max-w-[640px] desktop:max-w-[960px]">
+      <div className="grid grid-cols-1 gap-x-6 desktop:grid-cols-2">
+        <Input
+          label="Title"
+          state={errors.title ? "error" : "default"}
+          message={errors.title?.message}
+          {...register("title", {
+            onChange: (e) => {
+              if (!slugTouched) setValue("slug", slugify(e.target.value));
+            },
+          })}
+        />
 
-      <Input
-        label="Slug"
-        state={errors.slug ? "error" : "default"}
-        message={errors.slug?.message ?? `/insights/${watch("slug") || "…"}`}
-        {...register("slug", { onChange: () => setSlugTouched(true) })}
-      />
-
-      <div className="mb-4">
-        <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Excerpt</label>
-        <textarea
-          {...register("excerpt")}
-          rows={2}
-          placeholder="Shown on the /insights listing card, and as the full content for external-link posts."
+        <Input
+          label="Slug"
+          state={errors.slug ? "error" : "default"}
+          message={errors.slug?.message ?? `/insights/${watch("slug") || "…"}`}
+          {...register("slug", { onChange: () => setSlugTouched(true) })}
         />
       </div>
+
+      <Textarea
+        label="Excerpt"
+        rows={2}
+        placeholder="Shown on the /insights listing card, and as the full content for external-link posts."
+        {...register("excerpt")}
+      />
 
       <Controller
         control={control}
@@ -286,13 +292,9 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
       )}
 
       <h3 className="mb-3 text-[14px] font-semibold uppercase tracking-wide text-gray-700">SEO</h3>
-      <Input label="SEO title" {...register("seoTitle")} />
-      <div className="mb-6">
-        <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">SEO description</label>
-        <textarea
-          {...register("seoDescription")}
-          rows={2}
-        />
+      <div className="grid grid-cols-1 gap-x-6 desktop:grid-cols-2">
+        <Input label="SEO title" {...register("seoTitle")} />
+        <Textarea label="SEO description" rows={2} {...register("seoDescription")} />
       </div>
 
       {formError && (

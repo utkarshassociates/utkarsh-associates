@@ -6,7 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createPracticeAreaSchema } from "@/lib/validations/practice-area";
 import { createPracticeAreaAction, updatePracticeAreaAction } from "@/actions/practice-areas";
-import { Button, Input, Select } from "@/components/ui";
+import { Button, Input, Select, Textarea } from "@/components/ui";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { slugify } from "@/lib/utils";
@@ -73,33 +73,36 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-[640px]">
-      <Input
-        label="Title"
-        state={errors.title ? "error" : "default"}
-        message={errors.title?.message}
-        {...register("title", {
-          onChange: (e) => {
-            if (!slugTouched) setValue("slug", slugify(e.target.value));
-          },
-        })}
-      />
+    // See InsightForm.tsx's identical comment — widened to actually use the
+    // desktop admin layout's available width (capped at 1180px there)
+    // instead of a flat 640px at every breakpoint.
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-[560px] desktop:max-w-[900px]">
+      <div className="grid grid-cols-1 gap-x-6 desktop:grid-cols-2">
+        <Input
+          label="Title"
+          state={errors.title ? "error" : "default"}
+          message={errors.title?.message}
+          {...register("title", {
+            onChange: (e) => {
+              if (!slugTouched) setValue("slug", slugify(e.target.value));
+            },
+          })}
+        />
 
-      <Input
-        label="Slug"
-        state={errors.slug ? "error" : "default"}
-        message={errors.slug?.message ?? `/practice-areas/${watch("slug") || "…"}`}
-        {...register("slug", { onChange: () => setSlugTouched(true) })}
-      />
-
-      <div className="mb-4">
-        <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Short description</label>
-        <textarea
-          {...register("shortDescription")}
-          rows={2}
-          placeholder="Shown on the Practice Area card — a sentence or two."
+        <Input
+          label="Slug"
+          state={errors.slug ? "error" : "default"}
+          message={errors.slug?.message ?? `/practice-areas/${watch("slug") || "…"}`}
+          {...register("slug", { onChange: () => setSlugTouched(true) })}
         />
       </div>
+
+      <Textarea
+        label="Short description"
+        rows={2}
+        placeholder="Shown on the Practice Area card — a sentence or two."
+        {...register("shortDescription")}
+      />
 
       <div className="mb-4">
         <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Full content</label>
@@ -138,13 +141,9 @@ export function PracticeAreaForm({ mode, initialValues }: PracticeAreaFormProps)
       </div>
 
       <h3 className="mb-3 text-[14px] font-semibold uppercase tracking-wide text-gray-700">SEO</h3>
-      <Input label="SEO title" state={errors.seoTitle ? "error" : "default"} message={errors.seoTitle?.message} {...register("seoTitle")} />
-      <div className="mb-4">
-        <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">SEO description</label>
-        <textarea
-          {...register("seoDescription")}
-          rows={2}
-        />
+      <div className="grid grid-cols-1 gap-x-6 desktop:grid-cols-2">
+        <Input label="SEO title" state={errors.seoTitle ? "error" : "default"} message={errors.seoTitle?.message} {...register("seoTitle")} />
+        <Textarea label="SEO description" rows={2} {...register("seoDescription")} />
       </div>
 
       {formError && (

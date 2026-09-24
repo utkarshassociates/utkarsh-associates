@@ -6,7 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTeamMemberSchema } from "@/lib/validations/team";
 import { createTeamMemberAction, updateTeamMemberAction } from "@/actions/team";
-import { Button, Input, Select } from "@/components/ui";
+import { Button, Input, Select, Textarea } from "@/components/ui";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { slugify } from "@/lib/utils";
@@ -84,24 +84,29 @@ export function TeamMemberForm({ mode, initialValues, practiceAreas }: TeamMembe
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-[640px]">
-      <Input
-        label="Name"
-        state={errors.name ? "error" : "default"}
-        message={errors.name?.message}
-        {...register("name", {
-          onChange: (e) => {
-            if (!slugTouched) setValue("slug", slugify(e.target.value));
-          },
-        })}
-      />
+    // See InsightForm.tsx's identical comment — widened to actually use the
+    // desktop admin layout's available width (capped at 1180px there)
+    // instead of a flat 640px at every breakpoint.
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-[560px] desktop:max-w-[900px]">
+      <div className="grid grid-cols-1 gap-x-6 desktop:grid-cols-2">
+        <Input
+          label="Name"
+          state={errors.name ? "error" : "default"}
+          message={errors.name?.message}
+          {...register("name", {
+            onChange: (e) => {
+              if (!slugTouched) setValue("slug", slugify(e.target.value));
+            },
+          })}
+        />
 
-      <Input
-        label="Slug"
-        state={errors.slug ? "error" : "default"}
-        message={errors.slug?.message ?? `/team/${watch("slug") || "…"}`}
-        {...register("slug", { onChange: () => setSlugTouched(true) })}
-      />
+        <Input
+          label="Slug"
+          state={errors.slug ? "error" : "default"}
+          message={errors.slug?.message ?? `/team/${watch("slug") || "…"}`}
+          {...register("slug", { onChange: () => setSlugTouched(true) })}
+        />
+      </div>
 
       <Input label="Designation" state={errors.designation ? "error" : "default"} message={errors.designation?.message} {...register("designation")} />
 
@@ -128,9 +133,13 @@ export function TeamMemberForm({ mode, initialValues, practiceAreas }: TeamMembe
         />
       </div>
 
-      <Input label="Email" state={errors.email ? "error" : "default"} message={errors.email?.message} {...register("email")} />
-      <Input label="Phone" state={errors.phone ? "error" : "default"} message={errors.phone?.message} {...register("phone")} />
-      <Input label="LinkedIn URL" state={errors.linkedinUrl ? "error" : "default"} message={errors.linkedinUrl?.message} {...register("linkedinUrl")} />
+      {/* 3-col at tablet+, matching the same pattern InsightForm uses for its
+          Category/Author/Related-practice-area row. */}
+      <div className="grid grid-cols-1 gap-4 tablet:grid-cols-3">
+        <Input label="Email" state={errors.email ? "error" : "default"} message={errors.email?.message} {...register("email")} />
+        <Input label="Phone" state={errors.phone ? "error" : "default"} message={errors.phone?.message} {...register("phone")} />
+        <Input label="LinkedIn URL" state={errors.linkedinUrl ? "error" : "default"} message={errors.linkedinUrl?.message} {...register("linkedinUrl")} />
+      </div>
 
       <div className="mb-4">
         <label className="mb-2 block text-[13px] font-semibold text-ink-900">Practice areas</label>
@@ -157,38 +166,34 @@ export function TeamMemberForm({ mode, initialValues, practiceAreas }: TeamMembe
         />
       </div>
 
-      <div className="mb-4">
-        <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Tier</label>
-        <p className="mb-2 text-[12px] text-gray-500">Drives the segregated Team page display — leadership shown separately from counsel/general team.</p>
-        <Select
-          {...register("tier")}
-          className="max-w-[200px]"
-        >
-          <option value="leadership">Leadership</option>
-          <option value="counsel">Counsel</option>
-          <option value="team">Team</option>
-        </Select>
-      </div>
+      <div className="grid grid-cols-1 gap-x-6 desktop:grid-cols-2">
+        <div className="mb-4">
+          <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Tier</label>
+          <p className="mb-2 text-[12px] text-gray-500">Drives the segregated Team page display — leadership shown separately from counsel/general team.</p>
+          <Select
+            {...register("tier")}
+          >
+            <option value="leadership">Leadership</option>
+            <option value="counsel">Counsel</option>
+            <option value="team">Team</option>
+          </Select>
+        </div>
 
-      <div className="mb-6">
-        <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Status</label>
-        <Select
-          {...register("status")}
-          className="max-w-[200px]"
-        >
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-        </Select>
+        <div className="mb-4">
+          <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Status</label>
+          <Select
+            {...register("status")}
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </Select>
+        </div>
       </div>
 
       <h3 className="mb-3 text-[14px] font-semibold uppercase tracking-wide text-gray-700">SEO</h3>
-      <Input label="SEO title" {...register("seoTitle")} />
-      <div className="mb-4">
-        <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">SEO description</label>
-        <textarea
-          {...register("seoDescription")}
-          rows={2}
-        />
+      <div className="grid grid-cols-1 gap-x-6 desktop:grid-cols-2">
+        <Input label="SEO title" {...register("seoTitle")} />
+        <Textarea label="SEO description" rows={2} {...register("seoDescription")} />
       </div>
 
       {formError && (
