@@ -7,12 +7,18 @@ import { FIXED_ADMIN_ROLE_SLUGS } from "@/config/roles";
 export const metadata: Metadata = { title: "New Admin" };
 
 export default async function NewAdminPage() {
-  await requirePermission("admins.manage");
+  const actor = await requirePermission("admins.manage");
 
   const supabase = createServiceRoleClient();
+  // .neq("key", "roles.manage") — belt-and-suspenders: that permission was
+  // removed from src/config/permissions.ts/seed.sql (the screen it gated no
+  // longer exists), but a database seeded before that change still has the
+  // old row. Filtering it out here means the dead checkbox disappears from
+  // the UI immediately, regardless of whether the one-time SQL cleanup
+  // (see permissions.ts's comment) has been run against this database yet.
   const [{ data: roles }, { data: permissions }] = await Promise.all([
     supabase.from("roles").select("id, name, slug, is_super").order("name"),
-    supabase.from("permissions").select("id, key, label, category").order("category"),
+    supabase.from("permissions").select("id, key, label, category").neq("key", "roles.manage").order("category"),
   ]);
 
   // Phase 6 §12: the role dropdown is fixed to Admin/Author now — SuperAdmin
@@ -27,7 +33,7 @@ export default async function NewAdminPage() {
   return (
     <div>
       <h1 className="mb-6 font-serif text-h3 text-navy-700">New Admin</h1>
-      <AdminForm mode="create" roles={visibleRoles} permissions={permissions ?? []} />
+      <AdminForm mode="create" roles={visibleRoles} permissions={permissions ?? []} actorIsSuper={actor.isSuper} />
     </div>
   );
 }

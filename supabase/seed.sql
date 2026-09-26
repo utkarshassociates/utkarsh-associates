@@ -23,8 +23,7 @@ insert into permissions (key, label, category) values
   ('team.manage',            'Manage team members',           'content'),
   ('inquiries.view',         'View contact inquiries',        'inquiries'),
   ('inquiries.manage',       'Manage contact inquiries',      'inquiries'),
-  ('admins.manage',          'Create / edit / disable admins','system'),
-  ('roles.manage',           'Create / edit roles',           'system');
+  ('admins.manage',          'Create / edit / disable admins','system');
 
 -- ---- roles ----
 -- Phase 6 §12: fixed 3-role model — SuperAdmin / Admin / Author, no custom
@@ -40,7 +39,9 @@ insert into roles (name, slug, is_super) values
 -- restriction is enforced in code, not by withholding a permission key —
 -- see src/actions/admins.ts). Practice Areas, Team, Insights (full
 -- lifecycle), Inquiries, and creating/managing other Admins and Authors.
--- Deliberately does NOT include roles.manage — the screen it gated is gone.
+-- Includes every permission that now exists — roles.manage (the one that
+-- used to be deliberately excluded here) was removed from the permissions
+-- table entirely above, since the screen it gated is gone.
 insert into role_permissions (role_id, permission_id)
 select r.id, p.id
 from roles r, permissions p

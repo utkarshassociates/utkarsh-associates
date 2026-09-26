@@ -4,11 +4,12 @@ import { requirePermission } from "@/lib/auth/session";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui";
 import { StatusBadge } from "@/components/admin/StatusBadge";
+import { AdminStatusToggle } from "@/components/admin/AdminStatusToggle";
 
 export const metadata: Metadata = { title: "Admins" };
 
 export default async function AdminsListPage() {
-  await requirePermission("admins.manage");
+  const actor = await requirePermission("admins.manage");
 
   const supabase = createServiceRoleClient();
   const { data: admins, error } = await supabase
@@ -62,9 +63,20 @@ export default async function AdminsListPage() {
                     {admin.last_login_at ? new Date(admin.last_login_at).toLocaleString() : "Never"}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link href={`/admin/admins/${admin.id}`} className="font-semibold text-navy-700 hover:text-gold-700">
-                      Edit →
-                    </Link>
+                    <div className="flex items-center justify-end gap-4">
+                      {/* superAdmin-only, and not shown on the viewer's own
+                          row — disabling yourself from a one-click list
+                          action is a footgun worth avoiding even though the
+                          server's last-active-superAdmin guard would catch
+                          the truly dangerous case (disabling the very last
+                          one). */}
+                      {actor.isSuper && admin.id !== actor.adminId && (
+                        <AdminStatusToggle adminId={admin.id} status={admin.status as "active" | "disabled"} />
+                      )}
+                      <Link href={`/admin/admins/${admin.id}`} className="font-semibold text-navy-700 hover:text-gold-700">
+                        Edit →
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               );

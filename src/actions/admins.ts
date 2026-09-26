@@ -10,9 +10,11 @@ import {
   createAdminSchema,
   updateAdminSchema,
   resetPasswordSchema,
+  toggleAdminStatusSchema,
   type CreateAdminInput,
   type UpdateAdminInput,
   type ResetPasswordInput,
+  type ToggleAdminStatusInput,
 } from "@/lib/validations/admin";
 
 const BCRYPT_ROUNDS = 10; // matches scripts/hash-password.js
@@ -28,12 +30,21 @@ export async function createAdminAction(input: CreateAdminInput): Promise<Action
 
   const supabase = createServiceRoleClient();
 
-  // Security fix: only a superAdmin can hand out the superAdmin role. Without
-  // this, anyone granted admins.manage could create a brand-new superAdmin
-  // account for themselves regardless of their own role.
+  // There is exactly one superAdmin, created once via the bootstrap seed
+  // script — never through this action, for anyone, including an acting
+  // superAdmin themselves. (Previously this only blocked a *non-super*
+  // actor from assigning the superAdmin role — meaning a superAdmin could
+  // still have created a second one by calling this action directly, even
+  // though the UI's role dropdown never offered that option. Tightened to
+  // an unconditional rejection so "only one superAdmin will ever exist" is
+  // a real guarantee enforced here, not just something the UI happens not
+  // to expose.)
   const { data: targetRole } = await supabase.from("roles").select("is_super").eq("id", roleId).single();
-  if (targetRole?.is_super && !actor.isSuper) {
-    return { success: false, error: "Only a superAdmin can assign the superAdmin role." };
+  if (targetRole?.is_super) {
+    return {
+      success: false,
+      error: "A new superAdmin can't be created here — there is exactly one, set up once at bootstrap.",
+    };
   }
 
   const { data: existing } = await supabase
@@ -90,7 +101,7 @@ export async function updateAdminAction(input: UpdateAdminInput): Promise<Action
   // Guardrail: don't let the very last active superAdmin be disabled or
   // demoted away from a super role — there'd be no one left who could undo it.
   const [{ data: targetBefore }, { data: newRole }] = await Promise.all([
-    supabase.from("admins").select("id, roles(is_super)").eq("id", adminId).single(),
+    supabase.from("admins").select("id, status, roles(is_super)").eq("id", adminId).single(),
     supabase.from("roles").select("is_super").eq("id", roleId).single(),
   ]);
 
@@ -99,11 +110,36 @@ export async function updateAdminAction(input: UpdateAdminInput): Promise<Action
   const losingSuperStatus = status === "disabled" || newRole?.is_super !== true;
 
   // Security fix: only a superAdmin can touch an existing superAdmin's
-  // account (name/role/status/permissions) or promote someone TO superAdmin.
-  // Without this, anyone granted admins.manage could edit, disable, or
-  // re-permission a superAdmin — including their own account, to escalate.
-  if (!actor.isSuper && (targetWasSuper || newRole?.is_super)) {
+  // account (name/role/status/permissions). Without this, anyone granted
+  // admins.manage could edit, disable, or re-permission a superAdmin —
+  // including their own account, to escalate.
+  if (!actor.isSuper && targetWasSuper) {
     return { success: false, error: "Only a superAdmin can manage a superAdmin account." };
+  }
+
+  // There is exactly one superAdmin, created once via the bootstrap seed
+  // script — this action can never promote an existing admin/author TO
+  // superAdmin, for anyone, including an acting superAdmin. (Previously
+  // this only blocked a *non-super* actor from promoting someone — tightened
+  // for the same reason as the identical change in createAdminAction above:
+  // "only one superAdmin will ever exist" should be a real, unconditional
+  // guarantee, not just something the UI's role dropdown happens to hide.)
+  const isPromotionToSuper = newRole?.is_super === true && !targetWasSuper;
+  if (isPromotionToSuper) {
+    return {
+      success: false,
+      error: "Can't promote an admin to superAdmin — there is exactly one, set up once at bootstrap.",
+    };
+  }
+
+  // Only a superAdmin can change ANY admin's status (active/disabled) —
+  // narrower than the admins.manage permission itself, which still lets a
+  // regular Admin create new admins/authors and edit their name/role/extra
+  // permissions. Disabling someone is treated as a step above that: it's
+  // the one action here that can lock another admin out entirely, so it's
+  // reserved for superAdmin specifically, per explicit product decision.
+  if (!actor.isSuper && status !== targetBefore?.status) {
+    return { success: false, error: "Only a superAdmin can change an admin's status." };
   }
 
   if (targetWasSuper && losingSuperStatus) {
@@ -143,6 +179,60 @@ export async function updateAdminAction(input: UpdateAdminInput): Promise<Action
     entityId: adminId,
     meta: { name, roleId, status },
   });
+
+  revalidatePath("/admin/admins");
+  revalidatePath(`/admin/admins/${adminId}`);
+  return { success: true };
+}
+
+/**
+ * Quick inline toggle for the admin list page — narrower payload than
+ * updateAdminAction (just id + status), so the list page doesn't need to
+ * fetch/resend each row's full name/role/extra-permissions just to flip
+ * one field. Same superAdmin-only + last-active-superAdmin guardrails as
+ * updateAdminAction's status-change path, kept small and self-contained
+ * here rather than factored out, since both checks are only a few lines.
+ */
+export async function toggleAdminStatusAction(input: ToggleAdminStatusInput): Promise<ActionResult> {
+  const actor = await requirePermission("admins.manage");
+
+  if (!actor.isSuper) {
+    return { success: false, error: "Only a superAdmin can change an admin's status." };
+  }
+
+  const parsed = toggleAdminStatusSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Invalid input." };
+  }
+  const { adminId, status } = parsed.data;
+
+  const supabase = createServiceRoleClient();
+
+  const { data: target } = await supabase
+    .from("admins")
+    .select("id, roles(is_super)")
+    .eq("id", adminId)
+    .single();
+  const targetRole = Array.isArray(target?.roles) ? target.roles[0] : target?.roles;
+
+  if (targetRole?.is_super === true && status === "disabled") {
+    const { count } = await supabase
+      .from("admins")
+      .select("id, roles!inner(is_super)", { count: "exact", head: true })
+      .eq("status", "active")
+      .eq("roles.is_super", true);
+
+    if ((count ?? 0) <= 1) {
+      return { success: false, error: "Can't disable the last active superAdmin — activate another one first." };
+    }
+  }
+
+  const { error } = await supabase.from("admins").update({ status }).eq("id", adminId);
+  if (error) {
+    return { success: false, error: "Could not update status. " + error.message };
+  }
+
+  await logAudit({ adminId: actor.adminId, action: "update", entity: "admins", entityId: adminId, meta: { status } });
 
   revalidatePath("/admin/admins");
   revalidatePath(`/admin/admins/${adminId}`);

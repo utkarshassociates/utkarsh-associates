@@ -17,6 +17,8 @@ export default async function EditAdminPage({ params }: EditAdminPageProps) {
   const { id } = await params;
 
   const supabase = createServiceRoleClient();
+  // .neq("key", "roles.manage") — see the identical comment in
+  // admins/new/page.tsx for why.
   const [{ data: admin }, { data: roles }, { data: permissions }] = await Promise.all([
     supabase
       .from("admins")
@@ -24,7 +26,7 @@ export default async function EditAdminPage({ params }: EditAdminPageProps) {
       .eq("id", id)
       .maybeSingle(),
     supabase.from("roles").select("id, name, slug, is_super").order("name"),
-    supabase.from("permissions").select("id, key, label, category").order("category"),
+    supabase.from("permissions").select("id, key, label, category").neq("key", "roles.manage").order("category"),
   ]);
 
   if (!admin) notFound();
@@ -72,6 +74,7 @@ export default async function EditAdminPage({ params }: EditAdminPageProps) {
         mode="edit"
         roles={visibleRoles}
         permissions={permissions ?? []}
+        actorIsSuper={actor.isSuper}
         initialValues={{
           adminId: admin.id,
           loginId: admin.login_id,

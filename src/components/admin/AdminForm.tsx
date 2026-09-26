@@ -14,6 +14,16 @@ interface AdminFormProps {
   mode: "create" | "edit";
   roles: Pick<Role, "id" | "name" | "slug" | "is_super">[];
   permissions: PermissionRow[];
+  // Whether the person viewing this form is a superAdmin — controls whether
+  // the Status field (below) is editable. A regular Admin can still reach
+  // this form (admins.manage covers creating/editing admins generally), but
+  // per explicit product decision, disabling someone is superAdmin-only —
+  // shown disabled with an explanatory note rather than hidden outright, so
+  // it's clear the field exists and why it can't be changed here, matching
+  // updateAdminAction's/toggleAdminStatusAction's server-side enforcement of
+  // the same rule (this prop only controls the UI; the real guarantee is
+  // there, not here).
+  actorIsSuper: boolean;
   initialValues?: {
     adminId: string;
     loginId: string;
@@ -43,7 +53,7 @@ function groupByCategory(permissions: PermissionRow[]) {
   return Array.from(groups.entries());
 }
 
-export function AdminForm({ mode, roles, permissions, initialValues }: AdminFormProps) {
+export function AdminForm({ mode, roles, permissions, initialValues, actorIsSuper }: AdminFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string | null>(null);
@@ -150,11 +160,15 @@ export function AdminForm({ mode, roles, permissions, initialValues }: AdminForm
         <div className="mb-4">
           <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Status</label>
           <Select
+            disabled={!actorIsSuper}
             {...register("status")}
           >
             <option value="active">Active</option>
             <option value="disabled">Disabled</option>
           </Select>
+          {!actorIsSuper && (
+            <p className="mt-1 text-[12px] text-gray-500">Only a superAdmin can change an admin's status.</p>
+          )}
         </div>
       )}
 

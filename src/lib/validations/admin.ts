@@ -35,6 +35,12 @@ export const resetPasswordSchema = z.object({
   newPassword: passwordSchema,
 });
 
+export const toggleAdminStatusSchema = z.object({
+  adminId: z.string().uuid(),
+  status: z.enum(["active", "disabled"]),
+});
+
 export type CreateAdminInput = z.infer<typeof createAdminSchema>;
 export type UpdateAdminInput = z.infer<typeof updateAdminSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type ToggleAdminStatusInput = z.infer<typeof toggleAdminStatusSchema>;
