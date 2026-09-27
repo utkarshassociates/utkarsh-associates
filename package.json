@@ -22,7 +22,7 @@
     "@tanstack/react-table": "^8.20.5",
     "@ckeditor/ckeditor5-react": "^11.2.0",
     "ckeditor5": "^48.5.1",
-    "isomorphic-dompurify": "^2.19.0",
+    "sanitize-html": "^2.17.7",
     "sharp": "^0.35.4",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.5.4"
@@ -34,6 +34,7 @@
     "@types/react-dom": "^19.0.0",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/bcryptjs": "^2.4.6",
+    "@types/sanitize-html": "^2.16.0",
     "tailwindcss": "^3.4.14",
     "postcss": "^8.4.47",
     "autoprefixer": "^10.4.20",
