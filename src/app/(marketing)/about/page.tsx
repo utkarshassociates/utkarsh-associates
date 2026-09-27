@@ -29,7 +29,7 @@ export default function AboutPage() {
       <div className="grid gap-12 desktop:grid-cols-2 desktop:items-center">
         <div>
           <h1 className="font-serif text-h1 text-navy-700">About Us</h1>
-          <p className="mt-6 text-body-l text-gray-700">{introParagraph}</p>
+          <p className="mt-6 text-body-l text-justify text-gray-700">{introParagraph}</p>
         </div>
         <div className="hidden desktop:block">
           <Image
@@ -43,10 +43,10 @@ export default function AboutPage() {
 
       <div className="mt-16 grid gap-8 tablet:grid-cols-2">
         <div>
-          <h3 className="mb-2 font-serif text-h3 text-navy-700">
+          <h3 className="mb-2 font-serif text-h2 text-navy-700">
             Our Expertise
           </h3>
-          <p className="text-small text-gray-700">
+          <p className="text-body-l text-justify text-gray-700">
             The Firm focuses its practice on civil and commercial litigation and
             arbitration, and also advises and represents clients in matters
             relating to insolvency and bankruptcy, company and corporate
@@ -60,10 +60,10 @@ export default function AboutPage() {
           </p>
         </div>
         <div>
-          <h3 className="mb-2 font-serif text-h3 text-navy-700">
+          <h3 className="mb-2 font-serif text-h2 text-navy-700">
             Our Approach
           </h3>
-          <p className="text-small text-gray-700">
+          <p className="text-body-l text-justify text-gray-700">
             At Utkarsh Associates, we believe that legal advice must be both
             sound and practical. Our focus is on identifying the most effective
             route towards resolving a client’s legal problem—whether through

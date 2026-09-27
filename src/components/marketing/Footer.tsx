@@ -24,7 +24,7 @@ export function Footer() {
       <div className="mx-auto max-w-wide px-4 py-12 tablet:px-8 desktop:px-16">
         <div className="grid grid-cols-1 gap-8 tablet:grid-cols-4">
           <div>
-            <Image src={ASSETS.logo} alt="Utkarsh Associates" width={150} height={38} className="mb-4 brightness-0 invert" />
+            <Image src={ASSETS.logo} alt="Utkarsh Associates" width={150} height={38} className="mb-4" />
             {hq?.address && <p className="text-small text-gray-300">{hq.address}</p>}
             {phone && (
               <p className="mt-2 text-small text-gray-300">
@@ -76,7 +76,7 @@ export function Footer() {
 
         <div className="mt-10 border-t border-white/10 pt-6">
           <p className="text-[12px] leading-relaxed text-gray-500">
-            Advocates &amp; Solicitors. In accordance with the rules of the Bar Council of India, this website is
+            In accordance with the rules of the Bar Council of India, this website is
             intended solely for informational purposes and does not constitute advertising, solicitation, or
             inducement of any kind.
           </p>

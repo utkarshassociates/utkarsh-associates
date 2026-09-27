@@ -119,7 +119,7 @@ export default async function TeamMemberDetailPage({ params }: { params: Promise
           <h1 className="font-serif text-h1 text-navy-700">{member.name}</h1>
           {member.designation && <p className="mt-2 text-body-l text-gray-700">{member.designation}</p>}
           <div className="mt-8 max-w-[640px]">
-            <RichTextRenderer content={member.bio} />
+            <RichTextRenderer content={member.bio} className="text-justify" />
           </div>
         </div>
       </div>

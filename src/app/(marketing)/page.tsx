@@ -80,9 +80,9 @@ export default async function HomePage() {
           <StatStrip
             stats={[
               { num: "15+", label: "Years" },
-              { num: "3", label: "Jurisdictions" },
-              { num: "200+", label: "Clients Served" },
-              { num: "7", label: "Core Practices" },
+              { num: "Multiple", label: "Jurisdictions" },
+              { num: "400+", label: "Clients Served" },
+              { num: "Various", label: "Core Practices" },
             ]}
           />
         </div>

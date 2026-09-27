@@ -11,16 +11,6 @@
         "email": "delhi@utkarsh-associates.example",
         "isHeadquarters": true,
         "mapEmbedUrl": "https://www.google.com/maps?q=Connaught+Place,+New+Delhi&output=embed"
-      },
-      {
-        "id": "mumbai",
-        "name": "Mumbai",
-        "address": "456 Sample Road, Nariman Point",
-        "city": "Mumbai",
-        "phone": "+91-22-0000-0000",
-        "email": "mumbai@utkarsh-associates.example",
-        "isHeadquarters": false,
-        "mapEmbedUrl": "https://www.google.com/maps?q=Nariman+Point,+Mumbai&output=embed"
       }
     ]
   },
@@ -31,8 +21,8 @@
     "homeHeroSubheading": "Utkarsh Associates is a disputes-led law firm advising companies, institutions, associations and individuals on complex commercial, regulatory and public law matters.",
     "aboutIntroParagraph": "Utkarsh Associates is a full-service law firm committed to providing practical, effective and client-focused legal solutions. We represent a diverse range of clients, including national and multinational companies, technology companies, private institutions, market associations, partnership and proprietorship firms, as well as individual clients. Every matter is approached with an understanding of the client’s specific requirements, with strategies tailored to the nature of the dispute and the outcome sought.",
     "contactIntro": "Tell us about your matter and a member of our team will get back to you shortly.",
-    "firmPhone": "",
-    "firmEmail": "",
+    "firmPhone": "+91-987654321",
+    "firmEmail": "contact@utkarshassociates.com",
     "socialLinkedinUrl": "https://www.linkedin.com/company/utkarsh-associates/",
     "disclaimerText": "[PLACEHOLDER DISCLAIMER TEXT — pending final copy from legal counsel] I acknowledge that I am seeking information relating to Utkarsh Associates of my own accord and that there has been no form of solicitation, advertisement, or inducement by the firm or its members. The information on this website is provided for general informational purposes only and does not constitute legal advice."
   }
