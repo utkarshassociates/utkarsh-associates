@@ -26,6 +26,19 @@ const STORAGE_KEY = "utkarsh-disclaimer-acknowledged";
  * doesn't exist on the server, so checking it during render would be a
  * hydration mismatch (see PHASE-3-NOTES's "Lessons learned" #4 on
  * hydration pitfalls; same underlying principle, different API).
+ *
+ * Presentation: bottom-anchored full-width bar, not a centered modal card
+ * with a dark backdrop — per explicit reference (a competitor's site using
+ * this exact pattern). Only the visible position/style changed from the
+ * previous version; the actual gating is unchanged and just as strict as
+ * before: a full-viewport, invisible click/scroll-blocking layer sits
+ * behind the visible bar (transparent, matching the reference's lack of any
+ * dark dimming), and body scroll is explicitly locked while this is
+ * visible. Both are necessary — a bar that only occupies the bottom slice
+ * of the screen would otherwise leave the rest of the page fully visible,
+ * scrollable, and clickable behind it, which isn't a disclaimer gate at
+ * all, just a banner someone can ignore. `role="dialog"`/`aria-modal` are
+ * unchanged from before.
  */
 export function DisclaimerGate() {
   const [visible, setVisible] = useState(false);
@@ -35,6 +48,20 @@ export function DisclaimerGate() {
     if (!acknowledged) setVisible(true);
   }, []);
 
+  // Real scroll lock, not just click-blocking — a fixed full-viewport layer
+  // stops mouse-wheel/touch scroll (those events target whatever's under
+  // the pointer, which is the blocking layer), but keyboard scrolling
+  // (Page Down, Space, arrow keys) isn't pointer-based and could still
+  // reach the page underneath without this.
+  useEffect(() => {
+    if (!visible) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [visible]);
+
   function acknowledge() {
     sessionStorage.setItem(STORAGE_KEY, "1");
     setVisible(false);
@@ -43,23 +70,31 @@ export function DisclaimerGate() {
   if (!visible) return null;
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="disclaimer-heading"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-navy-900/80 p-4"
-    >
-      <div className="max-w-[560px] rounded-lg bg-white p-8 shadow-lg">
-        <h2 id="disclaimer-heading" className="mb-4 font-serif text-h4 text-navy-700">
+    <>
+      {/* Full-viewport click/scroll blocker — transparent, so it matches the
+          reference's lack of any dark dimming, but still intercepts every
+          click and scroll gesture aimed at the page behind it. This is what
+          actually makes it a gate; the bar below is just where the visible
+          content lives. */}
+      <div className="fixed inset-0 z-40" aria-hidden="true" />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="disclaimer-heading"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-300 bg-white shadow-lg"
+      >
+        <h2 id="disclaimer-heading" className="sr-only">
           Disclaimer
         </h2>
-        <p className="mb-6 max-h-[40vh] overflow-y-auto text-small leading-relaxed text-gray-700">
-          {SITE_SETTINGS.disclaimerText}
-        </p>
-        <Button variant="primary" onClick={acknowledge} className="w-full justify-center">
-          I Acknowledge &amp; Agree
-        </Button>
+        <div className="mx-auto flex max-w-wide flex-col items-center gap-4 px-4 py-6 text-center tablet:px-8 desktop:px-16">
+          <p className="max-h-[30vh] max-w-[820px] overflow-y-auto text-small leading-relaxed text-gray-700">
+            {SITE_SETTINGS.disclaimerText}
+          </p>
+          <Button variant="primary" onClick={acknowledge}>
+            I Acknowledge &amp; Agree
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
