@@ -1,7 +1,8 @@
 name: Supabase Keep-Alive
 on:
   schedule:
-    - cron: "0 6 * * 1,4"   # every Monday & Thursday, 06:00 UTC — well under the 7-day pause window
+    - cron: "*/5 * * * *"   # every 5 minutes — TEMPORARY, for testing only
+    # - cron: "0 6 * * 1,4"   # every Monday & Thursday, 06:00 UTC — well under the 7-day pause window
   workflow_dispatch: {}       # allows manually triggering a ping from the GitHub UI
 
 jobs:
