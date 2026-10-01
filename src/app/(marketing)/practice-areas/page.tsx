@@ -7,7 +7,7 @@ import { getPracticeAreaIconSrc } from "@/lib/utils";
 export const revalidate = 3600;
 
 const DESCRIPTION =
-  "Full-service counsel across the practice areas that matter most to our clients.";
+  "Comprehensive legal representation across our core practice areas, tailored to our client’s needs.";
 
 export const metadata: Metadata = {
   title: "Practice Areas",

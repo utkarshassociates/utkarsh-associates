@@ -94,7 +94,7 @@ export default async function HomePage() {
           <div>
             <h2 className="font-serif text-h2 text-navy-700">Our Expertise</h2>
             <p className="mt-2 max-w-[520px] text-body text-gray-700">
-              Full-service counsel across the practice areas that matter most to our clients.
+              Comprehensive legal representation across our core practice areas, tailored to our client’s needs.
             </p>
           </div>
           {practiceAreas.length > 0 && (

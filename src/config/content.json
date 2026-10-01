@@ -5,12 +5,12 @@
       {
         "id": "delhi-hq",
         "name": "New Delhi",
-        "address": "123 Sample Marg, Connaught Place",
+        "address": "9 Central Avenue (Basement), Maharani Bagh, New Delhi - 110065",
         "city": "New Delhi",
-        "phone": "+91-11-0000-0000",
-        "email": "delhi@utkarsh-associates.example",
+        "phone": "011-45695686",
+        "email": "mail@utkassociates.com",
         "isHeadquarters": true,
-        "mapEmbedUrl": "https://www.google.com/maps?q=Connaught+Place,+New+Delhi&output=embed"
+        "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3503.9423945190138!2d77.26159147549855!3d28.571492475698136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce3980e1c5b23%3A0x3203606ff0b5a662!2s9%2C%20Central%20Ave%2C%20Block%20G%2C%20Maharani%20Bagh%2C%20New%20Friends%20Colony%2C%20New%20Delhi%2C%20Delhi%20110065!5e0!3m2!1sen!2sin!4v1790835572655!5m2!1sen!2sin"
       }
     ]
   },
@@ -18,12 +18,12 @@
     "_comment": "Used in: (marketing)/page.tsx (hero), about/page.tsx, offices/page.tsx (reach-us block, replaces the old standalone contact/page.tsx), Footer.tsx, DisclaimerGate.tsx, Navbar.tsx (utility bar tagline + LinkedIn icon — socialLinkedinUrl below is a PLACEHOLDER link, replace with the firm's real LinkedIn company page URL before launch). Values below are carried over unchanged from the old src/config/site.ts SITE_DEFAULTS — since supabase/seed.sql never seeded any site_settings rows (confirmed in PHASE-2-NOTES.md), these defaults were already the only copy the live site has ever actually shown. Moving them here is a like-for-like migration, not a content change.",
     "firmTagline": "Full-Service Law Firm",
     "homeHeroHeading": "Trusted counsel, clearly delivered.",
-    "homeHeroSubheading": "Utkarsh Associates is a disputes-led law firm advising companies, institutions, associations and individuals on complex commercial, regulatory and public law matters.",
+    "homeHeroSubheading": "Utkarsh Associates is a law firm specialising in dispute resolution, providing legal representation and strategic advice to companies, institutions, associations and individuals across commercial litigation, arbitration, regulatory and public law matters.",
     "aboutIntroParagraph": "Utkarsh Associates is a full-service law firm committed to providing practical, effective and client-focused legal solutions. We represent a diverse range of clients, including national and multinational companies, technology companies, private institutions, market associations, partnership and proprietorship firms, as well as individual clients. Every matter is approached with an understanding of the client’s specific requirements, with strategies tailored to the nature of the dispute and the outcome sought.",
     "contactIntro": "Tell us about your matter and a member of our team will get back to you shortly.",
-    "firmPhone": "+91-987654321",
-    "firmEmail": "contact@utkarshassociates.com",
-    "socialLinkedinUrl": "https://www.linkedin.com/company/utkarsh-associates/",
-    "disclaimerText": "[PLACEHOLDER DISCLAIMER TEXT — pending final copy from legal counsel] I acknowledge that I am seeking information relating to Utkarsh Associates of my own accord and that there has been no form of solicitation, advertisement, or inducement by the firm or its members. The information on this website is provided for general informational purposes only and does not constitute legal advice."
+    "firmPhone": "011-45695686",
+    "firmEmail": "mail@utkassociates.com",
+    "socialLinkedinUrl": "https://www.linkedin.com/company/utkarsh-associatesjangpura",
+    "disclaimerText": "Disclaimer: By accessing and browsing this website, you acknowledge that you are voluntarily seeking information about Utkarsh Associates of your own accord. Nothing contained on this website shall be construed as an advertisement, solicitation, or invitation to engage our professional services."
   }
 }
