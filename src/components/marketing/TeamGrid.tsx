@@ -16,7 +16,7 @@ export function TeamGrid({ members }: { members: TeamMember[] }) {
           href={`/team/${member.slug}`}
           className="block overflow-hidden rounded-lg border border-gray-300 bg-white transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md"
         >
-          <div className="relative aspect-[4/3] w-full bg-navy-100">
+          <div className="relative aspect-[1/1] w-full bg-navy-100">
             {/* Phase 6 §6: CSS-only grayscale, not baked into the stored
                 file — trivially reversible (drop the `grayscale` class)
                 if the client wants color later. */}
@@ -24,7 +24,7 @@ export function TeamGrid({ members }: { members: TeamMember[] }) {
               src={member.photo_url ?? ASSETS.teamAvatarPlaceholder}
               alt={member.name}
               fill
-              className="object-cover grayscale"
+              className="object-cover object-top grayscale"
               sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
             />
           </div>
