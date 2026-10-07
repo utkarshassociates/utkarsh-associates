@@ -71,7 +71,7 @@ export default async function TeamMemberDetailPage({ params }: { params: Promise
               src={member.photo_url ?? ASSETS.teamAvatarPlaceholder}
               alt={member.name}
               fill
-              className="object-cover grayscale"
+              className="object-cover object-top grayscale"
               // Responsive audit fix: the 280px fixed hint matched only the
               // desktop grid column (grid-cols-[280px_1fr] applies at
               // `desktop` and up); below that the photo displays at the full
@@ -107,8 +107,10 @@ export default async function TeamMemberDetailPage({ params }: { params: Promise
           {linkedPracticeAreas.length > 0 && (
             <div className="mt-6 flex flex-wrap gap-2">
               {linkedPracticeAreas.map((pa) => (
-                <Link key={pa.id} href={`/practice-areas/${pa.slug}`}>
-                  <Tag variant="navy">{pa.title}</Tag>
+                <Link key={pa.id} href={`/practice-areas/${pa.slug}`} className="max-w-full">
+                  <Tag variant="navy" title={pa.title} className="max-w-full truncate align-top">
+                    {pa.title}
+                  </Tag>
                 </Link>
               ))}
             </div>
