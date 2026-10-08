@@ -7,7 +7,7 @@ import { OFFICES, SITE_SETTINGS, getHeadquartersOffice } from "@/config/content"
 // on /offices (see (marketing)/offices/page.tsx), so "Offices" is the way
 // there; there's no separate /contact route left to link to.
 const FOOTER_LINKS = [
-  { label: "About", href: "/about" },
+  { label: "About Us", href: "/about" },
   { label: "Practice Areas", href: "/practice-areas" },
   { label: "Team", href: "/team" },
   { label: "Insights", href: "/insights" },
@@ -24,7 +24,7 @@ export function Footer() {
       <div className="mx-auto max-w-wide px-4 py-12 tablet:px-8 desktop:px-16">
         <div className="grid grid-cols-1 gap-8 tablet:grid-cols-4">
           <div>
-            <Image src={ASSETS.logo} alt="Utkarsh Associates" width={150} height={38} className="mb-4" />
+            <Image src={ASSETS.logo} alt="Utkarsh Associates" width={150} height={38} className="mb-8" />
             {hq?.address && <p className="text-small text-gray-300">{hq.address}</p>}
             {phone && (
               <p className="mt-2 text-small text-gray-300">
@@ -34,7 +34,7 @@ export function Footer() {
               </p>
             )}
             {email && (
-              <p className="text-small text-gray-300">
+              <p className="mt-2 text-small text-gray-300">
                 <a href={`mailto:${email}`} className="hover:text-white">
                   {email}
                 </a>
@@ -47,6 +47,17 @@ export function Footer() {
                 </a>
               </p>
             )}
+          </div>
+          
+          <div>
+            {/* <h3 className="mb-3 font-mono text-[11px] uppercase tracking-wide text-gray-500">Offices</h3>
+            <ul className="flex flex-col gap-1.5">
+              {OFFICES.map((office) => (
+                <li key={office.id} className="text-small text-gray-300">
+                  {office.name}
+                </li>
+              ))}
+            </ul> */}
           </div>
 
           <div className="tablet:col-span-2">
@@ -62,16 +73,6 @@ export function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h3 className="mb-3 font-mono text-[11px] uppercase tracking-wide text-gray-500">Offices</h3>
-            <ul className="flex flex-col gap-1.5">
-              {OFFICES.map((office) => (
-                <li key={office.id} className="text-small text-gray-300">
-                  {office.name}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6">

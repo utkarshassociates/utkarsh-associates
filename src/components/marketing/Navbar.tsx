@@ -9,7 +9,7 @@ import { OFFICES, SITE_SETTINGS } from "@/config/content";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { label: "About", href: "/about" },
+  { label: "About Us", href: "/about" },
   { label: "Practice Areas", href: "/practice-areas" },
   { label: "Team", href: "/team" },
   { label: "Insights", href: "/insights" },
