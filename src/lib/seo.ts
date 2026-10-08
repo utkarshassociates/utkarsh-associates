@@ -110,7 +110,7 @@ export function articleJsonLd(insight: {
   cover_image_url: string | null;
   published_at: string | null;
   updated_at: string;
-  author: { name: string; slug: string } | null;
+  authors?: { name: string; slug: string }[];
 }) {
   return {
     "@context": "https://schema.org",
@@ -121,8 +121,8 @@ export function articleJsonLd(insight: {
     ...(insight.cover_image_url ? { image: [insight.cover_image_url] } : {}),
     ...(insight.published_at ? { datePublished: insight.published_at } : {}),
     dateModified: insight.updated_at,
-    author: insight.author
-      ? { "@type": "Person", name: insight.author.name, url: absoluteUrl(`/team/${insight.author.slug}`) }
+    author: insight.authors?.length
+      ? insight.authors.map((a) => ({ "@type": "Person", name: a.name, url: absoluteUrl(`/team/${a.slug}`) }))
       : { "@type": "Organization", name: ORG_NAME },
     publisher: {
       "@type": "Organization",

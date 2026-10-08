@@ -5,7 +5,7 @@ import { InsightsFilter } from "@/components/marketing/InsightsFilter";
 import { Tag } from "@/components/ui";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { getInsightCategories, getPublishedInsights } from "@/lib/data/public";
-import { formatDateDDMMYYYY } from "@/lib/utils";
+import { formatDateDDMMYYYY, formatAuthorNames } from "@/lib/utils";
 
 const PER_PAGE = 9;
 
@@ -91,7 +91,9 @@ export default async function InsightsPage({
                 <h4 className="mb-2 font-serif text-h4 text-navy-700">{insight.title}</h4>
                 {insight.excerpt && <p className="mb-3 text-small text-gray-700">{insight.excerpt}</p>}
                 <div className="mt-auto flex items-center justify-between pt-2 text-[12px] text-gray-500">
-                  {insight.author && <span>{insight.author.name}</span>}
+                  {insight.authors && insight.authors.length > 0 && (
+                    <span className="min-w-0 truncate pr-3">{formatAuthorNames(insight.authors.map((a) => a.name))}</span>
+                  )}
                   {insight.published_at && <span>{formatDateDDMMYYYY(insight.published_at)}</span>}
                 </div>
               </Link>

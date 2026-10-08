@@ -17,7 +17,8 @@ const baseInsightFields = z.object({
   excerpt: optionalTextSchema,
   coverImageUrl: optionalUrlOrPathSchema,
   categoryId: z.string().uuid().nullable().optional(),
-  authorId: z.string().uuid().nullable().optional(),
+  // Ordered list; first entry is the lead author (also mirrored to insights.author_id).
+  authorIds: z.array(z.string().uuid()).max(10, "Too many authors (max 10).").default([]),
   practiceAreaId: z.string().uuid().nullable().optional(),
   postType: insightPostTypeSchema,
   tags: z.array(z.string().trim().min(1).max(50)).max(20).default([]),

@@ -45,6 +45,24 @@ async function revalidatePublicInsightPaths(supabase: SupabaseClient, slug: stri
   }
 }
 
+/**
+ * Replaces an insight's credited authors with `authorIds` (ordered; index 0
+ * = lead). Upsert-then-prune rather than delete-then-insert, so a failed
+ * write can never leave the insight with its authors wiped. Returns an error
+ * message, or null on success.
+ */
+async function syncInsightAuthors(supabase: SupabaseClient, insightId: string, authorIds: string[]): Promise<string | null> {
+  if (authorIds.length > 0) {
+    const rows = authorIds.map((id, position) => ({ insight_id: insightId, team_member_id: id, position }));
+    const { error } = await supabase.from("insight_authors").upsert(rows, { onConflict: "insight_id,team_member_id" });
+    if (error) return error.message;
+  }
+  let del = supabase.from("insight_authors").delete().eq("insight_id", insightId);
+  if (authorIds.length > 0) del = del.not("team_member_id", "in", `(${authorIds.join(",")})`);
+  const { error: delError } = await del;
+  return delError?.message ?? null;
+}
+
 // The draft → pending_review → published(/rejected) workflow is enforced by
 // which action a caller reaches, not by trusting a status value the client
 // sent:
@@ -64,6 +82,7 @@ export async function createInsightAction(input: CreateInsightInput): Promise<Ac
   const data = parsed.data;
 
   const supabase = createServiceRoleClient();
+  const authorIds = [...new Set(data.authorIds)];
 
   const { data: existing } = await supabase.from("insights").select("id").eq("slug", data.slug).maybeSingle();
   if (existing) {
@@ -79,7 +98,7 @@ export async function createInsightAction(input: CreateInsightInput): Promise<Ac
       content: data.postType === "original" ? (data.content ?? null) : null,
       cover_image_url: data.coverImageUrl,
       category_id: data.categoryId ?? null,
-      author_id: data.authorId ?? null,
+      author_id: authorIds[0] ?? null,
       practice_area_id: data.practiceAreaId ?? null,
       post_type: data.postType,
       external_url: data.postType === "external_link" ? data.externalUrl || null : null,
@@ -95,6 +114,13 @@ export async function createInsightAction(input: CreateInsightInput): Promise<Ac
 
   if (error || !created) {
     return { success: false, error: "Could not create insight. " + (error?.message ?? "") };
+  }
+
+  const authorsError = await syncInsightAuthors(supabase, created.id, authorIds);
+  if (authorsError) {
+    // Don't leave a half-saved insight behind (a retry would hit the slug check).
+    await supabase.from("insights").delete().eq("id", created.id);
+    return { success: false, error: "Could not save authors. " + authorsError };
   }
 
   await logAudit({ adminId: actor.adminId, action: "create", entity: "insights", entityId: created.id, meta: { slug: data.slug, status: data.status } });
@@ -113,6 +139,7 @@ export async function updateInsightAction(input: UpdateInsightInput): Promise<Ac
   const data = parsed.data;
 
   const supabase = createServiceRoleClient();
+  const authorIds = [...new Set(data.authorIds)];
 
   const { data: target } = await supabase
     .from("insights")
@@ -148,7 +175,7 @@ export async function updateInsightAction(input: UpdateInsightInput): Promise<Ac
       content: data.postType === "original" ? (data.content ?? null) : null,
       cover_image_url: data.coverImageUrl,
       category_id: data.categoryId ?? null,
-      author_id: data.authorId ?? null,
+      author_id: authorIds[0] ?? null,
       practice_area_id: data.practiceAreaId ?? null,
       post_type: data.postType,
       external_url: data.postType === "external_link" ? data.externalUrl || null : null,
@@ -168,6 +195,11 @@ export async function updateInsightAction(input: UpdateInsightInput): Promise<Ac
 
   if (error) {
     return { success: false, error: "Could not update insight. " + error.message };
+  }
+
+  const authorsError = await syncInsightAuthors(supabase, data.id, authorIds);
+  if (authorsError) {
+    return { success: false, error: "Saved, but could not update authors — please save again. " + authorsError };
   }
 
   await logAudit({ adminId: actor.adminId, action: "update", entity: "insights", entityId: data.id, meta: { slug: data.slug, status: data.status } });

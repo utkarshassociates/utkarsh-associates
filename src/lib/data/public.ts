@@ -2,6 +2,7 @@ import { createBrowserClient } from "@/lib/supabase/client";
 import type {
   Insight,
   InsightCategory,
+  InsightAuthor,
   InsightWithRelations,
   PracticeArea,
   TeamMember,
@@ -170,7 +171,23 @@ export async function getInsightCategories(): Promise<InsightCategory[]> {
 // team treatment). Supabase aliases the FK relation as `practiceArea` here
 // since the DB column is `practice_area_id`, not `practice_area`.
 const INSIGHT_SELECT =
-  "*, category:insight_categories(id, name, slug), author:team_members(id, name, slug, photo_url), practiceArea:practice_areas(id, title, slug)";
+  "*, category:insight_categories(id, name, slug), authorLinks:insight_authors(position, member:team_members(id, name, slug, photo_url)), practiceArea:practice_areas(id, title, slug)";
+
+// Flattens the raw `authorLinks` embed into an ordered `authors` array (plain
+// data only — safe to pass to Client Components) and keeps `author` as the
+// lead author. Members hidden by RLS (unpublished) come back null and are
+// dropped. Every INSIGHT_SELECT query below must go through this.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeInsight(row: any): InsightWithRelations {
+  const links = (row.authorLinks ?? []) as { position: number; member: InsightAuthor | InsightAuthor[] | null }[];
+  const authors = [...links]
+    .sort((a, b) => a.position - b.position)
+    .map((l) => (Array.isArray(l.member) ? l.member[0] : l.member))
+    .filter((m): m is InsightAuthor => !!m);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { authorLinks, ...rest } = row;
+  return { ...rest, authors, author: authors[0] ?? null } as InsightWithRelations;
+}
 
 export interface PaginatedInsights {
   insights: InsightWithRelations[];
@@ -215,7 +232,7 @@ export async function getPublishedInsights(params: {
     console.error("getPublishedInsights failed:", error);
     return { insights: [], total: 0, page, perPage };
   }
-  return { insights: (data ?? []) as unknown as InsightWithRelations[], total: count ?? 0, page, perPage };
+  return { insights: (data ?? []).map(normalizeInsight), total: count ?? 0, page, perPage };
 }
 
 /** Home page "latest insights" strip. */
@@ -230,7 +247,7 @@ export async function getLatestInsights(limit = 3): Promise<InsightWithRelations
     console.error("getLatestInsights failed:", error);
     return [];
   }
-  return (data ?? []) as unknown as InsightWithRelations[];
+  return (data ?? []).map(normalizeInsight);
 }
 
 export async function getInsightBySlug(slug: string): Promise<InsightWithRelations | null> {
@@ -244,7 +261,7 @@ export async function getInsightBySlug(slug: string): Promise<InsightWithRelatio
     console.error("getInsightBySlug failed:", error);
     return null;
   }
-  return (data as unknown as InsightWithRelations) ?? null;
+  return data ? normalizeInsight(data) : null;
 }
 
 /** Related insights: same category, excluding the current one, newest first. */
@@ -266,7 +283,7 @@ export async function getRelatedInsights(
     console.error("getRelatedInsights failed:", error);
     return [];
   }
-  return (data ?? []) as unknown as InsightWithRelations[];
+  return (data ?? []).map(normalizeInsight);
 }
 
 /** Related insights: same practice area (via the migration 0004 `practice_area_id` relation), newest first. Practice Area detail page's "related insights" section — see PHASE-4-NOTES.md for why this needed a schema addition. */
@@ -282,7 +299,7 @@ export async function getInsightsForPracticeArea(practiceAreaId: string, limit =
     console.error("getInsightsForPracticeArea failed:", error);
     return [];
   }
-  return (data ?? []) as unknown as InsightWithRelations[];
+  return (data ?? []).map(normalizeInsight);
 }
 
 export type { Insight };

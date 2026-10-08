@@ -9,6 +9,7 @@ import { createInsightAction, updateInsightAction, createCategoryAction } from "
 import { Button, Input, Select, Textarea } from "@/components/ui";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { AuthorsField } from "@/components/admin/AuthorsField";
 import { slugify } from "@/lib/utils";
 import type { InsightWithRelations, InsightCategory, TeamMember, PracticeArea } from "@/types/domain";
 
@@ -26,7 +27,7 @@ type FormValues = {
   excerpt: string;
   coverImageUrl: string;
   categoryId: string;
-  authorId: string;
+  authorIds: string[];
   practiceAreaId: string;
   postType: "original" | "external_link";
   content: string | null;
@@ -62,7 +63,8 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
       excerpt: initialValues?.excerpt ?? "",
       coverImageUrl: initialValues?.cover_image_url ?? "",
       categoryId: initialValues?.category_id ?? "",
-      authorId: initialValues?.author_id ?? "",
+      // Edit: ordered co-authors if present; otherwise fall back to the legacy single author_id.
+      authorIds: initialValues?.authors?.length ? initialValues.authors.map((a) => a.id) : initialValues?.author_id ? [initialValues.author_id] : [],
       practiceAreaId: initialValues?.practice_area_id ?? "",
       postType: initialValues?.post_type ?? "original",
       content: (initialValues?.content as string | null) ?? null,
@@ -104,7 +106,7 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
       excerpt: values.excerpt,
       coverImageUrl: values.coverImageUrl,
       categoryId: values.categoryId || null,
-      authorId: values.authorId || null,
+      authorIds: values.authorIds ?? [],
       practiceAreaId: values.practiceAreaId || null,
       postType: values.postType,
       content: values.content,
@@ -218,17 +220,11 @@ export function InsightForm({ mode, initialValues, categories: initialCategories
         </div>
 
         <div>
-          <label className="mb-1.5 block text-[13px] font-semibold text-ink-900">Author</label>
-          <Select
-            {...register("authorId")}
-          >
-            <option value="">— None —</option>
-            {teamMembers.map((tm) => (
-              <option key={tm.id} value={tm.id}>
-                {tm.name}
-              </option>
-            ))}
-          </Select>
+          <Controller
+            control={control}
+            name="authorIds"
+            render={({ field }) => <AuthorsField value={field.value ?? []} onChange={field.onChange} teamMembers={teamMembers} />}
+          />
         </div>
 
         <div>

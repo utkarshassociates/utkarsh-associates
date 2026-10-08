@@ -54,6 +54,7 @@ export default async function InsightDetailPage({ params }: { params: Promise<{ 
   const { slug } = await params;
   const insight = await getInsightBySlug(slug);
   if (!insight) notFound();
+  const authors = insight.authors ?? [];
 
   const related = await getRelatedInsights(insight.category_id, insight.id);
 
@@ -80,10 +81,17 @@ export default async function InsightDetailPage({ params }: { params: Promise<{ 
         <h1 className="font-serif text-h1 text-navy-700">{insight.title}</h1>
 
         <div className="mt-4 flex flex-wrap items-center gap-3 text-small text-gray-500">
-          {insight.author && (
-            <Link href={`/team/${insight.author.slug}`} className="font-semibold text-navy-700 hover:text-gold-700">
-              {insight.author.name}
-            </Link>
+          {authors.length > 0 && (
+            <span>
+              {authors.map((a, i) => (
+                <span key={a.id}>
+                  {i > 0 && (i === authors.length - 1 ? " & " : ", ")}
+                  <Link href={`/team/${a.slug}`} className="font-semibold text-navy-700 hover:text-gold-700">
+                    {a.name}
+                  </Link>
+                </span>
+              ))}
+            </span>
           )}
           {insight.published_at && <span>{formatDateDDMMYYYY(insight.published_at)}</span>}
         </div>
@@ -139,22 +147,23 @@ export default async function InsightDetailPage({ params }: { params: Promise<{ 
             no linked practice area (or vice versa) just shows the one it
             has — "missing related practice area" means this whole block
             simply doesn't render that part, not a placeholder. */}
-        {(insight.author || insight.practiceArea) && (
+        {(authors.length > 0 || insight.practiceArea) && (
           <div className="mt-10 flex flex-wrap gap-4 border-t border-gray-300 pt-6">
-            {insight.author && (
+            {authors.map((author) => (
               <Link
-                href={`/team/${insight.author.slug}`}
+                key={author.id}
+                href={`/team/${author.slug}`}
                 className="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3 pr-5 hover:shadow-sm"
               >
                 <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-navy-100">
-                  <Image src={insight.author.photo_url ?? ASSETS.teamAvatarPlaceholder} alt="" fill className="object-cover grayscale" sizes="40px" />
+                  <Image src={author.photo_url ?? ASSETS.teamAvatarPlaceholder} alt="" fill className="object-cover grayscale" sizes="40px" />
                 </div>
                 <div>
                   <p className="text-[11px] uppercase tracking-wide text-gray-500">Written by</p>
-                  <p className="text-small font-semibold text-navy-700">{insight.author.name}</p>
+                  <p className="text-small font-semibold text-navy-700">{author.name}</p>
                 </div>
               </Link>
-            )}
+            ))}
             {insight.practiceArea && (
               <Link
                 href={`/practice-areas/${insight.practiceArea.slug}`}

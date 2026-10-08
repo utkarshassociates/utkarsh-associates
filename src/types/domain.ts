@@ -153,10 +153,16 @@ export interface Insight {
   updated_at: string;
 }
 
+/** One credited author of an insight (ordered; index 0 is the lead author). */
+export type InsightAuthor = Pick<TeamMember, "id" | "name" | "slug"> & { photo_url?: string | null };
+
 /** Insight row joined with the bits list/edit screens need for display. */
 export interface InsightWithRelations extends Insight {
   category: Pick<InsightCategory, "id" | "name" | "slug"> | null;
-  author: (Pick<TeamMember, "id" | "name" | "slug"> & { photo_url?: string | null }) | null;
+  /** Lead author — always authors[0] when authors is present. Kept so older call sites keep working. */
+  author: InsightAuthor | null;
+  /** All credited authors, in order. Populated by the public data layer and the admin edit page. */
+  authors?: InsightAuthor[];
   // Optional: only populated where the query actually joins practice_areas
   // (src/lib/data/public.ts's INSIGHT_SELECT). The admin edit page's own
   // narrower query doesn't need it — practice area selection there goes

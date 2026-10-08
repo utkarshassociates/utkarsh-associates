@@ -22,7 +22,7 @@ export default async function EditInsightPage({ params }: EditInsightPageProps) 
   const [{ data: insight }, { data: categories }, { data: teamMembers }, { data: practiceAreas }] = await Promise.all([
     supabase
       .from("insights")
-      .select("*, category:insight_categories(id, name, slug), author:team_members!insights_author_id_fkey(id, name, slug)")
+      .select("*, category:insight_categories(id, name, slug), author:team_members!insights_author_id_fkey(id, name, slug), authorLinks:insight_authors(position, member:team_members(id, name, slug))")
       .eq("id", id)
       .maybeSingle(),
     supabase.from("insight_categories").select("id, name, slug").order("name"),
@@ -34,6 +34,10 @@ export default async function EditInsightPage({ params }: EditInsightPageProps) 
 
   const category = Array.isArray(insight.category) ? insight.category[0] : insight.category;
   const author = Array.isArray(insight.author) ? insight.author[0] : insight.author;
+  const authors = ((insight.authorLinks ?? []) as { position: number; member: unknown }[])
+    .sort((x, y) => x.position - y.position)
+    .map((l) => (Array.isArray(l.member) ? l.member[0] : l.member))
+    .filter(Boolean);
 
   // insights.edit_any covers everyone's; insights.edit_own only the
   // admin's own. Mirrors the same check in updateInsightAction — this is the
@@ -78,7 +82,7 @@ export default async function EditInsightPage({ params }: EditInsightPageProps) 
 
       <InsightForm
         mode="edit"
-        initialValues={{ ...insight, category: category ?? null, author: author ?? null } as InsightWithRelations}
+        initialValues={{ ...insight, category: category ?? null, author: author ?? null, authors } as InsightWithRelations}
         categories={categories ?? []}
         teamMembers={teamMembers ?? []}
         practiceAreas={practiceAreas ?? []}

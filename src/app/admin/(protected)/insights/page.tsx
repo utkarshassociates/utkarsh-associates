@@ -33,7 +33,7 @@ export default async function InsightsListPage({ searchParams }: InsightsListPag
   const supabase = createServiceRoleClient();
   let query = supabase
     .from("insights")
-    .select("id, title, status, post_type, submitted_by, updated_at, team_members(name)")
+    .select("id, title, status, post_type, submitted_by, updated_at, team_members!insights_author_id_fkey(name)")
     .order("updated_at", { ascending: false });
 
   if (activeStatus === "external_link") {
