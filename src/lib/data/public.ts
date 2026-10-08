@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createBrowserClient } from "@/lib/supabase/client";
 import type {
   Insight,
@@ -32,6 +33,33 @@ const supabase = () => createBrowserClient();
 // (SITE_SETTINGS, OFFICES, getHeadquartersOffice), not fetched from the DB.
 // See PHASE-6 plan §1 for why (client's real day-to-day CMS needs are
 // Practice Areas/Team/Insights/Inquiries; this was config, not content).
+
+// ============ Common contact details (site_contact, superAdmin-editable) ============
+
+export interface ContactDetails {
+  phone: string | null;
+  email: string | null;
+}
+
+/**
+ * The one common office phone/email. A value comes back null when it is
+ * toggled off, blank, or the lookup fails — callers just render nothing for
+ * null. Wrapped in cache() so the layout's Footer and the page share one query.
+ */
+export const getContactDetails = cache(async (): Promise<ContactDetails> => {
+  const { data, error } = await supabase()
+    .from("site_contact")
+    .select("phone, email, show_phone, show_email")
+    .eq("id", 1)
+    .maybeSingle();
+  if (error) {
+    console.error("getContactDetails failed:", error);
+    return { phone: null, email: null };
+  }
+  const phone = data?.show_phone ? data.phone?.trim() : "";
+  const email = data?.show_email ? data.email?.trim() : "";
+  return { phone: phone || null, email: email || null };
+});
 
 // ============ Practice Areas ============
 

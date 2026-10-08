@@ -3,7 +3,7 @@ import { Tag } from "@/components/ui";
 import { ContactForm } from "@/components/marketing/ContactForm";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { OFFICES, SITE_SETTINGS } from "@/config/content";
-import { getPublishedPracticeAreas } from "@/lib/data/public";
+import { getContactDetails, getPublishedPracticeAreas } from "@/lib/data/public";
 import { localBusinessJsonLd } from "@/lib/seo";
 
 export const revalidate = 3600;
@@ -22,12 +22,13 @@ export const metadata: Metadata = {
 // nav/CTA had to link to.
 export default async function OfficesPage() {
   const practiceAreas = await getPublishedPracticeAreas();
-  const { contactIntro, firmPhone, firmEmail } = SITE_SETTINGS;
+  const { contactIntro } = SITE_SETTINGS;
+  const { phone: firmPhone, email: firmEmail } = await getContactDetails();
 
   return (
     <div className="mx-auto max-w-wide px-4 py-16 tablet:px-8 desktop:px-16">
       {OFFICES.map((office) => (
-        <JsonLd key={office.id} data={localBusinessJsonLd(office)} />
+        <JsonLd key={office.id} data={localBusinessJsonLd({ ...office, phone: firmPhone, email: firmEmail })} />
       ))}
       <h1 className="font-serif text-h1 text-navy-700">Offices &amp; Contact</h1>
       <p className="mt-4 max-w-[560px] text-body-l text-gray-700">
@@ -71,20 +72,20 @@ export default async function OfficesPage() {
                 {office.address && <p className="whitespace-pre-line text-small text-gray-700">{office.address}</p>}
                 {office.city && <p className="mt-1 text-small text-gray-500">{office.city}</p>}
                 <div className="mt-4 flex flex-col gap-1">
-                  {office.phone && (
+                  {firmPhone && (
                     <a
-                      href={`tel:${office.phone.replace(/\s+/g, "")}`}
+                      href={`tel:${firmPhone.replace(/\s+/g, "")}`}
                       className="text-small font-semibold text-navy-700 hover:text-gold-700"
                     >
-                      {office.phone}
+                      {firmPhone}
                     </a>
                   )}
-                  {office.email && (
+                  {firmEmail && (
                     <a
-                      href={`mailto:${office.email}`}
+                      href={`mailto:${firmEmail}`}
                       className="text-small font-semibold text-navy-700 hover:text-gold-700"
                     >
-                      {office.email}
+                      {firmEmail}
                     </a>
                   )}
                 </div>

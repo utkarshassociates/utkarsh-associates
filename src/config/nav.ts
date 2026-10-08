@@ -9,6 +9,8 @@ export interface AdminNavItem {
   anyPermission?: Permission[];
   /** True items are hidden from anyone but superAdmin, regardless of extra_permissions. Since per-admin overrides can still grant e.g. admins.manage to a non-super admin, this flag is advisory for the sidebar only — the actual page-level guard is requirePermission(), not requireSuperAdmin(), so a granted admin still gets in even though the item wouldn't otherwise show. Handled per-page, see src/app/admin/(protected)/admins/page.tsx etc. */
   superOnlyByDefault?: boolean;
+  /** Strictly superAdmin: hidden from everyone else in the sidebar (the page itself also calls requireSuperAdmin()). */
+  superOnly?: boolean;
 }
 
 /**
@@ -34,4 +36,5 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { label: "Team", href: "/admin/team", permission: "team.manage" },
   { label: "Inquiries", href: "/admin/inquiries", permission: "inquiries.view" },
   { label: "Admins", href: "/admin/admins", permission: "admins.manage", superOnlyByDefault: true },
+  { label: "Contact Details", href: "/admin/contact-details", superOnly: true },
 ];

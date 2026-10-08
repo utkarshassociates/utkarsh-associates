@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ASSETS } from "@/config/assets";
 import { OFFICES, SITE_SETTINGS, getHeadquartersOffice } from "@/config/content";
+import { getContactDetails } from "@/lib/data/public";
 
 // Phase 6 §2: "Contact" dropped from this list — the contact form now lives
 // on /offices (see (marketing)/offices/page.tsx), so "Offices" is the way
@@ -14,8 +15,9 @@ const FOOTER_LINKS = [
   { label: "Offices", href: "/offices" },
 ];
 
-export function Footer() {
-  const { firmPhone: phone, firmEmail: email, socialLinkedinUrl: linkedin } = SITE_SETTINGS;
+export async function Footer() {
+  const { socialLinkedinUrl: linkedin } = SITE_SETTINGS;
+  const { phone, email } = await getContactDetails();
   const hq = getHeadquartersOffice();
   const year = new Date().getFullYear();
 

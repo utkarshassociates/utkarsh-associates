@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { ASSETS } from "@/config/assets";
 import { SITE_SETTINGS } from "@/config/content";
-import { getLatestInsights, getPracticeAreaHighlights } from "@/lib/data/public";
+import { getContactDetails, getLatestInsights, getPracticeAreaHighlights } from "@/lib/data/public";
 import { getPracticeAreaIconSrc } from "@/lib/utils";
 import { ORG_NAME, organizationJsonLd } from "@/lib/seo";
 
@@ -42,11 +42,12 @@ export default async function HomePage() {
     getLatestInsights(3),
   ]);
 
-  const { homeHeroHeading: heroHeading, homeHeroSubheading: heroSubheading, firmPhone, firmEmail } = SITE_SETTINGS;
+  const { homeHeroHeading: heroHeading, homeHeroSubheading: heroSubheading } = SITE_SETTINGS;
+  const contact = await getContactDetails();
 
   return (
     <>
-      <JsonLd data={organizationJsonLd({ phone: firmPhone || undefined, email: firmEmail || undefined })} />
+      <JsonLd data={organizationJsonLd({ phone: contact.phone ?? undefined, email: contact.email ?? undefined })} />
       {/* Hero */}
       <section className="bg-navy-700 text-white">
         <div className="mx-auto grid max-w-wide gap-8 px-4 py-16 tablet:px-8 desktop:grid-cols-2 desktop:items-center desktop:px-16 desktop:py-24">
