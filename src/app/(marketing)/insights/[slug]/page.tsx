@@ -156,7 +156,7 @@ export default async function InsightDetailPage({ params }: { params: Promise<{ 
                 className="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3 pr-5 hover:shadow-sm"
               >
                 <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-navy-100">
-                  <Image src={author.photo_url ?? ASSETS.teamAvatarPlaceholder} alt="" fill className="object-cover grayscale" sizes="40px" />
+                  <Image src={author.photo_url ?? ASSETS.teamAvatarPlaceholder} alt="" fill className="object-cover object-top grayscale" sizes="40px" />
                 </div>
                 <div>
                   <p className="text-[11px] uppercase tracking-wide text-gray-500">Written by</p>
